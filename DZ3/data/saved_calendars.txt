@@ -1,0 +1,4 @@
+id,name_calendar,id_user,id_events
+1,work,@OlesyaShevlyakova*1,"[1, 1]"
+1,work,@OlesyaShevlyakova*1,[1]
+2,home,@OlesyaShev*1,"[1, 1]"

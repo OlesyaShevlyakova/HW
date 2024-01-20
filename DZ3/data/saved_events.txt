@@ -1,0 +1,2 @@
+id,name_event,description,data_event,repeat_type,event_owner,guests
+1,party,вечеринка,2007-12-06 15:29:00,,@OlesyaShevlyakova*1,['@MaksimBazhin*2']
