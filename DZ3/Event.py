@@ -23,7 +23,7 @@ class Event:
     _name_event = None    # название события
     _event_owner = None    # создатель события
     _event_guests = []  # участники события
-    _repeat_type = None   # периодичность события
+    _repeat_type = None   # периодичность события - D W M Y
     _data_event = None    # дата события
     _id = None   # id номер события
     __id_counter__ = 1

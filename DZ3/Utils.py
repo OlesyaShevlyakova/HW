@@ -8,6 +8,7 @@ def hash_password(password_for_hash):
 
 
 def check_date(date_for_check):
+    "Проверяет, что дата введена в формате YYYY-MM-DD, например, 2023-01-05"
     try:
         if (len(date_for_check) == 10 and isinstance(int(date_for_check[0:4]), int) and date_for_check[4] == '-'
                 and date_for_check[7] == '-' and isinstance(int(date_for_check[5:7]), int)

@@ -11,8 +11,10 @@
 
 from Backend import Backend
 from Utils import hash_password as hs
+from Utils import check_date
 from User import User
 from Calendar import Calendar
+from Event import Event
 
 class Interface:
     backend = None
@@ -67,7 +69,7 @@ class Interface:
                 Interface.consecution.append(Interface.identification_user)
 
     @staticmethod
-    def creating_user():
+    def creating_user(): #TODO: при создании пользователя надо сразу ему создавать календарь
         "Создание пользователя"
         print("Введите логин")
         login_user = input()
@@ -100,14 +102,13 @@ class Interface:
                     3) удалить календарь
                     ========== СОБЫТИЯ ==========
                     4) создать событие (выбрав календарь)
-                    5) изменить событие (выбрав календарь)
-                    6) удалить событие (выбрав календарь)
-                    7) отобразить все события
-                    8) отобразить события из временного диапазона
-                    9) отобразить события, где я "гость"
+                    5) удалить событие (выбрав календарь)
+                    6) отобразить все события
+                    7) отобразить события из временного диапазона
+                    8) отобразить события, где я "гость"
                     ========== СЕРВИСНОЕ ==========
-                    10) выйти из системы
-                    11) изменить информацию о пользователе
+                    9) выйти из системы
+                    10) изменить информацию о пользователе
                     """)
         if question == "0":
             Interface.consecution.append(Interface.show_list_calendar)
@@ -120,18 +121,16 @@ class Interface:
         elif question == "4":
             Interface.consecution.append(Interface.add_event)
         elif question == "5":
-            Interface.consecution.append(Interface.edit_event)
-        elif question == "6":
             Interface.consecution.append(Interface.del_event)
-        elif question == "7":
+        elif question == "6":
             Interface.consecution.append(Interface.show_events)
-        elif question == "8":
+        elif question == "7":
             Interface.consecution.append(Interface.show_events_range)
-        elif question == "9":
+        elif question == "8":
             Interface.consecution.append(Interface.show_events_guest)
-        elif question == "10":
+        elif question == "9":
             Interface.consecution.append(Interface.identification_user)
-        elif question == "11":
+        elif question == "10":
             Interface.consecution.append(Interface.change_user)
         else:
             print("Некорректный ввод данных 😎")
@@ -254,7 +253,75 @@ class Interface:
     @staticmethod
     def add_event():
         "Cоздать событие"
-        pass
+        print("Введите имя события")
+        name_event = input()
+        print("Введите описание события")
+        description = input()
+        while True:
+            print("Введите дату события в формате YYYY-MM-DD, например 2023-01-05")
+            date_event = input()
+            if check_date(date_event):
+                break
+            else:
+                print("Дата введена неправильно")
+        while True:
+            print("""Введите периодичность события в формате D или W или M или Y или N, где:
+                                                        D - ежедневно
+                                                        W - еженедельно
+                                                        M - ежемесячно
+                                                        Y - ежегодно
+                                                        N - разово""")
+            repeat_type = input().upper()
+            if (len(repeat_type) == 1) and (repeat_type in ["D", "W", "M", "Y", "N"]):
+                if repeat_type == "N":
+                    repeat_type = None
+                break
+            else:
+                print("Периодичность введена неправильно")
+        question = input("""
+                                        Будем добавлять гостей:
+                                        да - 1
+                                        нет - любой символ
+                                        """)
+        if question == "1":
+            Interface.backend.load_file_users()  # загрузить всех пользователей в backend
+            for elem in Interface.backend.info_users():
+                info_user = elem.info_User()
+                print(f"имя {info_user[1]}, id пользователя {info_user[0]}")
+            while True:
+                guests = input("Укажите id пользователей через пробел")
+                guests = guests.split()
+                result = Interface.backend.check_id_users(guests)
+                if result:
+                    break
+                else:
+                    print("Пользователи введены неверно, укажите id пользователей через пробел")
+        else:
+            guests = []
+        new_event = Event(name_event=name_event, description=description, event_owner=Interface.id_user, guests=guests, data_event=date_event,
+                 repeat_type=repeat_type)
+        Interface.backend.load_file_events(target_id_event='*********')  # запускаем загрузку событий без загрузки
+                                                                         # в память backend, чтобы обновить id_counter
+        # TODO: У нас не добавляются события в сам календарь, Надо исправить.
+        # TODO: Доработать, так как надо добавлять соыбтия в календари гостей
+        Interface.backend.add_event(new_event)
+        Interface.backend.save_file_events(add_user=True)
+        print("Успешно добавили событие")
+        Interface.consecution.append(Interface.main_screen)
+
+
+
+
+
+
+    "Cоздать календарь"
+
+    new_calendar = Calendar(id_user=Interface.id_user, name_calendar=name_calendar)
+    Interface.backend.load_file_calendars(target_id_user='*********')  # запускаем загрузку календарей без загрузки
+    # в память backend, чтобы обновить id_counter
+    Interface.backend.add_calendar(new_calendar)
+    Interface.backend.save_file_calendars(add_calendar=True)
+    Interface.consecution.append(Interface.main_screen)
 
 
 

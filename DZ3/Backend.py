@@ -112,13 +112,17 @@ class Backend:
             User.change_id_counter(maxsimum)
 
     @staticmethod
-    def save_file_events(add_calendar=None):
+    def save_file_events(add_event=None):
         "Создает файл с информацией о событиях"
         file_name = Backend._directory + 'saved_events.txt'
-        with open(file_name, "w", newline="") as f:
+        if add_event is None:
+            file_mode = "w"
+        else:
+            file_mode = "a"
+        with open(file_name, file_mode, newline="") as f:
             w = csv.DictWriter(f, ["id", "name_event", "description", "data_event", "repeat_type", "event_owner", "guests"])
-            w.writeheader()
-
+            if file_mode == "w":
+                w.writeheader()
             events = Backend.info_events()
             for event in events:
                 info = event.info_Event()
@@ -133,9 +137,12 @@ class Backend:
                 w.writerow(data)
 
     @staticmethod
-    def load_file_events():
-        "Загружаем события из файла"
+    def load_file_events(target_id_event=None):
+        """Загружаем события из файла
+        Если в переменную target_id_event передали искомый id, то загружаем событие с данным id
+        Иначе загружаем все события"""
         file_name = Backend._directory + 'saved_events.txt'
+        Backend.clear_events()
         with open(file_name, "r") as f:
             w = csv.DictReader(f, ["id", "name_event", "description", "data_event", "repeat_type",
                                    "event_owner", "guests"])
@@ -144,7 +151,10 @@ class Backend:
             for i in w:
                 event = Event(name_event=i["name_event"], description=i["description"], event_owner=i['event_owner'],
                               guests=i["guests"], data_event=i['data_event'], repeat_type=i["repeat_type"], id=i["id"])
-                Backend.add_event(event)
+                if target_id_event is None:
+                    Backend.add_event(event)
+                elif i["id"] == target_id_event:
+                    Backend.add_event(event)
                 id = i["id"]
                 id_events.append(int(id))
             maxsimum = max(id_events) + 1
@@ -229,6 +239,11 @@ class Backend:
         Backend.list_calendars = []
 
     @staticmethod
+    def clear_events():
+        "Очищаем список событий"
+        Backend.list_events = []
+
+    @staticmethod
     def update_calendar(target_id_calendar, new_name_calendar=None):
         "Метод обновления имени календаря"
         for elem in Backend.list_calendars:
@@ -250,6 +265,13 @@ class Backend:
             if target_id_calendar == elem.info_calendars()[0]:
                 return True
         return False
+
+    @staticmethod
+    def check_id_users(target_id_users: list):
+        "Проверяем присутствие id пользователей в памяти"
+        result = all(elem in Backend.list_users for elem in target_id_users)
+        return result
+
 
 
 
