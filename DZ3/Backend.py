@@ -112,7 +112,7 @@ class Backend:
             User.change_id_counter(maxsimum)
 
     @staticmethod
-    def save_file_events():
+    def save_file_events(add_calendar=None):
         "Создает файл с информацией о событиях"
         file_name = Backend._directory + 'saved_events.txt'
         with open(file_name, "w", newline="") as f:
@@ -151,13 +151,17 @@ class Backend:
             Event.change_id_counter(maxsimum)
 
     @staticmethod
-    def save_file_calendars():
+    def save_file_calendars(add_calendar=None):
         "Создает файл с информацией о календарях"
         file_name = Backend._directory + 'saved_calendars.txt'
-        with open(file_name, "w", newline="") as f:
+        if add_calendar is None:
+            file_mode = "w"
+        else:
+            file_mode = "a"
+        with open(file_name, file_mode, newline="") as f:
             w = csv.DictWriter(f, ["id", "name_calendar", "id_user", "id_events"])
-            w.writeheader()
-
+            if file_mode == "w":
+                w.writeheader()
             calendars = Backend.info_calendars()
             for calendar in calendars:
                 info = calendar.info_calendars()
@@ -169,9 +173,13 @@ class Backend:
                 w.writerow(data)
 
     @staticmethod
-    def load_file_calendars():
-        "Загружаем календарь из файла"
+    def load_file_calendars(target_id_user=None):
+        """Загружаем календарь из файла
+        Если в переменную target_id_user передали искомый id, то загружаем календарь пользователя с данным id
+        Иначе загружаем все календари"""
+
         file_name = Backend._directory + 'saved_calendars.txt'
+        Backend.clear_calendars()
         with open(file_name, "r") as f:
             w = csv.DictReader(f, ["id", "name_calendar", "id_user", "id_events"])
             next(w)
@@ -179,11 +187,17 @@ class Backend:
             for i in w:
                 calendar = Calendar(id=i["id"], id_user=i["id_user"], name_calendar=i['name_calendar'],
                               id_events=i["id_events"])
-                Backend.add_calendar(calendar)
+                if target_id_user is None:
+                    Backend.add_calendar(calendar)
+                elif i["id_user"] == target_id_user:
+                    Backend.add_calendar(calendar)
+                "Ищем максимальный id среди всех записей для обновления id_counter, чтобы id календаря был точно уникальным"
                 id = i["id"]
                 id_calendars.append(int(id))
             maxsimum = max(id_calendars) + 1
             Calendar.change_id_counter(maxsimum)
+
+
 
     @staticmethod
     def clear_users():
@@ -209,6 +223,38 @@ class Backend:
                 break
         Backend.save_file_users()    # выгрузить всех пользователей на диск
 
+    @staticmethod
+    def clear_calendars():
+        "Очищаем список календарей"
+        Backend.list_calendars = []
+
+    @staticmethod
+    def update_calendar(target_id_calendar, new_name_calendar=None):
+        "Метод обновления имени календаря"
+        for elem in Backend.list_calendars:
+            if target_id_calendar == elem.info_calendars()[0]:
+                our_calendar = elem  # В переменную поместить из памяти требуемый календарь
+                break
+        our_calendar.change_name(new_name_calendar)  # Обновить имя у календаря
+        Backend.load_file_calendars()  # Загрузить в память все календари
+        for i in range(len(Backend.list_calendars)):  # ищем календарь для изменения
+            if target_id_calendar == Backend.list_calendars[i].info_calendars()[0]:
+                Backend.list_calendars[i] = our_calendar  # обновить изменяемый календарь
+                break
+        Backend.save_file_calendars()  # выгрузить все календари на диск
+
+    @staticmethod
+    def check_id_calendar(target_id_calendar):
+        "Проверяем присутствие id календаря в памяти"
+        for elem in Backend.list_calendars:
+            if target_id_calendar == elem.info_calendars()[0]:
+                return True
+        return False
+
+
+
+
+
 
 
 
@@ -216,6 +262,7 @@ class Backend:
 
 
 if __name__ == "__main__":
+    Backend.load_file_users()
     user1 = User("lisenok", "Olesya", "Shevlyakova", "12345")
     # Backend.add_user(user1)
     user2 = User("lis", "Maksim", "Bazhin", "Bazhin")

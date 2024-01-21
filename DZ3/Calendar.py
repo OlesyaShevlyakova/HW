@@ -40,6 +40,10 @@ class Calendar:
         "Возвращает информацию о календаре"
         return (self._id, self._name_calendar, self._id_user, self._events)
 
+    def change_name(self, new_name):
+        "Изменение имени календаря"
+        self._name_calendar = new_name
+
     def search_events(self, data_from: datetime, data_to: datetime):
         "Поиск событий из промежутка времени"
         list_events = []
@@ -66,7 +70,7 @@ class Calendar:
         return f"[{self._id}:{self._id_user}]"
 
     def repeat_events(self):
-        "Метод обработки повторения события"
+        "Метод обработки повторения события" #TODO
         pass
 
 
