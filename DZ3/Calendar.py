@@ -65,6 +65,10 @@ class Calendar:
         "Возвращает информацию для разработчика"
         return f"[{self._id}:{self._id_user}]"
 
+    def repeat_events(self):
+        "Метод обработки повторения события"
+        pass
+
 
 if __name__ == "__main__":
     A = Calendar("123454")

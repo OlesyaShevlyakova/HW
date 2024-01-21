@@ -8,7 +8,6 @@
 в main можно использовать ТОЛЬКО interface
 """
 
-# TODO: написать интерфейс смены пароля
 
 from Backend import Backend
 from Utils import hash_password as hs
@@ -18,6 +17,7 @@ class Interface:
     backend = None
     consecution = list()
     id_user = None
+    login_user = None
 
     @staticmethod
     def work():
@@ -48,6 +48,7 @@ class Interface:
             if login_user == elem.info_User()[3] and password_user == elem.info_User()[4]:
                 flag = True
                 Interface.id_user = elem.info_User()[0]
+                Interface.login_user = elem.info_User()[3]
                 Interface.consecution.append(Interface.main_screen)
         if not flag:
             print("Данный логин не обнаружен, введите другой логин или заведите новый")
@@ -87,7 +88,83 @@ class Interface:
 
     @staticmethod
     def main_screen():
-        pass
+        "Главное меню интерфейса"
+        question = input("""
+                    Выберите действие:
+                    1) создать событие (выбрав календарь),
+                    2) изменить событие (выбрав календарь),
+                    3) удалить событие (выбрав календарь),
+                    4) отобразить все события,
+                    5) отобразить события из временного диапазона,
+                    6) отобразить события, где я "гость"
+                    7) выйти из системы,
+                    8) изменить информацию о пользователе
+                    """)
+        if question == "1":
+            Interface.consecution.append(Interface.add_event)
+        elif question == "2":
+            Interface.consecution.append(Interface.edit_event)
+        elif question == "3":
+            Interface.consecution.append(Interface.del_event)
+        elif question == "4":
+            Interface.consecution.append(Interface.show_events)
+        elif question == "5":
+            Interface.consecution.append(Interface.show_events_range)
+        elif question == "6":
+            Interface.consecution.append(Interface.show_events_guest)
+        elif question == "7":
+            Interface.consecution.append(Interface.identification_user)
+        elif question == "8":
+            Interface.consecution.append(Interface.change_user)
+        else:
+            print("Некорректный ввод данных 😎")
+            Interface.consecution.append(Interface.main_screen)
+
+    @staticmethod
+    def change_user():
+        "Изменить  информацию о пользователе"
+        question = input("""
+                            Выберите действие:
+                            1) изменить имя,
+                            2) изменить фамилию,
+                            3) изменить пароль,
+                            4) вернуться к главному меню
+                            """)
+        if question == "1":
+            Interface.consecution.append(Interface.change_name)
+        elif question == "2":
+            Interface.consecution.append(Interface.change_lastname)
+        elif question == "3":
+            Interface.consecution.append(Interface.change_password)
+        elif question == "4":
+            Interface.consecution.append(Interface.main_screen)
+        else:
+            print("Некорректный ввод данных 😎")
+            Interface.consecution.append(Interface.change_user)
+
+    @staticmethod
+    def change_name():
+        "Изменить имя пользователя"
+        new_name = input("Введите новое имя")
+        Interface.backend.update_user(Interface.login_user, new_name=new_name)
+        print("Имя успешно изменено")
+        Interface.consecution.append(Interface.change_user)
+
+    @staticmethod
+    def change_lastname():
+        "Изменить фамилию пользователя"
+        new_lastname = input("Введите новую фамилию")
+        Interface.backend.update_user(Interface.login_user, new_lastname=new_lastname)
+        print("Фамилия успешно изменена")
+        Interface.consecution.append(Interface.change_user)
+
+    @staticmethod
+    def change_password():
+        "Изменить пароль пользователя"
+        new_password = input("Введите новый пароль")
+        Interface.backend.update_user(Interface.login_user, new_password=new_password)
+        print("Пароль успешно изменен")
+        Interface.consecution.append(Interface.change_user)
 
 
 

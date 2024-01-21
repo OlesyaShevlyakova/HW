@@ -39,9 +39,15 @@ class User:
         "Возвращает информацию об id User"
         return (self._id)
 
-    def change_password(self, new_password):
-        "Замена пароля User"
-        self._password = new_password
+    def change_user(self, new_name=None, new_lastname=None, new_password=None):
+        "Замена информации о User"
+        if new_name is not None:
+            self._name = new_name
+        if new_lastname is not None:
+            self._lastname = new_lastname
+        if new_password is not None:
+            self._password = new_password
+
 
     def __str__(self):
         "Возвращает информацию для пользователя"

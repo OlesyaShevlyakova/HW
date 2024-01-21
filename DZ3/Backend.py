@@ -16,9 +16,9 @@ from datetime import datetime
 import csv
 
 class Backend:
-    list_users = []
-    list_events = []
-    list_calendars = []
+    list_users = []   # храним объекты класса User
+    list_events = []   # храним объекты класса Event
+    list_calendars = []   # храним объекты класса Calendar
     _directory = "data/"
 
     @staticmethod
@@ -189,6 +189,29 @@ class Backend:
     def clear_users():
         "Очищаем список пользователей"
         Backend.list_users = []
+
+    @staticmethod
+    def update_user(target_login, new_name=None, new_lastname=None, new_password=None):
+        """Метод обновления пользователя:
+                1) загрузить в память изменяемого пользователя,
+                2) изменить пользователя и сохранить его в отдельную переменную,
+                3) очистить память и загрузить всех пользователей,
+                4) обновить изменяемого пользователя,
+                5) выгрузить всех пользователей на диск
+                """
+        Backend.load_file_users(target_login)  # загрузить в память изменяемого пользователя
+        our_user = Backend.list_users[0]   # сохранить его в отдельную переменную
+        our_user.change_user(new_name, new_lastname, new_password)   # изменить пользователя
+        Backend.load_file_users()   # загрузить всех пользователей
+        for i in range(len(Backend.list_users)):  # ищем пользователя для изменения
+            if target_login == Backend.list_users[i].info_users()[3]:
+                Backend.list_users[i] = our_user     # обновить изменяемого пользователя
+                break
+        Backend.save_file_users()    # выгрузить всех пользователей на диск
+
+
+
+
 
 
 
