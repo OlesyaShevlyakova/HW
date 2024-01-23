@@ -150,7 +150,7 @@ class Backend:
             id_events = []
             for i in w:
                 event = Event(name_event=i["name_event"], description=i["description"], event_owner=i['event_owner'],
-                              guests=i["guests"], data_event=i['data_event'], repeat_type=i["repeat_type"], id=i["id"])
+                              guests=eval(i["guests"]), data_event=i['data_event'], repeat_type=i["repeat_type"], id=i["id"])
                 if target_id_event is None:
                     Backend.add_event(event)
                 elif i["id"] == target_id_event:
@@ -196,7 +196,7 @@ class Backend:
             id_calendars = []
             for i in w:
                 calendar = Calendar(id=i["id"], id_user=i["id_user"], name_calendar=i['name_calendar'],
-                              id_events=i["id_events"])
+                              id_events=eval(i["id_events"]))
                 if target_id_user is None:
                     Backend.add_calendar(calendar)
                 elif i["id_user"] == target_id_user:
@@ -228,7 +228,7 @@ class Backend:
         our_user.change_user(new_name, new_lastname, new_password)   # изменить пользователя
         Backend.load_file_users()   # загрузить всех пользователей
         for i in range(len(Backend.list_users)):  # ищем пользователя для изменения
-            if target_login == Backend.list_users[i].info_users()[3]:
+            if target_login == Backend.list_users[i].info_User()[3]:
                 Backend.list_users[i] = our_user     # обновить изменяемого пользователя
                 break
         Backend.save_file_users()    # выгрузить всех пользователей на диск

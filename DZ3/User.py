@@ -46,7 +46,7 @@ class User:
         if new_lastname is not None:
             self._lastname = new_lastname
         if new_password is not None:
-            self._password = new_password
+            self._password = hs(new_password)
 
 
     def __str__(self):

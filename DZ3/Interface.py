@@ -15,6 +15,7 @@ from Utils import check_date
 from User import User
 from Calendar import Calendar
 from Event import Event
+from time import sleep
 
 class Interface:
     backend = None
@@ -53,8 +54,11 @@ class Interface:
                 Interface.id_user = elem.info_User()[0]
                 Interface.login_user = elem.info_User()[3]
                 Interface.consecution.append(Interface.main_screen)
+                print("Успешная авторизация!")
+                sleep(1)
         if not flag:
-            print("Данный логин не обнаружен, введите другой логин или заведите новый")
+            print("Неправильный логин\пароль, либо логин не существует, введите другой логин или заведите новый")
+            sleep(1)
             question = input("""
             Выберите действие:
             1) ввести другой логин или пароль
@@ -69,12 +73,13 @@ class Interface:
                 Interface.consecution.append(Interface.identification_user)
 
     @staticmethod
-    def creating_user(): #TODO: при создании пользователя надо сразу ему создавать календарь
+    def creating_user():
         "Создание пользователя"
         print("Введите логин")
         login_user = input()
         if not Interface.backend.originality_login(login_user):
             print("Введите другой логин, данный логин уже существует")
+            sleep(1)
             Interface.consecution.append(Interface.creating_user)
         else:
             print("Введите имя")
@@ -83,12 +88,17 @@ class Interface:
             lastname_user = input()
             print("Введите пароль")
             password_user = input()
-            new_user = User(login=login_user, name=name_user, lastname=lastname_user, password=password_user)
             Interface.backend.load_file_users(target_login='*********')  # запускаем загрузку пользователей без загрузки
                                                                         # в память backend, чтобы обновить id_counter
+            new_user = User(login=login_user, name=name_user, lastname=lastname_user, password=password_user)
+            Interface.login_user = login_user
+            Interface.id_user = new_user.info_id_User()
             Interface.backend.add_user(new_user)
             Interface.backend.save_file_users(add_user=True)
-            Interface.consecution.append(Interface.main_screen)
+            Interface.consecution.append(Interface.add_calendar)
+            print("Учетная запись создана!")
+            print("Пожалуйста, создайте календарь")
+            sleep(2)
 
     @staticmethod
     def main_screen():
@@ -187,6 +197,7 @@ class Interface:
         "Отобразить список календарей"
         Interface.show_list_calendar_worker()
         Interface.consecution.append(Interface.main_screen)
+        input('Нажмите Enter')
 
     @staticmethod
     def show_list_calendar_worker():
@@ -195,9 +206,17 @@ class Interface:
                         2) отобразить календари пользователя
                         """
         Interface.backend.load_file_calendars(Interface.id_user)
+        calendar_exist = False
         for elem in Interface.backend.info_calendars():
+            if not calendar_exist:
+                print('======Список календарей=====')
+                calendar_exist = True
             info_calendar = elem.info_calendars()
-            print(f"Календарь {info_calendar[1]}, id календаря {info_calendar[0]}, количество события {len(info_calendar[3])}")
+            print(f"Календарь {info_calendar[1]}, id календаря {info_calendar[0]}, количество событий {len(info_calendar[3])}")
+        if not calendar_exist:
+            print('Календари не существуют! Создайте новый календарь!')
+        else:
+            print('============================')
 
     @staticmethod
     def add_calendar():
@@ -210,6 +229,8 @@ class Interface:
         Interface.backend.add_calendar(new_calendar)
         Interface.backend.save_file_calendars(add_calendar=True)
         Interface.consecution.append(Interface.main_screen)
+        print('Календарь успешно создан')
+        input('Нажмите Enter')
 
     @staticmethod
     def edit_calendar():
@@ -225,6 +246,7 @@ class Interface:
             Interface.consecution.append(Interface.main_screen)
         else:
             print("Некорректный ввод данных 😎")
+            sleep(1)
             Interface.consecution.append(Interface.edit_calendar)
 
     @staticmethod
@@ -248,6 +270,7 @@ class Interface:
             new_name_calendar = input("Введите новое имя календаря")
             Interface.backend.update_calendar(target_id_calendar, new_name_calendar)
             print("Имя календаря успешно изменено")
+            sleep(1)
             Interface.consecution.append(Interface.main_screen)
 
     @staticmethod
@@ -303,30 +326,13 @@ class Interface:
         Interface.backend.load_file_events(target_id_event='*********')  # запускаем загрузку событий без загрузки
                                                                          # в память backend, чтобы обновить id_counter
         # TODO: У нас не добавляются события в сам календарь, Надо исправить.
+        # 1) Загрузить в память календари пользователя
+        # 2) Если
         # TODO: Доработать, так как надо добавлять соыбтия в календари гостей
         Interface.backend.add_event(new_event)
         Interface.backend.save_file_events(add_user=True)
         print("Успешно добавили событие")
         Interface.consecution.append(Interface.main_screen)
-
-
-
-
-
-
-    "Cоздать календарь"
-
-    new_calendar = Calendar(id_user=Interface.id_user, name_calendar=name_calendar)
-    Interface.backend.load_file_calendars(target_id_user='*********')  # запускаем загрузку календарей без загрузки
-    # в память backend, чтобы обновить id_counter
-    Interface.backend.add_calendar(new_calendar)
-    Interface.backend.save_file_calendars(add_calendar=True)
-    Interface.consecution.append(Interface.main_screen)
-
-
-
-
-
 
 
 
