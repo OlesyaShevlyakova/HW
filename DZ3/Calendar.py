@@ -7,16 +7,19 @@
 from Event import Event
 from datetime import datetime
 
-# TODO: написать функцию обработки повторения события
 
 class Calendar:
     _id_user = None
     _name_calendar = None
-    _events = []
+    _events = []  # хранит id events
     _id = None  # id номер календаря
-    __id_counter__ = 1
+    __id_counter__ = 1  # счетчик для гарантии уникальности id
 
     def __init__(self, id_user, name_calendar: str, id=None, id_events=None):
+        """
+        :param id: заполняется при загрузке из файла, иначе генерируется
+        :param id_events: заполняется при загрузке из файла, иначе пустое
+        """
         self._id_user = id_user
         self._name_calendar = name_calendar
         if id_events is not None:
@@ -45,13 +48,14 @@ class Calendar:
         self._name_calendar = new_name
 
     def search_events(self, data_from: datetime, data_to: datetime):
+        #TODO переписать, так как в списке мы храним не объекты, а айдишники объектов
         "Поиск событий из промежутка времени"
         list_events = []
         for elem in self._events:
             data_of_event = elem.info_data_event()
             if data_from <= data_of_event <= data_to:
                 list_events.append(elem)
-        return list_events
+        return list_events   # возвращаем список id events
 
     def add_event(self, event):
         "Добавляет событие в календарь"
@@ -69,9 +73,7 @@ class Calendar:
         "Возвращает информацию для разработчика"
         return f"[{self._id}:{self._id_user}]"
 
-    def repeat_events(self):
-        "Метод обработки повторения события" #TODO
-        pass
+
 
 
 if __name__ == "__main__":

@@ -19,7 +19,7 @@ class Backend:
     list_users = []   # храним объекты класса User
     list_events = []   # храним объекты класса Event
     list_calendars = []   # храним объекты класса Calendar
-    _directory = "data/"
+    _directory = "data/"  # директория для хранения данных, при тестах переменная меняется
 
     @staticmethod
     def add_user(user):
@@ -62,7 +62,8 @@ class Backend:
 
     @staticmethod
     def save_file_users(add_user=None):
-        "Создает файл с информацией о пользователях"
+        """Создает файл с информацией о пользователях
+           Если в переменную add_user мы ничего не передали, то файл записываем, иначе добавляем информацию об User"""
         file_name = Backend._directory + 'saved_users.txt'
         if add_user is None:
             file_mode = "w"
@@ -70,7 +71,7 @@ class Backend:
             file_mode = "a"
         with open(file_name, file_mode, newline="") as f:
             w = csv.DictWriter(f, ["id", "name", "lastname", "login", "password"])
-            if file_mode == "w":
+            if file_mode == "w":  # чтобы не повторял заголовок, когда добавляем новую информацию
                 w.writeheader()
             users = Backend.info_users()
             for user in users:
@@ -94,7 +95,7 @@ class Backend:
         Backend.clear_users()
         with open(file_name, "r") as f:
             w = csv.DictReader(f, ["id", "name", "lastname", "login", "password"])
-            next(w)
+            next(w)  # чтобы переместить курсор на следующую строку и пропустить заголовок
             id_users = []
             for i in w:
                 user = User(login=i["login"], hash_pass=i["password"], name=i["name"], lastname=i["lastname"], id=i["id"])
@@ -113,7 +114,8 @@ class Backend:
 
     @staticmethod
     def save_file_events(add_event=None):
-        "Создает файл с информацией о событиях"
+        """Создает файл с информацией о событиях
+        Если в переменную add_event мы ничего не передали, то файл записываем, иначе добавляем информацию об Event"""
         file_name = Backend._directory + 'saved_events.txt'
         if add_event is None:
             file_mode = "w"
@@ -162,7 +164,8 @@ class Backend:
 
     @staticmethod
     def save_file_calendars(add_calendar=None):
-        "Создает файл с информацией о календарях"
+        """Создает файл с информацией о календарях
+        Если в переменную add_calendar мы ничего не передали, то файл записываем, иначе добавляем информацию об calendar"""
         file_name = Backend._directory + 'saved_calendars.txt'
         if add_calendar is None:
             file_mode = "w"
@@ -187,7 +190,6 @@ class Backend:
         """Загружаем календарь из файла
         Если в переменную target_id_user передали искомый id, то загружаем календарь пользователя с данным id
         Иначе загружаем все календари"""
-
         file_name = Backend._directory + 'saved_calendars.txt'
         Backend.clear_calendars()
         with open(file_name, "r") as f:
@@ -208,7 +210,6 @@ class Backend:
             Calendar.change_id_counter(maxsimum)
 
 
-
     @staticmethod
     def clear_users():
         "Очищаем список пользователей"
@@ -216,7 +217,10 @@ class Backend:
 
     @staticmethod
     def update_user(target_login, new_name=None, new_lastname=None, new_password=None):
-        """Метод обновления пользователя:
+        """
+        Метод обновления пользователя:
+        """
+        """Алгоритм обновления пользователя:
                 1) загрузить в память изменяемого пользователя,
                 2) изменить пользователя и сохранить его в отдельную переменную,
                 3) очистить память и загрузить всех пользователей,
@@ -244,7 +248,7 @@ class Backend:
         Backend.list_events = []
 
     @staticmethod
-    def update_calendar(target_id_calendar, new_name_calendar=None):
+    def update_calendar(target_id_calendar, new_name_calendar):
         "Метод обновления имени календаря"
         for elem in Backend.list_calendars:
             if target_id_calendar == elem.info_calendars()[0]:

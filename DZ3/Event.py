@@ -21,12 +21,12 @@ from datetime import datetime
 class Event:
     _description = None   # описание события
     _name_event = None    # название события
-    _event_owner = None    # создатель события
-    _event_guests = []  # участники события
+    _event_owner = None    # создатель события, логин User
+    _event_guests = []  # участники события, список логинов User
     _repeat_type = None   # периодичность события - D W M Y
     _data_event = None    # дата события
     _id = None   # id номер события
-    __id_counter__ = 1
+    __id_counter__ = 1  # счетчик для гарантии уникальности id
 
     def __init__(self, name_event: str, description: str, event_owner: str, guests: list, data_event: datetime,
                  repeat_type=None, id=None):
@@ -43,7 +43,7 @@ class Event:
             self._id = id
 
     def info_Event(self):
-        "Возвращает информацию о Event"
+        "Возвращает информацию об Event"
         return (self._id, self._name_event, self._description, self._data_event, self._repeat_type, self._event_owner,
                 self._event_guests)
 
@@ -108,6 +108,20 @@ class Event:
         "Изменение id_counter"
         Event.__id_counter__ = new_counter
 
+    def repeat_events(self):
+        "Метод обработки повторения события"
+        new_data = self._data_event
+        while True:
+            if self._repeat_type == "D":
+                new_data += timedelta(days=1)
+            elif self._repeat_type == "W":
+                new_data += timedelta(weeks=1)
+            elif self._repeat_type == "M":
+                new_data += relativedelta(month=1)
+            elif self._repeat_type == "Y":
+                new_data += relativedelta(months=12)
+            yield new_data
+
 
 if __name__ == "__main__":
     Day = Event("birthday", "party day", "olesya", ["maksim", "grisha"],
@@ -119,6 +133,14 @@ if __name__ == "__main__":
     print('123')
     print(Day.take_json('{"name_event": "birthday", "data_event": "2007-12-06 15:29:43", "description": "party day", "event_owner": "olesya", "guests": ["grisha"], "repeat_type": null}'))
     print(Day.info_Event())
+    Day = Event("birthday", "party day", "olesya", ["maksim", "grisha"],
+                datetime(2007, 12, 6), repeat_type="Y")
+
+    for num in Day.repeat_events():
+        print(num)
+        if num > datetime(2020, 1, 1):
+            break
+    print(Day.repeat_events())
 
 
 

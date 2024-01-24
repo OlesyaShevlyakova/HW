@@ -10,7 +10,7 @@ class User:
     _id = None
     _name = None
     _lastname = None
-    __id_counter__ = 1
+    __id_counter__ = 1  # счетчик для гарантии уникальности id
 
     def __init__(self, login, name, lastname, password=None, id=None, hash_pass=None):
         """
@@ -21,7 +21,7 @@ class User:
         if hash_pass is None:
             self._password = hs(password)   # переводим пароль в hash
         else:
-            self._password =hash_pass
+            self._password = hash_pass
         self._login = login
         self._name = name
         self._lastname = lastname
@@ -40,7 +40,8 @@ class User:
         return (self._id)
 
     def change_user(self, new_name=None, new_lastname=None, new_password=None):
-        "Замена информации о User"
+        """Замена информации о User
+           меняются только указанные параметры"""
         if new_name is not None:
             self._name = new_name
         if new_lastname is not None:

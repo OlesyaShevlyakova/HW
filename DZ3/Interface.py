@@ -19,25 +19,25 @@ from time import sleep
 
 class Interface:
     backend = None
-    consecution = list()
-    id_user = None
-    login_user = None
+    tasks_list = list()  # лист очереди задач
+    id_user = None  # сохранение id авторизованного пользователя
+    login_user = None  # сохранение login авторизованного пользователя
 
     @staticmethod
     def work():
         "Модуль обработки очереди задач"
-        Interface.consecution = [Interface.start]
+        Interface.tasks_list = [Interface.start]
 
-        while Interface.consecution:
-            Interface.consecution[0]()
-            del Interface.consecution[0]
+        while Interface.tasks_list:
+            Interface.tasks_list[0]()
+            del Interface.tasks_list[0]
         print("Work интерфейса закончил работу")
 
     @staticmethod
     def start():
         "Первичная инициализация программы"
         Interface.backend = Backend
-        Interface.consecution.append(Interface.identification_user)
+        Interface.tasks_list.append(Interface.identification_user)
 
     @staticmethod
     def identification_user():
@@ -46,14 +46,14 @@ class Interface:
         login_user = input()
         print("Введите пароль")
         password_user = hs(input())
-        Interface.backend.load_file_users(login_user)
+        Interface.backend.load_file_users(login_user)  # загрузили конкретного пользователя по логину
         flag = False
         for elem in Interface.backend.info_users():
             if login_user == elem.info_User()[3] and password_user == elem.info_User()[4]:
                 flag = True
                 Interface.id_user = elem.info_User()[0]
                 Interface.login_user = elem.info_User()[3]
-                Interface.consecution.append(Interface.main_screen)
+                Interface.tasks_list.append(Interface.main_screen)
                 print("Успешная авторизация!")
                 sleep(1)
         if not flag:
@@ -65,22 +65,22 @@ class Interface:
             2) создать новый логин
             """)
             if question == "1":
-                Interface.consecution.append(Interface.identification_user)
+                Interface.tasks_list.append(Interface.identification_user)
             elif question == "2":
-                Interface.consecution.append(Interface.creating_user)
+                Interface.tasks_list.append(Interface.creating_user)
             else:
                 print("Некорректный ввод данных 😎")
-                Interface.consecution.append(Interface.identification_user)
+                Interface.tasks_list.append(Interface.identification_user)
 
     @staticmethod
     def creating_user():
         "Создание пользователя"
         print("Введите логин")
         login_user = input()
-        if not Interface.backend.originality_login(login_user):
+        if not Interface.backend.originality_login(login_user):  # проверка на уникальность логина
             print("Введите другой логин, данный логин уже существует")
             sleep(1)
-            Interface.consecution.append(Interface.creating_user)
+            Interface.tasks_list.append(Interface.creating_user)
         else:
             print("Введите имя")
             name_user = input()
@@ -93,12 +93,12 @@ class Interface:
             new_user = User(login=login_user, name=name_user, lastname=lastname_user, password=password_user)
             Interface.login_user = login_user
             Interface.id_user = new_user.info_id_User()
-            Interface.backend.add_user(new_user)
-            Interface.backend.save_file_users(add_user=True)
-            Interface.consecution.append(Interface.add_calendar)
+            Interface.backend.add_user(new_user)  # добавили в память пользователя
+            Interface.backend.save_file_users(add_user=True)  # дополнили файл с пользователями новым пользователем
             print("Учетная запись создана!")
             print("Пожалуйста, создайте календарь")
             sleep(2)
+            Interface.tasks_list.append(Interface.add_calendar)
 
     @staticmethod
     def main_screen():
@@ -121,30 +121,30 @@ class Interface:
                     10) изменить информацию о пользователе
                     """)
         if question == "0":
-            Interface.consecution.append(Interface.show_list_calendar)
+            Interface.tasks_list.append(Interface.show_list_calendar)
         elif question == "1":
-            Interface.consecution.append(Interface.add_calendar)
+            Interface.tasks_list.append(Interface.add_calendar)
         elif question == "2":
-            Interface.consecution.append(Interface.edit_calendar)
+            Interface.tasks_list.append(Interface.edit_calendar)
         elif question == "3":
-            Interface.consecution.append(Interface.del_calendar) #TODO
+            Interface.tasks_list.append(Interface.del_calendar) #TODO
         elif question == "4":
-            Interface.consecution.append(Interface.add_event)
+            Interface.tasks_list.append(Interface.add_event)
         elif question == "5":
-            Interface.consecution.append(Interface.del_event)
+            Interface.tasks_list.append(Interface.del_event)
         elif question == "6":
-            Interface.consecution.append(Interface.show_events)
+            Interface.tasks_list.append(Interface.show_events)
         elif question == "7":
-            Interface.consecution.append(Interface.show_events_range)
+            Interface.tasks_list.append(Interface.show_events_range)
         elif question == "8":
-            Interface.consecution.append(Interface.show_events_guest)
+            Interface.tasks_list.append(Interface.show_events_guest)
         elif question == "9":
-            Interface.consecution.append(Interface.identification_user)
+            Interface.tasks_list.append(Interface.identification_user)
         elif question == "10":
-            Interface.consecution.append(Interface.change_user)
+            Interface.tasks_list.append(Interface.change_user)
         else:
             print("Некорректный ввод данных 😎")
-            Interface.consecution.append(Interface.main_screen)
+            Interface.tasks_list.append(Interface.main_screen)
 
     @staticmethod
     def change_user():
@@ -157,16 +157,16 @@ class Interface:
                             4) вернуться к главному меню
                             """)
         if question == "1":
-            Interface.consecution.append(Interface.change_name)
+            Interface.tasks_list.append(Interface.change_name)
         elif question == "2":
-            Interface.consecution.append(Interface.change_lastname)
+            Interface.tasks_list.append(Interface.change_lastname)
         elif question == "3":
-            Interface.consecution.append(Interface.change_password)
+            Interface.tasks_list.append(Interface.change_password)
         elif question == "4":
-            Interface.consecution.append(Interface.main_screen)
+            Interface.tasks_list.append(Interface.main_screen)
         else:
             print("Некорректный ввод данных 😎")
-            Interface.consecution.append(Interface.change_user)
+            Interface.tasks_list.append(Interface.change_user)
 
     @staticmethod
     def change_name():
@@ -174,7 +174,7 @@ class Interface:
         new_name = input("Введите новое имя")
         Interface.backend.update_user(Interface.login_user, new_name=new_name)
         print("Имя успешно изменено")
-        Interface.consecution.append(Interface.change_user)
+        Interface.tasks_list.append(Interface.change_user)
 
     @staticmethod
     def change_lastname():
@@ -182,7 +182,7 @@ class Interface:
         new_lastname = input("Введите новую фамилию")
         Interface.backend.update_user(Interface.login_user, new_lastname=new_lastname)
         print("Фамилия успешно изменена")
-        Interface.consecution.append(Interface.change_user)
+        Interface.tasks_list.append(Interface.change_user)
 
     @staticmethod
     def change_password():
@@ -190,13 +190,13 @@ class Interface:
         new_password = input("Введите новый пароль")
         Interface.backend.update_user(Interface.login_user, new_password=new_password)
         print("Пароль успешно изменен")
-        Interface.consecution.append(Interface.change_user)
+        Interface.tasks_list.append(Interface.change_user)
 
     @staticmethod
     def show_list_calendar():
         "Отобразить список календарей"
         Interface.show_list_calendar_worker()
-        Interface.consecution.append(Interface.main_screen)
+        Interface.tasks_list.append(Interface.main_screen)
         input('Нажмите Enter')
 
     @staticmethod
@@ -205,7 +205,7 @@ class Interface:
                         1) загрузить в память календари конкретного пользователя,
                         2) отобразить календари пользователя
                         """
-        Interface.backend.load_file_calendars(Interface.id_user)
+        Interface.backend.load_file_calendars(Interface.id_user)  # загружаем календари конкретного пользователя
         calendar_exist = False
         for elem in Interface.backend.info_calendars():
             if not calendar_exist:
@@ -226,9 +226,9 @@ class Interface:
         new_calendar = Calendar(id_user=Interface.id_user, name_calendar=name_calendar)
         Interface.backend.load_file_calendars(target_id_user='*********')  # запускаем загрузку календарей без загрузки
                                                                         # в память backend, чтобы обновить id_counter
-        Interface.backend.add_calendar(new_calendar)
-        Interface.backend.save_file_calendars(add_calendar=True)
-        Interface.consecution.append(Interface.main_screen)
+        Interface.backend.add_calendar(new_calendar)  # добавляем календарь в память
+        Interface.backend.save_file_calendars(add_calendar=True)  # дописываем файл с календарями
+        Interface.tasks_list.append(Interface.main_screen)
         print('Календарь успешно создан')
         input('Нажмите Enter')
 
@@ -241,18 +241,19 @@ class Interface:
                                 2) вернуться к главному меню
                                 """)
         if question == "1":
-            Interface.consecution.append(Interface.change_name_calendar)
+            Interface.tasks_list.append(Interface.change_name_calendar)
         elif question == "2":
-            Interface.consecution.append(Interface.main_screen)
+            Interface.tasks_list.append(Interface.main_screen)
         else:
             print("Некорректный ввод данных 😎")
             sleep(1)
-            Interface.consecution.append(Interface.edit_calendar)
+            Interface.tasks_list.append(Interface.edit_calendar)
 
     @staticmethod
     def change_name_calendar():
         "Изменить  информацию об имени календаря"
         """
+        Алгоритм работы
         1) Отобразить все календари и спросить, какой календарь (по id) хочет изменить
         2) Проверить, что выбрал существующий id календаря
         3) Ввод нового имени календаря
@@ -263,15 +264,15 @@ class Interface:
         """
         Interface.show_list_calendar_worker()  # Отобразить список календарей пользователя
         target_id_calendar = input("Введите id календаря, имя которого хотите изменить")
-        if not Interface.backend.check_id_calendar(target_id_calendar):
+        if not Interface.backend.check_id_calendar(target_id_calendar):  # проверка, что выбрали существующий календарь
             print("Некорректный ввод данных 😎")
-            Interface.consecution.append(Interface.change_name_calendar)
+            Interface.tasks_list.append(Interface.change_name_calendar)
         else:
             new_name_calendar = input("Введите новое имя календаря")
             Interface.backend.update_calendar(target_id_calendar, new_name_calendar)
             print("Имя календаря успешно изменено")
             sleep(1)
-            Interface.consecution.append(Interface.main_screen)
+            Interface.tasks_list.append(Interface.main_screen)
 
     @staticmethod
     def add_event():
@@ -283,7 +284,7 @@ class Interface:
         while True:
             print("Введите дату события в формате YYYY-MM-DD, например 2023-01-05")
             date_event = input()
-            if check_date(date_event):
+            if check_date(date_event):  # проверка, что ввели корректную дату
                 break
             else:
                 print("Дата введена неправильно")
@@ -332,7 +333,7 @@ class Interface:
         Interface.backend.add_event(new_event)
         Interface.backend.save_file_events(add_user=True)
         print("Успешно добавили событие")
-        Interface.consecution.append(Interface.main_screen)
+        Interface.tasks_list.append(Interface.main_screen)
 
 
 
