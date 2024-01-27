@@ -121,7 +121,7 @@ class Event:
             elif self._repeat_type == "W":
                 new_data += timedelta(weeks=1)
             elif self._repeat_type == "M":
-                new_data += relativedelta(month=1)
+                new_data += relativedelta(months=1)
             elif self._repeat_type == "Y":
                 new_data += relativedelta(months=12)
 

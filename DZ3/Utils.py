@@ -20,9 +20,12 @@ def check_date(date_for_check):
 
 def str_to_date(str_data):
     "Перевод даты из типа str в тип data"
-    year = int(str_data[0:4])
-    month = int(str_data[5:7])
-    day = int(str_data[8:10])
-    data_data = datetime(year, month, day)
-    return data_data
+    if not isinstance(str_data,datetime):
+        year = int(str_data[0:4])
+        month = int(str_data[5:7])
+        day = int(str_data[8:10])
+        data_data = datetime(year, month, day)
+        return data_data
+    else:
+        return str_data
 
