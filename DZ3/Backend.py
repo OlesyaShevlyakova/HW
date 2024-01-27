@@ -56,6 +56,22 @@ class Backend:
         Backend.list_calendars.append(calendar)
 
     @staticmethod
+    def add_event_into_calendar(target_id_calendar, target_id_event):
+        "Добавляет событие в календарь"
+        for elem in Backend.list_calendars:  # ищем нужный календарь для добавления
+            if target_id_calendar == elem.info_calendars()[0]:
+                our_calendar = elem  # в переменную поместить из памяти требуемый календарь
+                break
+        our_calendar.add_event(target_id_event)  # добавить событие в календарь
+        Backend.load_file_calendars()  # загрузить в память все календари
+        for i in range(len(Backend.list_calendars)):  # ищем календарь для изменения
+            if target_id_calendar == Backend.list_calendars[i].info_calendars()[0]:
+                Backend.list_calendars[i] = our_calendar  # обновить изменяемый календарь
+                break
+        Backend.save_file_calendars()  # выгрузить все календари на диск
+
+
+    @staticmethod
     def info_calendars():
         "Возвращает информацию о календарях"
         return Backend.list_calendars
@@ -114,7 +130,7 @@ class Backend:
 
     @staticmethod
     def save_file_events(add_event=None):
-        """Создает файл с информацией о событиях
+        """Создает файл с информацией о событиях. События берет из памяти backend
         Если в переменную add_event мы ничего не передали, то файл записываем, иначе добавляем информацию об Event"""
         file_name = Backend._directory + 'saved_events.txt'
         if add_event is None:
@@ -139,9 +155,10 @@ class Backend:
                 w.writerow(data)
 
     @staticmethod
-    def load_file_events(target_id_event=None):
-        """Загружаем события из файла
-        Если в переменную target_id_event передали искомый id, то загружаем событие с данным id
+    def load_file_events(target_id_events=None):
+        """ Загружаем события из файла
+        Входящий параметр или None, или list
+        Если в переменную target_id_event передали искомый/ые id, то загружаем событие с данным/ными id
         Иначе загружаем все события"""
         file_name = Backend._directory + 'saved_events.txt'
         Backend.clear_events()
@@ -153,9 +170,9 @@ class Backend:
             for i in w:
                 event = Event(name_event=i["name_event"], description=i["description"], event_owner=i['event_owner'],
                               guests=eval(i["guests"]), data_event=i['data_event'], repeat_type=i["repeat_type"], id=i["id"])
-                if target_id_event is None:
+                if target_id_events is None:
                     Backend.add_event(event)
-                elif i["id"] == target_id_event:
+                elif i["id"] in target_id_events:
                     Backend.add_event(event)
                 id = i["id"]
                 id_events.append(int(id))
@@ -208,6 +225,14 @@ class Backend:
                 id_calendars.append(int(id))
             maxsimum = max(id_calendars) + 1
             Calendar.change_id_counter(maxsimum)
+
+            """"Ищем максимальный id среди всех записей для обновления id_counter, чтобы логин был точно уникальным"
+                id = i["id"]
+                position = id.find("*")
+                position_id = position + 1
+                id_users.append(int(id[position_id:]))
+            maxsimum = max(id_users) + 1
+            User.change_id_counter(maxsimum)"""
 
 
     @staticmethod
@@ -273,16 +298,76 @@ class Backend:
     @staticmethod
     def check_id_users(target_id_users: list):
         "Проверяем присутствие id пользователей в памяти"
-        result = all(elem in Backend.list_users for elem in target_id_users)
+        if len(target_id_users) == 0:  # если передали пустой список, то False
+            return False
+        else:
+            list_id_user = []
+            for elem in Backend.list_users:
+                list_id_user.append(elem.info_id_User())
+            result = all(elem in list_id_user for elem in target_id_users)
         return result
 
+    @staticmethod
+    def search_events(data_from: datetime, data_to: datetime, target_id_calendar):
+        "Поиск событий из промежутка времени"
+        """
+        Алгоритм:
+        1) На вход поступает диапазон дат и id календаря, в котором искать события из промежутка
+        2) В памяти уже должен быть календарь загружен, так как в интерфейсе вопрос - в каком календаре будем смотреть
+        3) По id календаря, смотрим его в памяти и обращаемся в переменную со списком событий
+        4) Загружаем из файла эти события в память
+        5) В цикле проходимся по списку событий, выбирая каждое событие
+        6) Cобытие надо выбрать, учитывая два условия:
+          а) у события нет повторения - если событие попадает в наш диапазон,добавлем его в список для вывода
+          б) у события есть повторение - смотрим события, у которых дата меньше или равна началу
+             нашего диапазона. И начинаем в цикле выбирать у события дату: если совпало, то в список вставляем.
+             Прерываем, если вычисленная дата больше верхней границы диапазона. 
+        В списке для вывода: все поля этого события, а в части даты: если без повторения, то исходную дату, а если
+         повторение, то вычисленную дату.
+        7) Возвращаем обратно список событий
+        """
 
+        for elem in Backend.list_calendars:
+            if target_id_calendar == elem.info_calendars()[0]:
+                our_calendar = elem  # В переменную поместить из памяти требуемый календарь
+                break
+        our_events = our_calendar.info_events()  # список всех событий нашего календаря
+        Backend.load_file_events(our_events)  # загружаем из файла эти события в память
+        list_search_events = []   # список событий из нужного временного диапазона
+        for elem in Backend.info_events():  # в цикле проходимся по списку событий, выбирая каждое событие
+            if elem.info_Event[4] == "N" and (data_from <= elem.info_Event[3] <= data_to):
+                list_search_events.append(elem.info_Event)
+            elif (elem.info_Event[4] in ["D", "W", "M", "Y"]) and (elem.info_Event[3] <= data_from):
+                for calculated_data in elem.repeat_events():
+                    if data_from <= calculated_data <= data_to:
+                        info_with_new_date = (elem.info_Event[0], elem.info_Event[1], elem.info_Event[2],
+                                              calculated_data, elem.info_Event[4], elem.info_Event[5],
+                                              elem.info_Event[6])
+                        list_search_events.append(info_with_new_date)
+                    elif calculated_data > data_to:
+                        break
+        return list_search_events
 
+    @staticmethod
+    def add_event_into_calendar_guest(add_id_event, guests: list):  # список id гостей
+        "Добавление события в календарь гостей"
+        """
+        Алгоритм добавления событий в календари гостей
+        1) Загружаем в память все календари
+        2) Проходим по списку календарей и ищем первый календарь каждого гостя
+            а) запускаем цикл по id приглашенных гостей
+            б) как только нашли первый календарь, то добавляем id события в него.
+            в) добавляем нотификацию из id пользователя, id события и C\D события
+            г) делаем брейк"""
 
-
-
-
-
+        Backend.load_file_calendars()  # загрузить в память все календари
+        lst_cal = Backend.list_calendars
+        for gst in guests:  # проходим по списку гостей
+            for cal in lst_cal:  # проходим по списку календарей
+                if cal.info_id_user() == gst:
+                    Backend.add_event_into_calendar(cal.info_calendars()[0], add_id_event)
+                    #TODO: нотификация
+                    break
 
 
 

@@ -17,6 +17,7 @@
 
 import json
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 class Event:
     _description = None   # описание события
@@ -112,6 +113,7 @@ class Event:
         "Метод обработки повторения события"
         new_data = self._data_event
         while True:
+            yield new_data
             if self._repeat_type == "D":
                 new_data += timedelta(days=1)
             elif self._repeat_type == "W":
@@ -120,7 +122,7 @@ class Event:
                 new_data += relativedelta(month=1)
             elif self._repeat_type == "Y":
                 new_data += relativedelta(months=12)
-            yield new_data
+
 
 
 if __name__ == "__main__":

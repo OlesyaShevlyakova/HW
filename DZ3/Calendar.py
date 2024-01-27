@@ -39,6 +39,10 @@ class Calendar:
         "Возвращает информацию о событиях календаря"
         return (self._events)
 
+    def info_id_user(self):
+        "Возвращает информацию об id пользователя календаря"
+        return (self._id_user)
+
     def info_calendars(self):
         "Возвращает информацию о календаре"
         return (self._id, self._name_calendar, self._id_user, self._events)
@@ -46,16 +50,6 @@ class Calendar:
     def change_name(self, new_name):
         "Изменение имени календаря"
         self._name_calendar = new_name
-
-    def search_events(self, data_from: datetime, data_to: datetime):
-        #TODO переписать, так как в списке мы храним не объекты, а айдишники объектов
-        "Поиск событий из промежутка времени"
-        list_events = []
-        for elem in self._events:
-            data_of_event = elem.info_data_event()
-            if data_from <= data_of_event <= data_to:
-                list_events.append(elem)
-        return list_events   # возвращаем список id events
 
     def add_event(self, event):
         "Добавляет событие в календарь"

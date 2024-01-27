@@ -7,7 +7,7 @@
 
 в main можно использовать ТОЛЬКО interface
 """
-
+#TODO: работу notification реализовать
 
 from Backend import Backend
 from Utils import hash_password as hs
@@ -106,28 +106,25 @@ class Interface:
         question = input("""
                     Выберите действие:
                     ========== КАЛЕНДАРИ ==========
-                    0) отобразить список календарей
-                    1) создать календарь
-                    2) изменить календарь
-                    3) удалить календарь
+                    1) отобразить список календарей
+                    2) создать календарь
+                    3) изменить календарь
                     ========== СОБЫТИЯ ==========
                     4) создать событие (выбрав календарь)
                     5) удалить событие (выбрав календарь)
                     6) отобразить все события
                     7) отобразить события из временного диапазона
-                    8) отобразить события, где я "гость"
                     ========== СЕРВИСНОЕ ==========
+                    8) посмотреть оповещения
                     9) выйти из системы
                     10) изменить информацию о пользователе
                     """)
-        if question == "0":
+        if question == "1":
             Interface.tasks_list.append(Interface.show_list_calendar)
-        elif question == "1":
-            Interface.tasks_list.append(Interface.add_calendar)
         elif question == "2":
-            Interface.tasks_list.append(Interface.edit_calendar)
+            Interface.tasks_list.append(Interface.add_calendar)
         elif question == "3":
-            Interface.tasks_list.append(Interface.del_calendar) #TODO
+            Interface.tasks_list.append(Interface.edit_calendar)
         elif question == "4":
             Interface.tasks_list.append(Interface.add_event)
         elif question == "5":
@@ -137,7 +134,7 @@ class Interface:
         elif question == "7":
             Interface.tasks_list.append(Interface.show_events_range)
         elif question == "8":
-            Interface.tasks_list.append(Interface.show_events_guest)
+            Interface.tasks_list.append(Interface.show_notification)
         elif question == "9":
             Interface.tasks_list.append(Interface.identification_user)
         elif question == "10":
@@ -313,31 +310,56 @@ class Interface:
                 info_user = elem.info_User()
                 print(f"имя {info_user[1]}, id пользователя {info_user[0]}")
             while True:
-                guests = input("Укажите id пользователей через пробел")
+                guests = input("Укажите id пользователей через пробел\n")
                 guests = guests.split()
                 result = Interface.backend.check_id_users(guests)
                 if result:
                     break
                 else:
-                    print("Пользователи введены неверно, укажите id пользователей через пробел")
+                    print("Пользователи введены неверно, укажите id пользователей через пробел\n")
         else:
             guests = []
-        new_event = Event(name_event=name_event, description=description, event_owner=Interface.id_user, guests=guests, data_event=date_event,
-                 repeat_type=repeat_type)
-        Interface.backend.load_file_events(target_id_event='*********')  # запускаем загрузку событий без загрузки
+        Interface.backend.load_file_events(target_id_events=['*********'])  # запускаем загрузку событий без загрузки
                                                                          # в память backend, чтобы обновить id_counter
-        # TODO: У нас не добавляются события в сам календарь, Надо исправить.
-        # 1) Загрузить в память календари пользователя
-        # 2) Если
-        # TODO: Доработать, так как надо добавлять соыбтия в календари гостей
-        Interface.backend.add_event(new_event)
-        Interface.backend.save_file_events(add_user=True)
-        print("Успешно добавили событие")
+        new_event = Event(name_event=name_event, description=description, event_owner=Interface.id_user, guests=guests,
+                          data_event=date_event, repeat_type=repeat_type)
+        Interface.backend.clear_events()  # очищаем память backend от событий
+        Interface.backend.add_event(new_event)  # добавляем событие в память backend
+        Interface.backend.save_file_events(add_event=True)  # добавляем событие в файл
+
+        """Алгоритм добавления события в календарь:
+        1) Загрузить в память календари пользователя
+        2) Спросить у пользователя, в какой календарь надо добавить событие
+        3) Проверяем id выбранного календаря
+        4) Добавляем событие в выбранный календарь"""
+
+        print('*********Выводим ваши календари*********')
+        Interface.backend.load_file_calendars(Interface.id_user)  # загружаем в память календари пользователя
+        for elem in Interface.backend.info_calendars():
+            print(elem)
+        while True:
+            target_id_calendar = input("Введите id своего календаря, в который хотите добавить своё событие\n")
+            if not Interface.backend.check_id_calendar(target_id_calendar):  # проверка, что выбрали существующий календарь
+                print("Некорректный ввод данных 😎")
+            else:
+                break
+        Interface.backend.add_event_into_calendar(target_id_calendar, new_event.info_id_event())  # добавление
+                                                                                                # события в календарь
+        Interface.backend.add_event_into_calendar_guest(new_event.info_id_event(), guests)  # добавление события в
+                                                                                            # календарь гостей
+        print("Событие в календарь успешно добавлено")
+        sleep(1)
         Interface.tasks_list.append(Interface.main_screen)
 
 
 
 
 
-Interface.work()
+
+
+
+
+
+if __name__ == "__main__":
+    Interface.work()
 
