@@ -2,7 +2,6 @@
 Пользователь - имеет логин и пароль, а так же календарь.
 у пользователя есть итендифекатор начинающийся с @
 """
-import hashlib
 from Utils import hash_password as hs
 class User:
     _login = None

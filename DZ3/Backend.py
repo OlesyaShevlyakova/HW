@@ -14,6 +14,7 @@ from User import User
 from Calendar import Calendar
 from datetime import datetime
 import csv
+from Utils import str_to_date
 
 class Backend:
     list_users = []   # храним объекты класса User
@@ -172,7 +173,7 @@ class Backend:
                               guests=eval(i["guests"]), data_event=i['data_event'], repeat_type=i["repeat_type"], id=i["id"])
                 if target_id_events is None:
                     Backend.add_event(event)
-                elif i["id"] in target_id_events:
+                elif int(i["id"]) in target_id_events:
                     Backend.add_event(event)
                 id = i["id"]
                 id_events.append(int(id))
@@ -308,6 +309,19 @@ class Backend:
         return result
 
     @staticmethod
+    def show_events(target_id_calendar):
+        "Поиск событий календаря"
+        for elem in Backend.list_calendars:
+            if target_id_calendar == elem.info_calendars()[0]:
+                our_calendar = elem  # В переменную поместить из памяти требуемый календарь
+                break
+        our_events = our_calendar.info_events()  # список всех событий нашего календаря
+        Backend.load_file_events(our_events)  # загружаем из файла эти события в память
+        result = Backend.info_events()
+        return result
+
+
+    @staticmethod
     def search_events(data_from: datetime, data_to: datetime, target_id_calendar):
         "Поиск событий из промежутка времени"
         """
@@ -327,26 +341,26 @@ class Backend:
         7) Возвращаем обратно список событий
         """
 
-        for elem in Backend.list_calendars:
-            if target_id_calendar == elem.info_calendars()[0]:
-                our_calendar = elem  # В переменную поместить из памяти требуемый календарь
-                break
-        our_events = our_calendar.info_events()  # список всех событий нашего календаря
-        Backend.load_file_events(our_events)  # загружаем из файла эти события в память
+        Backend.show_events(target_id_calendar)  # возвращаем события календаря
         list_search_events = []   # список событий из нужного временного диапазона
+        data_from = str_to_date(data_from)
+        data_to = str_to_date(data_to)
         for elem in Backend.info_events():  # в цикле проходимся по списку событий, выбирая каждое событие
-            if elem.info_Event[4] == "N" and (data_from <= elem.info_Event[3] <= data_to):
+            if elem.info_Event()[4] == "N" and (data_from <= str_to_date(elem.info_Event()[3]) <= data_to):
                 list_search_events.append(elem.info_Event)
-            elif (elem.info_Event[4] in ["D", "W", "M", "Y"]) and (elem.info_Event[3] <= data_from):
+            elif (elem.info_Event()[4] in ["D", "W", "M", "Y"]) and (str_to_date(elem.info_Event()[3]) <= data_to):
                 for calculated_data in elem.repeat_events():
+                    print(calculated_data)
                     if data_from <= calculated_data <= data_to:
-                        info_with_new_date = (elem.info_Event[0], elem.info_Event[1], elem.info_Event[2],
-                                              calculated_data, elem.info_Event[4], elem.info_Event[5],
-                                              elem.info_Event[6])
+                        info_with_new_date = (elem.info_Event()[0], elem.info_Event()[1], elem.info_Event()[2],
+                                              calculated_data, elem.info_Event()[4], elem.info_Event()[5],
+                                              elem.info_Event()[6])
                         list_search_events.append(info_with_new_date)
+
                     elif calculated_data > data_to:
                         break
         return list_search_events
+
 
     @staticmethod
     def add_event_into_calendar_guest(add_id_event, guests: list):  # список id гостей

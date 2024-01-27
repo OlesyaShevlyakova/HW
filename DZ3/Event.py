@@ -17,7 +17,9 @@
 
 import json
 from datetime import datetime
+from datetime import timedelta
 from dateutil.relativedelta import relativedelta
+from Utils import str_to_date
 
 class Event:
     _description = None   # описание события
@@ -111,7 +113,7 @@ class Event:
 
     def repeat_events(self):
         "Метод обработки повторения события"
-        new_data = self._data_event
+        new_data = str_to_date(self._data_event)
         while True:
             yield new_data
             if self._repeat_type == "D":

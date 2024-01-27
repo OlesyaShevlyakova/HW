@@ -103,36 +103,43 @@ class Interface:
     @staticmethod
     def main_screen():
         "Главное меню интерфейса"
+        print()
+        print('-------------------------------------------------------------------')
+        print(f'Текущий логин пользователя - {Interface.login_user} и id - {Interface.id_user}')
+        print('-------------------------------------------------------------------')
         question = input("""
                     Выберите действие:
                     ========== КАЛЕНДАРИ ==========
-                    1) отобразить список календарей
-                    2) создать календарь
-                    3) изменить календарь
+                    0) отобразить список календарей
+                    1) создать календарь
+                    2) изменить имя календаря
                     ========== СОБЫТИЯ ==========
-                    4) создать событие (выбрав календарь)
-                    5) удалить событие (выбрав календарь)
-                    6) отобразить все события
-                    7) отобразить события из временного диапазона
+                    3) создать событие (выбрав календарь)
+                    4) удалить событие (выбрав календарь)
+                    5) отобразить все события из выбранного календаря
+                    6) отобразить события из временного диапазона (выбрав календарь)
+                    7) привязать событие к другому календарю
                     ========== СЕРВИСНОЕ ==========
                     8) посмотреть оповещения
                     9) выйти из системы
                     10) изменить информацию о пользователе
                     """)
-        if question == "1":
+        if question == "0":
             Interface.tasks_list.append(Interface.show_list_calendar)
-        elif question == "2":
+        elif question == "1":
             Interface.tasks_list.append(Interface.add_calendar)
-        elif question == "3":
+        elif question == "2":
             Interface.tasks_list.append(Interface.edit_calendar)
-        elif question == "4":
+        elif question == "3":
             Interface.tasks_list.append(Interface.add_event)
-        elif question == "5":
+        elif question == "4":
             Interface.tasks_list.append(Interface.del_event)
-        elif question == "6":
+        elif question == "5":
             Interface.tasks_list.append(Interface.show_events)
-        elif question == "7":
+        elif question == "6":
             Interface.tasks_list.append(Interface.show_events_range)
+        elif question == "7":
+            Interface.tasks_list.append(Interface.link_to_another_calendar)
         elif question == "8":
             Interface.tasks_list.append(Interface.show_notification)
         elif question == "9":
@@ -279,9 +286,9 @@ class Interface:
         print("Введите описание события")
         description = input()
         while True:
-            print("Введите дату события в формате YYYY-MM-DD, например 2023-01-05")
+            print("Введите дату события в формате YYYY-MM-DD, например, 2023-01-05")
             date_event = input()
-            if check_date(date_event):  # проверка, что ввели корректную дату
+            if check_date(date_event):  # проверка, что ввели корректно дату
                 break
             else:
                 print("Дата введена неправильно")
@@ -350,6 +357,68 @@ class Interface:
         print("Событие в календарь успешно добавлено")
         sleep(1)
         Interface.tasks_list.append(Interface.main_screen)
+
+    @staticmethod
+    def show_events():
+        "Отобразить все события"
+        print('*********Выводим ваши календари*********')
+        Interface.backend.load_file_calendars(Interface.id_user)  # загружаем в память календари пользователя
+        for elem in Interface.backend.info_calendars():
+            print(elem)
+        while True:
+            target_id_calendar = input("Введите id своего календаря, события которого хотите увидеть\n")
+            if not Interface.backend.check_id_calendar(
+                    target_id_calendar):  # проверка, что выбрали существующий календарь
+                print("Некорректный ввод данных 😎")
+            else:
+                break
+        print('*********Выводим события выбранного календаря*********')
+        print("id, название, описание, дата, периодичность, создатель, участники")
+        for elem in Interface.backend.show_events(target_id_calendar):
+            print(elem.info_Event())
+        sleep(2)
+        Interface.tasks_list.append(Interface.main_screen)
+
+    @staticmethod
+    def show_events_range():
+        "Отобразить события из временного диапазона"
+        print('*********Выводим ваши календари*********')
+        Interface.backend.load_file_calendars(Interface.id_user)  # загружаем в память календари пользователя
+        for elem in Interface.backend.info_calendars():
+            print(elem)
+        while True:
+            target_id_calendar = input("Введите id своего календаря, события которого хотите увидеть\n")
+            if not Interface.backend.check_id_calendar(
+                    target_id_calendar):  # проверка, что выбрали существующий календарь
+                print("Некорректный ввод данных 😎")
+            else:
+                break
+        while True:
+            print("Введите дату начала диапазона в формате YYYY-MM-DD, например, 2023-01-05")
+            data_from = input()
+            if check_date(data_from):  # проверка, что ввели корректно дату
+                break
+            else:
+                print("Дата введена неправильно, необходимо ввести в формате YYYY-MM-DD, например, 2023-01-05")
+        while True:
+            print("Введите дату конца диапазона в формате YYYY-MM-DD, например, 2023-01-05")
+            data_to = input()
+            if check_date(data_to):  # проверка, что ввели корректно дату
+                break
+            else:
+                print("Дата введена неправильно, необходимо ввести в формате YYYY-MM-DD, например, 2023-01-05")
+        print('*********Выводим ваши события из временного диапазона и выбранного календаря*********')
+        for elem in Interface.backend.search_events(data_from, data_to, target_id_calendar):
+            print(elem)
+        sleep(1)
+        Interface.tasks_list.append(Interface.main_screen)
+
+    @staticmethod
+    def del_event():
+        pass
+
+
+
 
 
 
