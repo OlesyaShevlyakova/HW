@@ -1,0 +1,15 @@
+id,id_user,id_event,action,del_details
+2,@GrishaSidorov*4,1,C,
+3,@AllaShpak*5,1,C,
+2,@OlesyaShevlyakova*1,2,C,
+3,@GrishaSidorov*4,2,C,
+4,@AllaShpak*5,3,C,
+5,@AllaShpak*5,3,D,dinner
+3,@OlesyaShevlyakova*1,2,D,Meeting
+5,@GrishaSidorov*4,2,D,Meeting
+2,@OlesyaShevlyakova*1,2,C,
+3,@MaksimBazhin*3,2,C,
+4,@GrishaSidorov*4,2,C,
+5,@AllaShpak*5,2,C,
+6,@NataNevskaya*6,2,C,
+7,@GrishaSidorov*4,3,C,
