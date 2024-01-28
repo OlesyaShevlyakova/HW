@@ -500,7 +500,7 @@ class Interface:
         noti = Interface.backend.show_notifications_user(Interface.id_user)
         for elem in noti:
             print(elem)
-        input('Нажмите Enter')
+        input('Оповещений больше нет, нажмите Enter')
         Interface.tasks_list.append(Interface.main_screen)
 
 
