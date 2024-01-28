@@ -15,20 +15,24 @@ from Utils import hash_password as hs
 class MyTestCase(unittest.TestCase):
     Backend._directory = 'test_data/'
     def test_add_user(self):
+        "Добавляет пользователя"
         Backend.list_users = []
         user1 = User("test_login1", "test_name1", "test_lastname1", password='new_password')
         Backend.add_user(user1)
         self.assertEqual(Backend.list_users[0], user1)  # add assertion here
 
     def test_originality_login(self):
+        """Проверяем логин на уникальность"""
         self.assertFalse(Backend.originality_login('user1'))
         self.assertTrue(Backend.originality_login('user5'))
 
     def test_info_users_empty(self):
+        "Возвращает информацию об пользователях - ПУСТО"
         Backend.list_users = []
         self.assertEqual(Backend.info_users(),[])
 
     def test_info_users_full(self):
+        "Возвращает информацию об пользователях - С ДАННЫМИ"
         Backend.list_users = []
         user1 = User("test_login1", "test_name1", "test_lastname1", password='123')
         user2 = User("test_login2", "test_name2", "test_lastname2", password='123')
@@ -36,6 +40,7 @@ class MyTestCase(unittest.TestCase):
         Backend.add_user(user2)
         self.assertEqual(Backend.info_users(),[user1,user2])
     def test_add_event(self):
+        "Добавляет событие"
         ev1 = Event("event1", "event1_descr", "event1_own",
                     ["user1", "user2"], datetime(2007, 12, 6))
         ev2 = Event("event2", "event2_descr", "event2_own",
@@ -46,10 +51,12 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(Backend.list_events,[ev1,ev2])
 
     def test_info_events_empty(self):
+        "Возвращает информацию о событиях - ПУСТО"
         Backend.list_events = []
         self.assertEqual(Backend.info_events(),[])
 
     def test_info_events_full(self):
+        "Возвращает информацию о событиях - С ДАННЫМИ"
         ev1 = Event("event1", "event1_descr", "event1_own",
                     ["user1", "user2"], datetime(2007, 12, 6))
         ev2 = Event("event2", "event2_descr", "event2_own",
@@ -60,6 +67,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(Backend.info_events(),[ev1,ev2])
 
     def test_add_calendar(self):
+        "Добавляет календарь"
         cal1 = Calendar('iduser1','work')
         cal2 = Calendar('iduser1','work')
         Backend.list_calendars=[]
@@ -68,10 +76,12 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(Backend.list_calendars,[cal1,cal2])
 
     def test_info_calendars_empty(self):
+        "Возвращает информацию о календарях - ПУСТО"
         Backend.list_calendars=[]
         self.assertEqual(Backend.info_calendars(),[])
 
     def test_info_calendars_full(self):
+        "Возвращает информацию о календарях - С ДАННЫМИ"
         cal1 = Calendar('iduser1', 'work')
         cal2 = Calendar('iduser1', 'work')
         Backend.list_calendars = []
@@ -80,6 +90,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(Backend.info_calendars(),[cal1,cal2])
 
     def test_add_event_into_calendar(self):
+        "Добавляет событие в календарь"
         shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
         cal1 = Calendar('iduser1', 'work', id=1)
         cal2 = Calendar('iduser2', 'personal', id=2)
@@ -105,6 +116,7 @@ class MyTestCase(unittest.TestCase):
         shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
 
     def test_save_file_calendars_write(self):
+        """Создает файл с информацией о календарях - ПЕРЕЗАПИСЬ"""
         shutil.copyfile(Backend._directory + 'saved_calendars_clear.txt', Backend._directory + 'saved_calendars.txt')
         cal1 = Calendar('iduser1', 'work', id='1')
         cal2 = Calendar('iduser2', 'work', id='2')
@@ -125,6 +137,7 @@ class MyTestCase(unittest.TestCase):
         shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
 
     def test_save_file_calendars_append(self):
+        """Создает файл с информацией о календарях - ДОЗАПИСЬ"""
         shutil.copyfile(Backend._directory + 'saved_calendars_clear.txt', Backend._directory + 'saved_calendars.txt')
         cal1 = Calendar('iduser1', 'work', id='1')
         cal2 = Calendar('iduser2', 'work', id='2')
@@ -153,6 +166,7 @@ class MyTestCase(unittest.TestCase):
 
 
     def test_load_file_calendars_all(self):
+        """Загружаем календарь из файла - ВСЕХ"""
         shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
         Backend.load_file_calendars()
         part1 = Backend.list_calendars[0]._id+Backend.list_calendars[0]._name_calendar
@@ -166,6 +180,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual("3vacationiduser3['1', '2', '3']",part1+part2)
 
     def test_load_file_calendars_one(self):
+        """Загружаем календарь из файла - ОДИН"""
         shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
         Backend.load_file_calendars('iduser2')
         part1 = Backend.list_calendars[0]._id+Backend.list_calendars[0]._name_calendar
@@ -173,12 +188,14 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual("2personaliduser2['3']",part1+part2)
 
     def test_load_file_calendars_max_counter(self):
+        """Загружаем календарь из файла - КАУНТЕР"""
         shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
         Calendar.__id_counter__=1
         Backend.load_file_calendars('*********')
         self.assertEqual(Calendar.__id_counter__,4)
 
     def test_clear_users(self):
+        "Очищаем список пользователей"
         Backend.list_users = []
         user1 = User("test_login1", "test_name1", "test_lastname1", password='123')
         user2 = User("test_login2", "test_name2", "test_lastname2", password='123')
@@ -188,6 +205,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(Backend.list_users,[])
 
     def test_clear_calendars(self):
+        "Очищаем список календарей"
         Backend.list_calendars = []
         cal1 = Calendar('iduser1', 'work', id='1')
         cal2 = Calendar('iduser2', 'work', id='2')
@@ -198,6 +216,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(Backend.list_calendars,[])
 
     def test_clear_events(self):
+        "Очищаем список событий"
         Backend.list_users = []
         ev1 = Event("event1", "event1_descr", "event1_own",
                     ["user1", "user2"], datetime(2007, 12, 6), id=1)
@@ -210,6 +229,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(Backend.list_events,[])
 
     def test_update_user(self):
+        "Метод обновления пользователя:"
         shutil.copyfile(Backend._directory + 'saved_users_etalon.txt', Backend._directory + 'saved_users.txt')
         Backend.update_user('user3','new_name','new_lastname','new_pass')
         file_name = Backend._directory + 'saved_users.txt'
@@ -224,6 +244,7 @@ class MyTestCase(unittest.TestCase):
         shutil.copyfile(Backend._directory + 'saved_users_etalon.txt', Backend._directory + 'saved_users.txt')
 
     def test_update_calendar(self):
+        "Метод обновления имени календаря"
         shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
         Backend.update_calendar('2','new_name')
         file_name = Backend._directory + 'saved_calendars.txt'
@@ -242,18 +263,21 @@ class MyTestCase(unittest.TestCase):
         shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
 
     def test_check_id_calendar(self):
+        "Проверяем присутствие id календаря в памяти"
         shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
         Backend.load_file_calendars()
         self.assertTrue(Backend.check_id_calendar('2'))
         self.assertFalse(Backend.check_id_calendar('5'))
 
     def test_check_id_users(self):
+        "Проверяем присутствие id пользователей в памяти"
         shutil.copyfile(Backend._directory + 'saved_users_etalon.txt', Backend._directory + 'saved_calendars.txt')
         Backend.load_file_users()
         self.assertTrue(Backend.check_id_users(['@user3*3']))
         self.assertFalse(Backend.check_id_users(['5']))
 
     def test_check_id_event(self):
+        "Проверяем присутствие id события в памяти"
         shutil.copyfile(Backend._directory + 'saved_events_etalon.txt', Backend._directory + 'saved_events.txt')
         Backend.load_file_events()
         self.assertTrue(Backend.check_id_event('1'))
@@ -261,7 +285,7 @@ class MyTestCase(unittest.TestCase):
 
 #TODO: load\save users, load\save events, load\save notifications
 #TODO: show_events, search_events, add_event_into_calendar_guest, del_event_from_calendars
-#TODO: clear_notification, add_notification, check_id_notification
+#TODO: clear_notification, add_notification, check_id_notification, info_notifications
 
 if __name__ == '__main__':
     unittest.main()

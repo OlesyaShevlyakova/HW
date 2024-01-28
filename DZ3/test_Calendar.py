@@ -76,7 +76,7 @@ class TestItem(unittest.TestCase):
     def test_str(self):
         'Проверка __str__'
         cal1 = Calendar('iduser1','work', id_events=['id_evetn1', 'id_event2'],id=1)
-        self.assertEqual(str(cal1),f"Календарь {cal1._id}, пользователя {cal1._id_user}")
+        self.assertEqual(str(cal1),f"Календарь {cal1._id}, наменование календаря {cal1._name_calendar}, пользователя {cal1._id_user}")
 
     def test_repr(self):
         'Проверка __repr__'
