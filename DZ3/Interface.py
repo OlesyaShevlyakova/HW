@@ -117,13 +117,14 @@ class Interface:
                     ========== СОБЫТИЯ ==========
                     3) создать событие (выбрав календарь)
                     4) удалить событие (выбрав календарь)
-                    5) отобразить все события из выбранного календаря
-                    6) отобразить события из временного диапазона (выбрав календарь)
-                    7) привязать событие к другому календарю
+                    5) изменить информацию о событии 
+                    6) отобразить все события из выбранного календаря
+                    7) отобразить события из временного диапазона (выбрав календарь)
+                    8) привязать событие к другому календарю
                     ========== СЕРВИСНОЕ ==========
-                    8) посмотреть оповещения
-                    9) выйти из системы
-                    10) изменить информацию о пользователе
+                    9) посмотреть оповещения
+                    10) выйти из системы
+                    11) изменить информацию о пользователе
                     """)
         if question == "0":
             Interface.tasks_list.append(Interface.show_list_calendar)
@@ -136,16 +137,18 @@ class Interface:
         elif question == "4":
             Interface.tasks_list.append(Interface.del_event)
         elif question == "5":
-            Interface.tasks_list.append(Interface.show_events)
+            Interface.tasks_list.append(Interface.edit_event)
         elif question == "6":
-            Interface.tasks_list.append(Interface.show_events_range)
+            Interface.tasks_list.append(Interface.show_events)
         elif question == "7":
-            Interface.tasks_list.append(Interface.link_to_another_calendar)
+            Interface.tasks_list.append(Interface.show_events_range)
         elif question == "8":
-            Interface.tasks_list.append(Interface.show_notification)
+            Interface.tasks_list.append(Interface.link_to_another_calendar)
         elif question == "9":
-            Interface.tasks_list.append(Interface.identification_user)
+            Interface.tasks_list.append(Interface.show_notification)
         elif question == "10":
+            Interface.tasks_list.append(Interface.identification_user)
+        elif question == "11":
             Interface.tasks_list.append(Interface.change_user)
         else:
             print("Некорректный ввод данных 😎")
@@ -449,6 +452,31 @@ class Interface:
         print("Событие из календарей успешно удалено")
         sleep(2)
         Interface.tasks_list.append(Interface.main_screen)
+
+    @staticmethod
+    def edit_event():
+        "Изменить информацию о событии"
+        question = input("""
+                                    Выберите действие:
+                                    1) изменить название события
+                                    2) изменить описание события
+                                    3) добавить список участников
+                                    4) удалить список участников
+                                    5) вернуться к главному меню
+                                    """)
+        if question == "1":
+            Interface.tasks_list.append(Interface.change_name_event)
+        elif question == "2":
+            Interface.tasks_list.append(Interface.change_description)
+        elif question == "3":
+            Interface.tasks_list.append(Interface.add_guests)
+        elif question == "4":
+            Interface.tasks_list.append(Interface.del_guests)
+        elif question == "5":
+            Interface.tasks_list.append(Interface.main_screen)
+        else:
+            print("Некорректный ввод данных 😎")
+            Interface.tasks_list.append(Interface.change_user)
 
 
 

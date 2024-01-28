@@ -3,4 +3,8 @@ id,name_event,description,data_event,repeat_type,event_owner,guests
 2,суббота,писасть код,2024-01-27,D,@LesyaSlon*20,[]
 3,Суббота,Программировать,2024-01-27,W,@LesyaSlon*20,"['@Maksim*5', '@Maksim*4']"
 6,grish,grish,2023-01-05,D,@grishgrish*22,['@grishagrisha*21']
-7,est,est,2023-01-05,D,@grishgrish*22,['@LesyaSlon*20']
+7,Sunday-winter,pathon,2024-01-28,,@LesyaSlon*20,['@Maksim*5']
+8,Sunday-winter,Py,2024-01-28,,@LesyaSlon*20,['@grishagrisha*21']
+9,Sunday-winter,py,2024-01-28,,@LesyaSlon*20,['@grishagrisha*21']
+10,maks,maks,2020-01-01,D,@maksmaks*23,['@LesyaSlon*20']
+11,maks2,maks2,2020-01-01,W,@maksmaks*23,['@grishgrish*22']

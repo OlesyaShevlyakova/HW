@@ -12,6 +12,7 @@
 from Event import Event
 from User import User
 from Calendar import Calendar
+from Notification import Notification
 from datetime import datetime
 import csv
 from Utils import str_to_date
@@ -20,6 +21,7 @@ class Backend:
     list_users = []   # храним объекты класса User
     list_events = []   # храним объекты класса Event
     list_calendars = []   # храним объекты класса Calendar
+    list_notification = []  # храним объекты класса Notification
     _directory = "data/"  # директория для хранения данных, при тестах переменная меняется
     '''Основной принцип работы с данными на диске
        для обеспечения одновременной работы нескольких пользователей.
@@ -88,6 +90,11 @@ class Backend:
     def info_calendars():
         "Возвращает информацию о календарях"
         return Backend.list_calendars
+
+    @staticmethod
+    def info_notifications():
+        "Возвращает информацию об уведомлениях"
+        return Backend.list_notification
 
     @staticmethod
     def save_file_users(add_user=None):
@@ -185,7 +192,7 @@ class Backend:
                               guests=eval(i["guests"]), data_event=i['data_event'], repeat_type=i["repeat_type"], id=i["id"])
                 if target_id_events is None:
                     Backend.add_event(event)
-                elif int(i["id"]) in target_id_events:
+                elif i["id"] in target_id_events:
                     Backend.add_event(event)
                 id = i["id"]
                 id_events.append(int(id))
@@ -388,12 +395,17 @@ class Backend:
 
         Backend.load_file_calendars()  # загрузить в память все календари
         lst_cal = Backend.list_calendars
+        Backend.clear_notification()   # очищаем список уведомлений
         for gst in guests:  # проходим по списку гостей
             for cal in lst_cal:  # проходим по списку календарей
                 if cal.info_id_user() == gst:
                     Backend.add_event_into_calendar(cal.info_calendars()[0], add_id_event)
+                    Backend.add_notification(id_user=gst, id_event=add_id_event, action="C")  # добавляем уведомление
+                    Backend.save_file_notifications(add_notification=True)  # сохраняем уведомления
                     #TODO: нотификация
                     break
+
+
 
     @staticmethod
     def check_id_event(target_id_event):
@@ -431,6 +443,46 @@ class Backend:
             if target_id_event in Backend.list_calendars[i].info_calendars()[3]:
                 Backend.list_calendars[i].info_calendars()[3].remove(target_id_event)  # удаляем событие из календарей
         Backend.save_file_calendars()  # сохраняем календари
+
+    @staticmethod
+    def clear_notification():
+        "Очищаем список уведомлений"
+        Backend.list_notification = []
+
+    @staticmethod
+    def add_notification(id_user, id_event, action, del_details=None, id=None):
+        "Добавляем уведомление"
+        notification = Notification(id=id, id_user=id_user, id_event=id_event, action=action,
+                                    del_details=del_details)
+        Backend.list_notification.append(notification)
+
+    def save_file_notifications(add_notification=None):
+        """Создает файл с информацией об уведомлениях. События берет из памяти backend
+        Если в переменную add_notification мы ничего не передали, то файл записываем, иначе добавляем информацию об Notification"""
+        file_name = Backend._directory + 'saved_notification.txt'
+        if add_notification is None:
+            file_mode = "w"
+        else:
+            file_mode = "a"
+        with open(file_name, file_mode, newline="") as f:
+            w = csv.DictWriter(f, ["id", "id_user", "id_event", "action", "del_details"])
+            if file_mode == "w":
+                w.writeheader()
+            notifications = Backend.info_notifications()
+            for notif in notifications:
+                info = notif.info_Notif()
+                data = dict()
+                data['id'] = info[0]
+                data['id_user'] = info[1]
+                data['id_event'] = info[2]
+                data['action'] = info[3]
+                data['del_details'] = info[4]
+                w.writerow(data)
+
+
+
+
+
 
 
 
