@@ -24,6 +24,8 @@ class Calendar:
         self._name_calendar = name_calendar
         if id_events is not None:
             self._events = id_events
+        else:
+            self._events = []
         if id is None:
             self._id = self.__class__.__id_counter__  # присвоили id новому событию
             self.__class__.__id_counter__ += 1  # увеличили инкрементальный id

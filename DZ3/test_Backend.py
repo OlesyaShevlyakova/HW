@@ -4,6 +4,11 @@ from User import User
 from Event import Event
 from Calendar import Calendar
 from datetime import datetime
+import csv
+import shutil
+from Utils import hash_password as hs
+
+
 
 
 
@@ -75,6 +80,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(Backend.info_calendars(),[cal1,cal2])
 
     def test_add_event_into_calendar(self):
+        shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
         cal1 = Calendar('iduser1', 'work', id=1)
         cal2 = Calendar('iduser2', 'personal', id=2)
         ev1 = Event("event1", "event1_descr", "event1_own",
@@ -88,8 +94,128 @@ class MyTestCase(unittest.TestCase):
         Backend.add_event(ev1)
         Backend.add_event(ev2)
         Backend.add_event_into_calendar('2','2')
-        self.assertEqual(True,True)
+        self.assertEqual(Backend.list_calendars[1]._events,['2'])
+        file_name = Backend._directory + 'saved_calendars.txt'
+        with open(file_name, "r") as f:
+            w = csv.DictReader(f, ["id", "name_calendar", "id_user", "id_events"])
+            next(w)
+            next(w)
+            for_check = (next(w)["id_events"])
+        self.assertEqual(for_check,"['2']")
+        shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
 
+    def test_save_file_calendars_write(self):
+        shutil.copyfile(Backend._directory + 'saved_calendars_clear.txt', Backend._directory + 'saved_calendars.txt')
+        cal1 = Calendar('iduser1', 'work', id='1')
+        cal2 = Calendar('iduser2', 'work', id='2')
+        Backend.list_calendars = []
+        Backend.add_calendar(cal1)
+        Backend.add_calendar(cal2)
+        Backend.save_file_calendars()
+        file_name = Backend._directory + 'saved_calendars.txt'
+        with open(file_name, "r") as f:
+            w = csv.DictReader(f, ["id", "name_calendar", "id_user", "id_events"])
+            next(w)
+            first_row = next(w)
+            second_row = next(w)
+        self.assertEqual(first_row,{'id': '1', 'name_calendar': 'work', 'id_user': 'iduser1',
+                                    'id_events': "[]"})
+        self.assertEqual(second_row,{'id': '2', 'name_calendar': 'work', 'id_user': 'iduser2',
+                                    'id_events': "[]"})
+        shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
+
+    def test_save_file_calendars_append(self):
+        shutil.copyfile(Backend._directory + 'saved_calendars_clear.txt', Backend._directory + 'saved_calendars.txt')
+        cal1 = Calendar('iduser1', 'work', id='1')
+        cal2 = Calendar('iduser2', 'work', id='2')
+        cal3 = Calendar('iduser3', 'work', id='3')
+        Backend.list_calendars = []
+        Backend.add_calendar(cal1)
+        Backend.add_calendar(cal2)
+        Backend.save_file_calendars()
+        Backend.list_calendars = []
+        Backend.add_calendar(cal3)
+        Backend.save_file_calendars(add_calendar=True)
+        file_name = Backend._directory + 'saved_calendars.txt'
+        with open(file_name, "r") as f:
+            w = csv.DictReader(f, ["id", "name_calendar", "id_user", "id_events"])
+            next(w)
+            first_row = next(w)
+            second_row = next(w)
+            third_row = next(w)
+        self.assertEqual(first_row, {'id': '1', 'name_calendar': 'work', 'id_user': 'iduser1',
+                                     'id_events': "[]"})
+        self.assertEqual(second_row, {'id': '2', 'name_calendar': 'work', 'id_user': 'iduser2',
+                                      'id_events': "[]"})
+        self.assertEqual(third_row, {'id': '3', 'name_calendar': 'work', 'id_user': 'iduser3',
+                                      'id_events': "[]"})
+        shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
+
+
+    def test_load_file_calendars_all(self):
+        shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
+        Backend.load_file_calendars()
+        part1 = Backend.list_calendars[0]._id+Backend.list_calendars[0]._name_calendar
+        part2 = Backend.list_calendars[0]._id_user+str(Backend.list_calendars[0]._events)
+        self.assertEqual('1workiduser1[]',part1+part2)
+        part1 = Backend.list_calendars[1]._id+Backend.list_calendars[1]._name_calendar
+        part2 = Backend.list_calendars[1]._id_user+str(Backend.list_calendars[1]._events)
+        self.assertEqual('2personaliduser2[]',part1+part2)
+        part1 = Backend.list_calendars[2]._id+Backend.list_calendars[2]._name_calendar
+        part2 = Backend.list_calendars[2]._id_user+str(Backend.list_calendars[2]._events)
+        self.assertEqual('3vacationiduser3[]',part1+part2)
+
+    def test_load_file_calendars_one(self):
+        shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
+        Backend.load_file_calendars('iduser2')
+        part1 = Backend.list_calendars[0]._id+Backend.list_calendars[0]._name_calendar
+        part2 = Backend.list_calendars[0]._id_user+str(Backend.list_calendars[0]._events)
+        self.assertEqual('2personaliduser2[]',part1+part2)
+
+    def test_clear_users(self):
+        Backend.list_users = []
+        user1 = User("test_login1", "test_name1", "test_lastname1", password='123')
+        user2 = User("test_login2", "test_name2", "test_lastname2", password='123')
+        Backend.add_user(user1)
+        Backend.add_user(user2)
+        Backend.clear_users()
+        self.assertEqual(Backend.list_users,[])
+
+    def test_clear_calendars(self):
+        Backend.list_calendars = []
+        cal1 = Calendar('iduser1', 'work', id='1')
+        cal2 = Calendar('iduser2', 'work', id='2')
+        Backend.list_calendars = []
+        Backend.add_calendar(cal1)
+        Backend.add_calendar(cal2)
+        Backend.clear_calendars()
+        self.assertEqual(Backend.list_calendars,[])
+
+    def test_clear_events(self):
+        Backend.list_users = []
+        ev1 = Event("event1", "event1_descr", "event1_own",
+                    ["user1", "user2"], datetime(2007, 12, 6), id=1)
+        ev2 = Event("event2", "event2_descr", "event2_own",
+                    ["user3", "user4"], datetime(2008, 10, 16), id=1)
+        Backend.list_events = []
+        Backend.add_event(ev1)
+        Backend.add_event(ev2)
+        Backend.clear_events()
+        self.assertEqual(Backend.list_events,[])
+
+    def test_update_user(self):
+        shutil.copyfile(Backend._directory + 'saved_users_etalon.txt', Backend._directory + 'saved_users.txt')
+        Backend.update_user('user3','new_name','new_lastname','new_pass')
+        file_name = Backend._directory + 'saved_users.txt'
+        with open(file_name, "r") as f:
+            w = csv.DictReader(f, ["id","name","lastname","login","password"])
+            next(w)
+            next(w)
+            next(w)
+            for_check = next(w)
+            for_check = for_check["name"]+for_check["lastname"]+for_check["password"]
+        self.assertEqual(for_check, "new_namenew_lastname"+hs('new_pass'))
+        shutil.copyfile(Backend._directory + 'saved_users_etalon.txt', Backend._directory + 'saved_users.txt')
 
 
 if __name__ == '__main__':
