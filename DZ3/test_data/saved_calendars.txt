@@ -1,0 +1,4 @@
+id,name_calendar,id_user,id_events
+1,work,iduser1,[]
+2,personal,iduser2,['2']
+3,vacation,iduser3,[]

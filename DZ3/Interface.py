@@ -228,9 +228,9 @@ class Interface:
         "Cоздать календарь"
         print("Введите имя календаря")
         name_calendar = input()
-        new_calendar = Calendar(id_user=Interface.id_user, name_calendar=name_calendar)
         Interface.backend.load_file_calendars(target_id_user='*********')  # запускаем загрузку календарей без загрузки
                                                                         # в память backend, чтобы обновить id_counter
+        new_calendar = Calendar(id_user=Interface.id_user, name_calendar=name_calendar)
         Interface.backend.add_calendar(new_calendar)  # добавляем календарь в память
         Interface.backend.save_file_calendars(add_calendar=True)  # дописываем файл с календарями
         Interface.tasks_list.append(Interface.main_screen)

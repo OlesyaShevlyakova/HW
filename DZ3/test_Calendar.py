@@ -10,10 +10,10 @@ class TestItem(unittest.TestCase):
 
     def test_init_calendar_custom(self):
         "Проверка создания календаря - с доп.параметрами"
-        cal1 = Calendar('iduser1','work',id='id1', id_events=['id_evetn1', 'id_event2'])
+        cal1 = Calendar('iduser1','work',id=1, id_events=['id_evetn1', 'id_event2'])
         self.assertEqual(cal1._id_user, "iduser1")
         self.assertEqual(cal1._name_calendar, "work")
-        self.assertEqual(cal1._id, "id1")
+        self.assertEqual(cal1._id, '1')
         self.assertEqual(cal1._events, ['id_evetn1', 'id_event2'])
 
     def test_init_calendar_check_id_counter(self):
@@ -23,13 +23,13 @@ class TestItem(unittest.TestCase):
         cal2 = Calendar('iduser1','work')
         cal3 = Calendar('iduser1','work')
         cal4 = Calendar('iduser1','work')
-        self.assertEqual(cal1._id, id_counter_before_creating)
+        self.assertEqual(cal1._id, str(id_counter_before_creating))
         id_counter_before_creating += 1
-        self.assertEqual(cal2._id, id_counter_before_creating)
+        self.assertEqual(cal2._id, str(id_counter_before_creating))
         id_counter_before_creating += 1
-        self.assertEqual(cal3._id, id_counter_before_creating)
+        self.assertEqual(cal3._id, str(id_counter_before_creating))
         id_counter_before_creating += 1
-        self.assertEqual(cal4._id, id_counter_before_creating)
+        self.assertEqual(cal4._id, str(id_counter_before_creating))
 
     def test_change_id_counter(self):
         'Проверка изменения счетчика'
@@ -51,36 +51,36 @@ class TestItem(unittest.TestCase):
 
     def test_info_calendars(self):
         'Проверка возврата информации о календаре'
-        cal1 = Calendar('iduser1','work', id_events=['id_evetn1', 'id_event2'],id='id_cal1')
-        self.assertEqual(cal1.info_calendars(), ('id_cal1','work','iduser1',['id_evetn1', 'id_event2']))
+        cal1 = Calendar('iduser1','work', id_events=['id_evetn1', 'id_event2'],id=1)
+        self.assertEqual(cal1.info_calendars(), ('1','work','iduser1',['id_evetn1', 'id_event2']))
 
     def test_change_name(self):
         'Проверка изменения имени календаря'
-        cal1 = Calendar('iduser1','work', id_events=['id_evetn1', 'id_event2'],id='id_cal1')
+        cal1 = Calendar('iduser1','work', id_events=['id_evetn1', 'id_event2'],id=1)
         cal1.change_name('new_name')
         self.assertEqual('new_name', cal1._name_calendar)
 
     def test_add_event(self):
         'Проверка добавления событий в календарь'
-        cal1 = Calendar('iduser1','work', id_events=['id_evetn1', 'id_event2'],id='id_cal1')
+        cal1 = Calendar('iduser1','work', id_events=['id_evetn1', 'id_event2'],id=1)
         event1 = 'id_event3'
         cal1.add_event(event1)
         self.assertEqual(cal1._events,['id_evetn1', 'id_event2', 'id_event3'])
 
     def test_delete_event(self):
         'Проверка удаления события из календаря'
-        cal1 = Calendar('iduser1','work', id_events=['id_evetn1', 'id_event2'],id='id_cal1')
+        cal1 = Calendar('iduser1','work', id_events=['id_evetn1', 'id_event2'],id=1)
         cal1.delete_event('id_evetn1')
         self.assertEqual(cal1._events, ['id_event2'])
 
     def test_str(self):
         'Проверка __str__'
-        cal1 = Calendar('iduser1','work', id_events=['id_evetn1', 'id_event2'],id='id_cal1')
+        cal1 = Calendar('iduser1','work', id_events=['id_evetn1', 'id_event2'],id=1)
         self.assertEqual(str(cal1),f"Календарь {cal1._id}, пользователя {cal1._id_user}")
 
     def test_repr(self):
         'Проверка __repr__'
-        cal1 = Calendar('iduser1','work', id_events=['id_evetn1', 'id_event2'],id='id_cal1')
+        cal1 = Calendar('iduser1','work', id_events=['id_evetn1', 'id_event2'],id=1)
         self.assertEqual(cal1.__repr__(),f"[{cal1._id}:{cal1._id_user}]")
 
 
