@@ -128,24 +128,3 @@ class Event:
 
 
 
-if __name__ == "__main__":
-    Day = Event("birthday", "party day", "olesya", ["maksim", "grisha"],
-                datetime(2007, 12, 6, 15, 29, 43))
-    Day.remove_list_guests(["maksim"])
-    print(Day._event_guests)
-    print(Day.info_Event())
-    print(Day.get_json())
-    print('123')
-    print(Day.take_json('{"name_event": "birthday", "data_event": "2007-12-06 15:29:43", "description": "party day", "event_owner": "olesya", "guests": ["grisha"], "repeat_type": null}'))
-    print(Day.info_Event())
-    Day = Event("birthday", "party day", "olesya", ["maksim", "grisha"],
-                datetime(2007, 12, 6), repeat_type="Y")
-
-    for num in Day.repeat_events():
-        print(num)
-        if num > datetime(2020, 1, 1):
-            break
-    print(Day.repeat_events())
-
-
-

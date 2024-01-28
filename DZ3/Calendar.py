@@ -73,13 +73,3 @@ class Calendar:
 
 
 
-if __name__ == "__main__":
-    A = Calendar("123454")
-    Event1 = Event("birthday", "party day", "olesya", ["maksim", "grisha"], datetime(2008, 12, 6, 15, 29, 43))
-    Event2 = Event("birthday", "party day", "olesya", ["maksim", "grisha"], datetime(2009, 12, 6, 15, 29, 43))
-    Event3 = Event("birthday", "party day", "olesya", ["maksim", "grisha"], datetime(2010, 12, 6, 15, 29, 43))
-    A.add_event(Event1)
-    A.add_event(Event2)
-    A.add_event(Event3)
-    print(A.search_events(datetime(2000, 12, 6, 15, 29, 43), datetime(2009, 12, 6, 15, 29, 43)))
-
