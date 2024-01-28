@@ -38,7 +38,24 @@ class Interface:
     def start():
         "Первичная инициализация программы"
         Interface.backend = Backend
-        Interface.tasks_list.append(Interface.identification_user)
+        Interface.tasks_list.append(Interface.hello)
+
+    @staticmethod
+    def hello():
+        "Приветствие"
+        print("Добро пожаловать в интерфейс, написанный с любовью 😀")
+        question = input("""
+                    Выберите:
+                    1) аккаунт существует
+                    2) зарегистрироваться
+                    """)
+        if question == "1":
+            Interface.tasks_list.append(Interface.identification_user)
+        elif question == "2":
+            Interface.tasks_list.append(Interface.creating_user)
+        else:
+            print("Некорректный ввод данных 😎")
+            Interface.tasks_list.append(Interface.hello)
 
     @staticmethod
     def identification_user():
@@ -108,7 +125,7 @@ class Interface:
         print('-------------------------------------------------------------------')
         print(f'Текущий логин пользователя - {Interface.login_user} и id - {Interface.id_user}')
         print('-------------------------------------------------------------------')
-        question = input("""
+        print("""
                     Выберите действие:
                     ========== КАЛЕНДАРИ ==========
                     0) отобразить список календарей
@@ -126,6 +143,10 @@ class Interface:
                     10) выйти из системы
                     11) изменить информацию о пользователе
                     """)
+
+        if Interface.backend.check_id_notification(Interface.id_user):
+            print("Есть новые оповещения, для просмотра введите 9")
+        question = input()
         if question == "0":
             Interface.tasks_list.append(Interface.show_list_calendar)
         elif question == "1":

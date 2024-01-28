@@ -145,7 +145,7 @@ class Backend:
                 position = id.find("*")
                 position_id = position + 1
                 id_users.append(int(id[position_id:]))
-            maxsimum = max(id_users) + 1
+            maxsimum = max(id_users, default=0) + 1
             User.change_id_counter(maxsimum)
 
     @staticmethod
@@ -196,7 +196,7 @@ class Backend:
                     Backend.add_event(event)
                 id = i["id"]
                 id_events.append(int(id))
-            maxsimum = max(id_events) + 1
+            maxsimum = max(id_events, default=0) + 1
             Event.change_id_counter(maxsimum)
 
     @staticmethod
@@ -243,16 +243,8 @@ class Backend:
                 "Ищем максимальный id среди всех записей для обновления id_counter, чтобы id календаря был точно уникальным"
                 id = i["id"]
                 id_calendars.append(int(id))
-            maxsimum = max(id_calendars) + 1
+            maxsimum = max(id_calendars, default=0) + 1
             Calendar.change_id_counter(maxsimum)
-
-            """"Ищем максимальный id среди всех записей для обновления id_counter, чтобы логин был точно уникальным"
-                id = i["id"]
-                position = id.find("*")
-                position_id = position + 1
-                id_users.append(int(id[position_id:]))
-            maxsimum = max(id_users) + 1
-            User.change_id_counter(maxsimum)"""
 
 
     @staticmethod
@@ -402,9 +394,8 @@ class Backend:
                     Backend.add_event_into_calendar(cal.info_calendars()[0], add_id_event)
                     Backend.add_notification(id_user=gst, id_event=add_id_event, action="C")  # добавляем уведомление
                     Backend.save_file_notifications(add_notification=True)  # сохраняем уведомления
-                    #TODO: нотификация
+                    Backend.clear_notification()  # очищаем список уведомлений
                     break
-
 
 
     @staticmethod
@@ -426,22 +417,25 @@ class Backend:
         5) Загружаем в память все календари
         6) Удаляем событие из календарей
         7) Сохраняем календари"""
-
+        Backend.clear_notification()  # очищаем список уведомлений
         for elem in Backend.list_events:
             if target_id_event == elem.info_Event()[0]:
                 guests = elem.info_Event()[6]  # cохраняем в отдельную переменную гостей события
         Backend.load_file_events()  # загружаем в память все события
         for i in range(len(Backend.list_events)):
             if target_id_event == Backend.list_events[i].info_Event()[0]:
+                name_event = Backend.list_events[i].info_Event()[1]
                 Backend.list_events.pop(i)  # удаляем требуемое событие (по id)
                 break
         Backend.save_file_events()  # сохраняем события
         Backend.load_file_calendars()  # загружаем в память все календари
         for i in range(len(Backend.list_calendars)):
-            print(target_id_event)
-            print(Backend.list_calendars[i].info_calendars()[3])
             if target_id_event in Backend.list_calendars[i].info_calendars()[3]:
                 Backend.list_calendars[i].info_calendars()[3].remove(target_id_event)  # удаляем событие из календарей
+                Backend.add_notification(id_user=Backend.list_calendars[i].info_calendars()[2],
+                                         id_event=target_id_event, action="D", del_details=name_event)  # добавляем уведомление
+                Backend.save_file_notifications(add_notification=True)  # сохраняем уведомления
+                Backend.clear_notification()  # очищаем список уведомлений
         Backend.save_file_calendars()  # сохраняем календари
 
     @staticmethod
@@ -478,6 +472,41 @@ class Backend:
                 data['action'] = info[3]
                 data['del_details'] = info[4]
                 w.writerow(data)
+
+    @staticmethod
+    def load_file_notifications(target_id_notifications=None):
+        """ Загружаем события из файла
+        Входящий параметр или None, или list
+        Если в переменную target_id_notificationt передали искомый/ые id, то загружаем уведомления с данным/ными id
+        Иначе загружаем все уведомления"""
+        file_name = Backend._directory + 'saved_events.txt'
+        Backend.clear_notification()
+        with open(file_name, "r") as f:
+            w = csv.DictReader(f, ["id", "id_user", "id_event", "action", "del_details"])
+            next(w)
+            id_notifications = []
+            for i in w:
+                if target_id_notifications is None:
+                    Backend.add_notification(id=i["id"], id_user=i["id_user"], id_event=i['id_event'],
+                                             action=i["action"], del_details=i['del_details'])  # добавляем уведомление
+                elif i["id"] in target_id_notifications:
+                    Backend.add_notification(id=i["id"], id_user=i["id_user"], id_event=i['id_event'],
+                                             action=i["action"], del_details=i['del_details'])  # добавляем уведомление
+                id = i["id"]
+                id_notifications.append(int(id))
+            maxsimum = max(id_notifications, default=0) + 1
+            Notification.change_id_counter(maxsimum)
+
+    @staticmethod
+    def check_id_notification(id_user):
+        "Провереряем наличие оповещения для текущего пользователя"
+        Backend.load_file_notifications()  # загружаем оповещения
+        for elem in Backend.list_notification:
+            if id_user == elem.info_Notif()[1]:
+                Backend.clear_notification()
+                return True
+        Backend.clear_notification()
+        return False
 
 
 
