@@ -361,7 +361,6 @@ class Backend:
                 list_search_events.append(elem.info_Event)
             elif (elem.info_Event()[4] in ["D", "W", "M", "Y"]) and (str_to_date(elem.info_Event()[3]) <= data_to):
                 for calculated_data in elem.repeat_events():
-                    print(calculated_data)
                     if data_from <= calculated_data <= data_to:
                         info_with_new_date = (elem.info_Event()[0], elem.info_Event()[1], elem.info_Event()[2],
                                               calculated_data, elem.info_Event()[4], elem.info_Event()[5],
