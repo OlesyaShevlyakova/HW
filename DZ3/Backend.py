@@ -39,7 +39,9 @@ class Backend:
 
     @staticmethod
     def originality_login(new_login):
-        "Проверяем логин на уникальность"
+        """Проверяем логин на уникальность
+        True - уникальный
+        False - неуникальный"""
         Backend.load_file_users(new_login)
         if len(Backend.info_users()) == 0:
             return True

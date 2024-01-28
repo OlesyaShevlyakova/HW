@@ -27,8 +27,9 @@ class Calendar:
         if id is None:
             self._id = self.__class__.__id_counter__  # присвоили id новому событию
             self.__class__.__id_counter__ += 1  # увеличили инкрементальный id
+            self._id = str(self._id)
         else:
-            self._id = id
+            self._id = str(id)
 
     @staticmethod
     def change_id_counter(new_counter):
