@@ -1,0 +1,4 @@
+id,name_event,description,data_event,repeat_type,event_owner,guests
+1,party,big party,2007-12-06,,@user1*1,['@user3*3']
+2,party,big party,2007-12-06,,@user1*1,['@user3*3']
+3,party,big party,2007-12-06,,@user2*2,['@user3*3']
