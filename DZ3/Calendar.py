@@ -64,7 +64,7 @@ class Calendar:
 
     def __str__(self):
         "Возвращает информацию для пользователя"
-        return f"Календарь {self._id}, пользователя {self._id_user}"
+        return f"Календарь {self._id}, наменование календаря {self._name_calendar}, пользователя {self._id_user}"
 
     def __repr__(self):
         "Возвращает информацию для разработчика"
