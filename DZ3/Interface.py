@@ -340,7 +340,7 @@ class Interface:
             Interface.backend.load_file_users()  # загрузить всех пользователей в backend
             for elem in Interface.backend.info_users():
                 info_user = elem.info_User()
-                print(f"имя {info_user[1]}, id пользователя {info_user[0]}")
+                print(f"имя {info_user[1]}, фамилия {info_user[2]}, id пользователя {info_user[0]}")
             while True:
                 guests = input("Укажите id пользователей через пробел\n")
                 guests = guests.split()
@@ -378,7 +378,7 @@ class Interface:
                 break
         Interface.backend.add_event_into_calendar(target_id_calendar, new_event.info_id_event())  # добавление
                                                                                                 # события в календарь
-        Interface.backend.add_event_into_calendar_guest(new_event.info_id_event(), guests)  # добавление события в
+        Interface.backend.add_event_into_calendar_guest(new_event.info_id_event(), guests, name_event)  # добавление события в
                                                                                             # календарь гостей
         print("Событие в календарь успешно добавлено")
         sleep(1)
@@ -499,6 +499,20 @@ class Interface:
         else:
             print("Некорректный ввод данных 😎")
             Interface.tasks_list.append(Interface.change_user)
+
+
+    @staticmethod
+    def show_notification():
+        "Посмотреть оповещения"
+        noti = Interface.backend.show_notifications_user(Interface.id_user)
+        for elem in noti:
+            print(elem)
+        input('Нажмите Enter')
+        Interface.tasks_list.append(Interface.main_screen)
+
+
+
+
 
 
 

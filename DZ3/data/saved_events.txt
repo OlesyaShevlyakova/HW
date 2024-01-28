@@ -1,3 +1,6 @@
 id,name_event,description,data_event,repeat_type,event_owner,guests
 1,birthday party,90s style party,2024-12-12,,@OlesyaShevlyakova*1,"['@MishaIvanov*2', '@GrishaSidorov*4', '@AllaShpak*5']"
 2,meeting,hard,2025-07-25,W,@MishaIvanov*2,"['@OlesyaShevlyakova*1', '@MaksimBazhin*3', '@GrishaSidorov*4', '@AllaShpak*5', '@NataNevskaya*6']"
+3,Game,tennis,2024-09-07,Y,@MishaIvanov*2,['@GrishaSidorov*4']
+4,Breakfast,tàsty,2024-03-07,M,@OlesyaShevlyakova*1,['@MishaIvanov*2']
+5,Game,Football,2024-02-02,,@OlesyaShevlyakova*1,['@MishaIvanov*2']

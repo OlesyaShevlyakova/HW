@@ -373,7 +373,7 @@ class Backend:
 
 
     @staticmethod
-    def add_event_into_calendar_guest(add_id_event, guests: list):  # список id гостей
+    def add_event_into_calendar_guest(add_id_event, guests: list, name_event):  # список id гостей
         "Добавление события в календарь гостей"
         """
         Алгоритм добавления событий в календари гостей
@@ -391,7 +391,7 @@ class Backend:
             for cal in lst_cal:  # проходим по списку календарей
                 if cal.info_id_user() == gst:
                     Backend.add_event_into_calendar(cal.info_calendars()[0], add_id_event)
-                    Backend.add_notification(id_user=gst, id_event=add_id_event, action="C")  # добавляем уведомление
+                    Backend.add_notification(id_user=gst, id_event=add_id_event, action="C", del_details=name_event)  # добавляем уведомление
                     Backend.save_file_notifications(add_notification=True)  # сохраняем уведомления
                     Backend.clear_notification()  # очищаем список уведомлений
                     break
@@ -452,7 +452,7 @@ class Backend:
     def save_file_notifications(add_notification=None):
         """Создает файл с информацией об уведомлениях. События берет из памяти backend
         Если в переменную add_notification мы ничего не передали, то файл записываем, иначе добавляем информацию об Notification"""
-        file_name = Backend._directory + 'saved_notification.txt'
+        file_name = Backend._directory + 'saved_notifications.txt'
         if add_notification is None:
             file_mode = "w"
         else:
@@ -478,7 +478,7 @@ class Backend:
         Входящий параметр или None, или list
         Если в переменную target_id_notificationt передали искомый/ые id, то загружаем уведомления с данным/ными id
         Иначе загружаем все уведомления"""
-        file_name = Backend._directory + 'saved_events.txt'
+        file_name = Backend._directory + 'saved_notifications.txt'
         Backend.clear_notification()
         with open(file_name, "r") as f:
             w = csv.DictReader(f, ["id", "id_user", "id_event", "action", "del_details"])
@@ -506,6 +506,24 @@ class Backend:
                 return True
         Backend.clear_notification()
         return False
+
+    @staticmethod
+    def show_notifications_user(target_id_user):
+        "Загружаем уведомления пользователя"
+        Backend.load_file_notifications()  # загружаем все уведомления
+        our_notif_elem_to_save = []
+        our_notif_info = []
+        for elem in Backend.list_notification:
+            if target_id_user == elem.info_Notif()[1]:
+                our_notif_info.append(str(elem))  # в переменную помещаем объекты уведомлений для залогиненного пользователя
+            else:
+                our_notif_elem_to_save.append(elem)  # в переменную помещаем объекты уведомлений для других пользователей
+        Backend.clear_notification()  # очищаем backend
+        for elem in our_notif_elem_to_save:
+            Backend.list_notification.append(elem)  # в память добавляем уведомления других пользователей
+        Backend.save_file_notifications()  # сохраняем уведомления других пользователей
+        return our_notif_info
+
 
 
 
