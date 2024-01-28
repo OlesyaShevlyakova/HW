@@ -157,20 +157,26 @@ class MyTestCase(unittest.TestCase):
         Backend.load_file_calendars()
         part1 = Backend.list_calendars[0]._id+Backend.list_calendars[0]._name_calendar
         part2 = Backend.list_calendars[0]._id_user+str(Backend.list_calendars[0]._events)
-        self.assertEqual('1workiduser1[]',part1+part2)
+        self.assertEqual("1workiduser1['1', '2']",part1+part2)
         part1 = Backend.list_calendars[1]._id+Backend.list_calendars[1]._name_calendar
         part2 = Backend.list_calendars[1]._id_user+str(Backend.list_calendars[1]._events)
-        self.assertEqual('2personaliduser2[]',part1+part2)
+        self.assertEqual("2personaliduser2['3']",part1+part2)
         part1 = Backend.list_calendars[2]._id+Backend.list_calendars[2]._name_calendar
         part2 = Backend.list_calendars[2]._id_user+str(Backend.list_calendars[2]._events)
-        self.assertEqual('3vacationiduser3[]',part1+part2)
+        self.assertEqual("3vacationiduser3['1', '2', '3']",part1+part2)
 
     def test_load_file_calendars_one(self):
         shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
         Backend.load_file_calendars('iduser2')
         part1 = Backend.list_calendars[0]._id+Backend.list_calendars[0]._name_calendar
         part2 = Backend.list_calendars[0]._id_user+str(Backend.list_calendars[0]._events)
-        self.assertEqual('2personaliduser2[]',part1+part2)
+        self.assertEqual("2personaliduser2['3']",part1+part2)
+
+    def test_load_file_calendars_max_counter(self):
+        shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
+        Calendar.__id_counter__=1
+        Backend.load_file_calendars('*********')
+        self.assertEqual(Calendar.__id_counter__,4)
 
     def test_clear_users(self):
         Backend.list_users = []
@@ -217,6 +223,45 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(for_check, "new_namenew_lastname"+hs('new_pass'))
         shutil.copyfile(Backend._directory + 'saved_users_etalon.txt', Backend._directory + 'saved_users.txt')
 
+    def test_update_calendar(self):
+        shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
+        Backend.update_calendar('2','new_name')
+        file_name = Backend._directory + 'saved_calendars.txt'
+        with open(file_name, "r") as f:
+            w = csv.DictReader(f, ["id", "name_calendar", "id_user", "id_events"])
+            next(w)
+            first_row = next(w)
+            second_row = next(w)
+            third_row = next(w)
+        self.assertEqual(first_row, {'id': '1', 'name_calendar': 'work', 'id_user': 'iduser1',
+                                     'id_events': "['1', '2']"})
+        self.assertEqual(second_row, {'id': '2', 'name_calendar': 'new_name', 'id_user': 'iduser2',
+                                      'id_events': "[]"})
+        self.assertEqual(third_row, {'id': '3', 'name_calendar': 'vacation', 'id_user': 'iduser3',
+                                     'id_events': "['1', '2', '3']"})
+        shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
+
+    def test_check_id_calendar(self):
+        shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
+        Backend.load_file_calendars()
+        self.assertTrue(Backend.check_id_calendar('2'))
+        self.assertFalse(Backend.check_id_calendar('5'))
+
+    def test_check_id_users(self):
+        shutil.copyfile(Backend._directory + 'saved_users_etalon.txt', Backend._directory + 'saved_calendars.txt')
+        Backend.load_file_users()
+        self.assertTrue(Backend.check_id_users(['@user3*3']))
+        self.assertFalse(Backend.check_id_users(['5']))
+
+    def test_check_id_event(self):
+        shutil.copyfile(Backend._directory + 'saved_events_etalon.txt', Backend._directory + 'saved_events.txt')
+        Backend.load_file_events()
+        self.assertTrue(Backend.check_id_event('1'))
+        self.assertFalse(Backend.check_id_event('5'))
+
+#TODO: load\save users, load\save events, load\save notifications
+#TODO: show_events, search_events, add_event_into_calendar_guest, del_event_from_calendars
+#TODO: clear_notification, add_notification, check_id_notification
 
 if __name__ == '__main__':
     unittest.main()

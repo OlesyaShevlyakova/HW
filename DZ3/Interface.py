@@ -344,11 +344,12 @@ class Interface:
             while True:
                 guests = input("Укажите id пользователей через пробел\n")
                 guests = guests.split()
-                result = Interface.backend.check_id_users(guests)
+                result = Interface.backend.check_id_users(guests) and Interface.id_user not in guests
                 if result:
                     break
                 else:
                     print("Пользователи введены неверно, укажите id пользователей через пробел\n")
+                    print("Себя указывать нельзя\n")
         else:
             guests = []
         Interface.backend.load_file_events(target_id_events=['*********'])  # запускаем загрузку событий без загрузки
