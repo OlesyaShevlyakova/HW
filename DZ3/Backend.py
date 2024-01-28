@@ -27,9 +27,9 @@ class Backend:
           Для изменения по требованию пользователем - 
              1) с диска загружаем в переменную данные, которые нужно изменить
              2) в переменной загруженные данные меняем через диалог с пользователем
-             3) загружаем в память бэкенда данные всего файла
-             4) заменяем в памяти бекенда изменяемые данные
-             5) сохранем все данные из бэкенда на диск 
+             3) загружаем в память backend данные всего файла
+             4) заменяем в памяти backend изменяемые данные
+             5) сохранем все данные из backend на диск 
           Для добавления - делаем аппенд данными файла на диске
        '''
     @staticmethod
@@ -392,6 +392,56 @@ class Backend:
                     Backend.add_event_into_calendar(cal.info_calendars()[0], add_id_event)
                     #TODO: нотификация
                     break
+
+    @staticmethod
+    def check_id_event(target_id_event):
+        "Проверяем присутствие id события в памяти"
+        for elem in Backend.list_events:
+            if target_id_event == elem.info_Event()[0]:
+                return True
+        return False
+
+    @staticmethod
+    def del_event_from_calendars(target_id_event):
+        "Удаление события"
+        """Алгоритм:
+        1) Сохраняем в отдельную переменную гостей события
+        2) Загружаем в память все события
+        3) Удаляем требуемое событие (по id)
+        4) Сохраняем события
+        5) Загружаем в память все календари
+        6) Удаляем событие из календарей
+        7) Сохраняем календари"""
+
+        for elem in Backend.list_events:
+            if target_id_event == elem.info_Event()[0]:
+                guests = elem.info_Event()[6]  # cохраняем в отдельную переменную гостей события
+        Backend.load_file_events()  # загружаем в память все события
+        for i in range(len(Backend.list_events)):
+            if target_id_event == Backend.list_events[i].info_Event()[0]:
+                Backend.list_events.pop(i)  # удаляем требуемое событие (по id)
+                break
+        Backend.save_file_events()  # сохраняем события
+        Backend.load_file_calendars()  # загружаем в память все календари
+        for i in range(len(Backend.list_calendars)):
+            print(target_id_event)
+            print(Backend.list_calendars[i].info_calendars()[3])
+            if target_id_event in Backend.list_calendars[i].info_calendars()[3]:
+                Backend.list_calendars[i].info_calendars()[3].remove(target_id_event)  # удаляем событие из календарей
+        Backend.save_file_calendars()  # сохраняем календари
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

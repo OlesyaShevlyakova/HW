@@ -1,2 +1,6 @@
 id,name_event,description,data_event,repeat_type,event_owner,guests
 1,party,вечеринка,2007-12-06 15:29:00,,@OlesyaShevlyakova*1,['@MaksimBazhin*2']
+2,суббота,писасть код,2024-01-27,D,@LesyaSlon*20,[]
+3,Суббота,Программировать,2024-01-27,W,@LesyaSlon*20,"['@Maksim*5', '@Maksim*4']"
+6,grish,grish,2023-01-05,D,@grishgrish*22,['@grishagrisha*21']
+7,est,est,2023-01-05,D,@grishgrish*22,['@LesyaSlon*20']

@@ -1,5 +1,5 @@
 id,name_calendar,id_user,id_events
-1,work,@OlesyaShevlyakova*1,"[1, 1]"
+1,рабочий,@LesyaSlon*20,"[4, 5, 7]"
 1,work,@OlesyaShevlyakova*1,[1]
 2,home,@OlesyaShev*1,"[1, 1]"
 3,zxc,@zxczxc*7,[]
@@ -7,3 +7,8 @@ id,name_calendar,id_user,id_events
 5,personal,@zxczxc*14,[]
 6,personal,@sdfsdf*18,[]
 1,zdfg,@dfsgddsgzdg*19,[]
+1,рабочий,@LesyaSlon*20,[]
+7,personal,@LesyaSlon*20,[]
+7,grisha,@grishagrisha*21,[]
+8,grisha2,@grishagrisha*21,[]
+9,grish,@grishgrish*22,"[6, 7]"
