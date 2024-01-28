@@ -52,3 +52,10 @@ class Notification:
         "Изменение id_counter"
         Notification.__id_counter__ = new_counter
 
+    def __str__(self):
+        "Возвращает информацию для пользователя"
+        result1 = f"Наменование события {self._del_details}, id события {self._id_event}, выполненное действие с событием "
+        result2 = '{action}'.format(action='Создано' if self._action=='C' else 'Удалено')
+        result = result1 + result2
+        return result
+
