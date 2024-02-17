@@ -7,7 +7,8 @@
 
 в main можно использовать ТОЛЬКО interface
 """
-
+#TODO: работу notification реализовать
+#TODO: изменение события в календаре
 
 from Backend import Backend
 from Utils import hash_password as hs
@@ -127,27 +128,31 @@ class Interface:
         print("""
                     Выберите действие:
                     ========== КАЛЕНДАРИ ==========
-                    1) отобразить список календарей
-                    2) создать календарь
+                    0) отобразить список календарей
+                    1) создать календарь
+                    2) изменить информацию о календаре
                     ========== СОБЫТИЯ ==========
                     3) создать событие (выбрав календарь)
                     4) удалить событие (выбрав календарь)
                     5) изменить информацию о событии 
                     6) отобразить все события из выбранного календаря
                     7) отобразить события из временного диапазона (выбрав календарь)
+                    8) привязать событие к другому календарю
                     ========== СЕРВИСНОЕ ==========
-                    8) посмотреть оповещения
-                    9) выйти из системы
-                    10) изменить информацию о пользователе
+                    9) посмотреть оповещения
+                    10) выйти из системы
+                    11) изменить информацию о пользователе
                     """)
 
         if Interface.backend.check_id_notification(Interface.id_user):
             print("Есть новые оповещения, для просмотра введите 9")
         question = input()
-        if question == "1":
+        if question == "0":
             Interface.tasks_list.append(Interface.show_list_calendar)
-        elif question == "2":
+        elif question == "1":
             Interface.tasks_list.append(Interface.add_calendar)
+        elif question == "2":
+            Interface.tasks_list.append(Interface.edit_calendar)
         elif question == "3":
             Interface.tasks_list.append(Interface.add_event)
         elif question == "4":
@@ -159,10 +164,12 @@ class Interface:
         elif question == "7":
             Interface.tasks_list.append(Interface.show_events_range)
         elif question == "8":
-            Interface.tasks_list.append(Interface.show_notification)
+            Interface.tasks_list.append(Interface.link_to_another_calendar)
         elif question == "9":
-            Interface.tasks_list.append(Interface.identification_user)
+            Interface.tasks_list.append(Interface.show_notification)
         elif question == "10":
+            Interface.tasks_list.append(Interface.identification_user)
+        elif question == "11":
             Interface.tasks_list.append(Interface.change_user)
         else:
             print("Некорректный ввод данных 😎")
@@ -502,6 +509,25 @@ class Interface:
             print(elem)
         input('Оповещений больше нет, нажмите Enter')
         Interface.tasks_list.append(Interface.main_screen)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 if __name__ == "__main__":
