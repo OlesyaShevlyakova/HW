@@ -6,3 +6,5 @@ id,name,lastname,login,password
 @AllaShpak*5,Alla,Shpak,lis,afc0b0d1d853ba78ab43c5c36448cddbb82cce915e4d68d9e3ca7af40361d5c5
 @NataNevskaya*6,Nata,Nevskaya,lisenok,a766f664fee239076c622a721238ed5a0ce47f827c71edb0e717d02652777a30
 @LenaPush*7,Lena,Push,maugli,a84824572c971ce646b5e23c3050b9863c279975c9ea76fc75aca217a4036f79
+@LesyaHungry*8,Lesya,Hungry,sun,27756f050e14a1cb1c1ee867f0eace9ea4d9fcb81b8bee089469f1ebd5fd7b17
+@LenaShain*9,Lena,Shain,sweet,b9043c16af362f30807deaf692025d61c3c803bba1efc43fe2f63dc8b507418d

@@ -1,12 +1,12 @@
 """
 Сущность, отвечающая за храние и предоставление данных
 Оно хранит пользователей, календари и события.
-Хранение в том числе означает сохранение между сессиями в csv файлах
+Хранение, в том числе, означает сохранение между сессиями в csv файлах
 (пароли пользователей хранятся как hash)
 
 Должен быть статическим или Синглтоном
 
-*) Нужно хранить для каждого пользователя все события которые с нима произошли но ещё не были обработаны.
+Нужно хранить для каждого пользователя все события, которые с ними произошли, но ещё не были обработаны.
 """
 
 from Event import Event
@@ -16,6 +16,7 @@ from Notification import Notification
 from datetime import datetime
 import csv
 from Utils import str_to_date
+from Utils import hash_password as hs
 
 class Backend:
     list_users = []   # храним объекты класса User
@@ -320,6 +321,22 @@ class Backend:
         return result
 
     @staticmethod
+    def check_id_users_event(target_id_users: list, target_id_event, oper):
+        "Проверяем присутствие id пользователей в событии"
+        if len(target_id_users) == 0:  # если передали пустой список, то False
+            return False
+        else:
+            for elem in Backend.list_events:
+                if target_id_event == elem.info_Event()[0]:
+                    our_event = elem  # в переменную поместить из памяти требуемое событие
+                    if oper == "any":
+                        result = any(elem in target_id_users for elem in our_event.info_Event()[6])
+                    elif oper == "all":
+                        result = all(elem in our_event.info_Event()[6] for elem in target_id_users)
+                    break
+        return result
+
+    @staticmethod
     def show_events(target_id_calendar):
         "Поиск событий календаря"
         for elem in Backend.list_calendars:
@@ -438,6 +455,35 @@ class Backend:
         Backend.save_file_calendars()  # сохраняем календари
 
     @staticmethod
+    def move_event_from_calendars(source_id_calendar, target_id_event, target_id_calendar):
+        "Перемещение события"
+        """Алгоритм:
+        1) Ожидаем, что календари конкретного пользователя в память уже загружены
+        2) Из памяти Backend в отдельную переменную помещаем календарь (из которого перемещаем событие)
+        3) Из памяти Backend в отдельную переменную помещаем календарь (в который перемещаем событие)
+        4) Удаляем событие из календаря (источника) (отдельная переменная)
+        5) Добавляем событие в целевой календарь (отдельная переменная)
+        6) Загружаем в память все календари
+        7) Проходим по списку календарей и заменяем старые календари из переменных на новые календари
+        8) Сохраняем календари"""
+        for elem in Backend.list_calendars:
+            if source_id_calendar == elem.info_calendars()[0]:
+                source_calendar = elem  # cохраняем в отдельную переменную календарь (из которого перемещаем событие)
+            elif target_id_calendar == elem.info_calendars()[0]:
+                target_calendar = elem  # cохраняем в отдельную переменную календарь (в который перемещаем событие)
+        source_calendar.delete_event(target_id_event)  # удаляем событие из календаря (источника)
+        target_calendar.add_event(target_id_event)  # добавляем событие в целевой календарь
+        Backend.load_file_calendars()  # загружаем в память все календари
+        for i in range(len(Backend.list_calendars)):
+            if Backend.list_calendars[i].info_calendars()[0] == source_calendar.info_calendars()[0]:
+                Backend.list_calendars[i] = source_calendar  # заменяем календарь
+            elif Backend.list_calendars[i].info_calendars()[0] == target_calendar.info_calendars()[0]:
+                Backend.list_calendars[i] = target_calendar  # заменяем календарь
+        Backend.save_file_calendars()  # сохраняем календари
+
+
+
+    @staticmethod
     def clear_notification():
         "Очищаем список уведомлений"
         Backend.list_notification = []
@@ -523,6 +569,131 @@ class Backend:
             Backend.list_notification.append(elem)  # в память добавляем уведомления других пользователей
         Backend.save_file_notifications()  # сохраняем уведомления других пользователей
         return our_notif_info
+
+    def update_name_event(target_id_event, new_name_event):
+        "Метод обновления названия события"
+        for elem in Backend.list_events:
+            if target_id_event == elem.info_Event()[0]:
+                our_event = elem  # В переменную поместить из памяти требуемое событие
+                break
+        our_event.change_name_event(new_name_event)  # Обновить название у события
+        Backend.load_file_events()  # Загрузить в память все события
+        for i in range(len(Backend.list_events)):  # ищем событие для изменения
+            if target_id_event == Backend.list_events[i].info_Event()[0]:
+                Backend.list_events[i] = our_event  # обновить изменяемое событие
+                break
+        Backend.save_file_events()  # выгрузить все события на диск
+
+    def update_description_event(target_id_event, new_description_event):
+        "Метод обновления описания события"
+        for elem in Backend.list_events:
+            if target_id_event == elem.info_Event()[0]:
+                our_event = elem  # в переменную поместить из памяти требуемое событие
+                break
+        our_event.change_description(new_description_event)  # обновить описание события
+        Backend.load_file_events()  # загрузить в память все события
+        for i in range(len(Backend.list_events)):  # ищем событие для изменения
+            if target_id_event == Backend.list_events[i].info_Event()[0]:
+                Backend.list_events[i] = our_event  # обновить изменяемое событие
+                break
+        Backend.save_file_events()  # выгрузить все события на диск
+
+    def add_guests_in_event(target_id_event, guests: list):
+        "Метод добавления гостей в событие"
+        """Алгоритм:
+        1) Ожидаем, что в памяти имеются события текущего пользователя
+        2) В переменную помещаем требуемое событие
+        3) В событие (новая переменная) добавляем новых гостей
+        4) Загружаем в память все события
+        5) Проходим по списку событий и заменяем старое событие из переменной на новое событие
+        6) Сохраняем события
+        7) Добавляем событие в календарь гостей
+        """
+        for elem in Backend.list_events:
+            if target_id_event == elem.info_Event()[0]:
+                our_event = elem  # В переменную поместить из памяти требуемое событие
+                break
+        our_event.add_list_users(guests)  # Добавляем новых гостей
+        Backend.load_file_events()  # Загрузить в память все события
+        for i in range(len(Backend.list_events)):  # ищем событие для изменения
+            if target_id_event == Backend.list_events[i].info_Event()[0]:
+                Backend.list_events[i] = our_event  # обновить изменяемое событие
+                break
+        Backend.save_file_events()  # выгрузить все события на диск
+        Backend.add_event_into_calendar_guest(target_id_event, guests, our_event.info_Event()[1])  # добавляем событие в календарь гостей
+
+    def del_guests_in_event(target_id_event, guests: list):
+        "Метод удаления гостей из события"
+        for elem in Backend.list_events:
+            if target_id_event == elem.info_Event()[0]:
+                our_event = elem  # В переменную поместить из памяти требуемое событие
+                break
+        name_event = our_event.info_Event()[1]
+        our_event.remove_list_guests(guests)  # Удаляем гостей из события
+        Backend.load_file_events()  # Загрузить в память все события
+        for i in range(len(Backend.list_events)):  # ищем событие для изменения
+            if target_id_event == Backend.list_events[i].info_Event()[0]:
+                Backend.list_events[i] = our_event  # обновить изменяемое событие
+                break
+        Backend.save_file_events()  # выгрузить все события на диск
+        Backend.del_event_from_calendars_guests(target_id_event, guests, name_event)  # добавляем событие в календарь гостей
+
+    @staticmethod
+    def del_event_from_calendars_guests(target_id_event, guest:list, name_event):
+        "Метод удаления события из календарей гостей"
+        """Алгоритм:
+        1) Загружаем в память все календари
+        2) Проходим по календарям
+        3) Удаляем требуемое событие (по id) в календаре, если id_user есть в guest
+        4) Сохраняем календари
+        """
+        Backend.clear_notification()  # очищаем список уведомлений
+        Backend.load_file_calendars()  # загружаем в память все календари
+        for i in range(len(Backend.list_calendars)):
+            if (target_id_event in Backend.list_calendars[i].info_calendars()[3]) and ((Backend.list_calendars[i].info_calendars()[2]) in guest):
+                Backend.list_calendars[i].info_calendars()[3].remove(target_id_event)  # удаляем требуемое событие (по id)
+                Backend.add_notification(id_user=Backend.list_calendars[i].info_calendars()[2],id_event=target_id_event, action="D", del_details=name_event)  # добавляем уведомление
+                Backend.save_file_notifications(add_notification=True)  # сохраняем уведомления
+                Backend.clear_notification()  # очищаем список уведомлений
+        Backend.save_file_calendars()  # сохраняем все календари
+
+    @staticmethod
+    def auth_user(login_user, password_user):
+        "Метод проверки логина и пароля"
+        """Возвращает True, если всё совпало, иначе False"""
+        password_user = hs(password_user)
+        Backend.load_file_users(login_user)  # загрузили конкретного пользователя по логину
+        for elem in Backend.info_users():
+            if login_user == elem.info_User()[3] and password_user == elem.info_User()[4]:
+                id_user = elem.info_User()[0]
+                return id_user
+        else:
+            return False
+
+    @staticmethod
+    def reg_user(login_user, name_user, lastname_user, password_user):
+        "Регистрация нового user"
+        Backend.load_file_users(target_login='*********')  # запускаем загрузку пользователей без загрузки
+        # в память backend, чтобы обновить id_counter
+        new_user = User(login=login_user, name=name_user, lastname=lastname_user, password=password_user)
+        Backend.add_user(new_user)  # добавили в память пользователя
+        Backend.save_file_users(add_user=True)  # дополнили файл с пользователями новым пользователем
+        return new_user.info_id_User()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

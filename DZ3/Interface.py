@@ -1,19 +1,16 @@
 """
 Позволяет зайти по логину-паролю или создать нового пользователя (а так же выйти из аккаунта)
-Позволяет выбрать календарь, узнать ближайшие события, события из промежутка времени а так же
+Позволяет выбрать календарь, узнать ближайшие события, события из промежутка времени
 Создать событие или удалить событие
 После создания события можно добавить туда пользователей
-Если нас добавили в событие или удалили мы получаем уведомление.
+Если нас добавили в событие или удалили, мы получаем уведомление.
 
 в main можно использовать ТОЛЬКО interface
 """
-#TODO: работу notification реализовать
-#TODO: изменение события в календаре
+
 
 from Backend import Backend
-from Utils import hash_password as hs
 from Utils import check_date
-from User import User
 from Calendar import Calendar
 from Event import Event
 from time import sleep
@@ -63,18 +60,14 @@ class Interface:
         print("Введите логин")
         login_user = input()
         print("Введите пароль")
-        password_user = hs(input())
-        Interface.backend.load_file_users(login_user)  # загрузили конкретного пользователя по логину
-        flag = False
-        for elem in Interface.backend.info_users():
-            if login_user == elem.info_User()[3] and password_user == elem.info_User()[4]:
-                flag = True
-                Interface.id_user = elem.info_User()[0]
-                Interface.login_user = elem.info_User()[3]
-                Interface.tasks_list.append(Interface.main_screen)
-                print("Успешная авторизация!")
-                sleep(1)
-        if not flag:
+        flag = Interface.backend.auth_user(login_user, password_user)
+        if flag:
+            Interface.id_user = flag
+            Interface.login_user = login_user
+            Interface.tasks_list.append(Interface.main_screen)
+            print("Успешная авторизация!")
+            sleep(1)
+        else:
             print("Неправильный логин\пароль, либо логин не существует, введите другой логин или заведите новый")
             sleep(1)
             question = input("""
@@ -106,13 +99,8 @@ class Interface:
             lastname_user = input()
             print("Введите пароль (только ЛАТИНСКИЕ буквы и цифры)")
             password_user = input()
-            Interface.backend.load_file_users(target_login='*********')  # запускаем загрузку пользователей без загрузки
-                                                                        # в память backend, чтобы обновить id_counter
-            new_user = User(login=login_user, name=name_user, lastname=lastname_user, password=password_user)
             Interface.login_user = login_user
-            Interface.id_user = new_user.info_id_User()
-            Interface.backend.add_user(new_user)  # добавили в память пользователя
-            Interface.backend.save_file_users(add_user=True)  # дополнили файл с пользователями новым пользователем
+            Interface.id_user = Interface.backend.reg_user(login_user, name_user, lastname_user, password_user)
             print("Учетная запись создана!")
             print("Пожалуйста, создайте календарь")
             sleep(2)
@@ -476,6 +464,59 @@ class Interface:
         Interface.tasks_list.append(Interface.main_screen)
 
     @staticmethod
+    def link_to_another_calendar():
+        "Привязать событие к другому календарю"
+        """Алгоритм:
+                1) Выбираем календарь, из которого хотим переместить событие
+                2) Отображаем все события выбранного календаря, выбираем id события
+                3) Выбираем календарь, в который хотим переместить событие
+                4) Добавляем событие в новый календарь
+                5) Удаляем из старого календаря
+                """
+        print('*********Выводим Ваши календари*********')
+        Interface.backend.load_file_calendars(Interface.id_user)  # загружаем в память календари пользователя
+        for elem in Interface.backend.info_calendars():
+            print(elem)
+        while True:
+            source_id_calendar = input("Введите id своего календаря, событие из которого хотите переместить\n")
+            if not Interface.backend.check_id_calendar(source_id_calendar):  # проверка, что выбрали
+                # существующий календарь
+                print("Некорректный ввод данных 😎")
+            else:
+                break
+        print('*********Выводим события выбранного календаря*********')
+        print("id, название, описание, дата, периодичность, создатель, участники")
+        for elem in Interface.backend.show_events(source_id_calendar):
+            print(elem.info_Event())
+        while True:
+            target_id_event = input("Введите id cобытия, которое хотите переместить\n")
+            if not Interface.backend.check_id_event(target_id_event):  # проверка, что выбрали
+                # существующее событие в календаре
+                print("Некорректный ввод данных 😎")
+            else:
+                break
+        print('*********Выводим Ваши календари*********')
+        Interface.backend.load_file_calendars(Interface.id_user)  # загружаем в память календари пользователя
+        for elem in Interface.backend.info_calendars():
+            print(elem)
+        while True:
+            target_id_calendar = input("Введите id своего календаря, событие в который хотите переместить\n")
+            if (not Interface.backend.check_id_calendar(target_id_calendar)) or (source_id_calendar == target_id_calendar):
+                # проверка, что выбрали
+                # существующий календарь
+                print("Некорректный ввод данных 😎")
+            else:
+                break
+        Interface.backend.move_event_from_calendars(source_id_calendar, target_id_event, target_id_calendar)  # привязываем
+        # событие к другому календарю
+        print("Событие перемещено")
+        sleep(2)
+        Interface.tasks_list.append(Interface.main_screen)
+
+
+
+
+    @staticmethod
     def edit_event():
         "Изменить информацию о событии"
         question = input("""
@@ -489,11 +530,11 @@ class Interface:
         if question == "1":
             Interface.tasks_list.append(Interface.change_name_event)
         elif question == "2":
-            Interface.tasks_list.append(Interface.change_description)
+            Interface.tasks_list.append(Interface.change_description_event)
         elif question == "3":
-            Interface.tasks_list.append(Interface.add_guests)
+            Interface.tasks_list.append(Interface.add_guests_event)
         elif question == "4":
-            Interface.tasks_list.append(Interface.del_guests)
+            Interface.tasks_list.append(Interface.del_guests_event)
         elif question == "5":
             Interface.tasks_list.append(Interface.main_screen)
         else:
@@ -510,24 +551,150 @@ class Interface:
         input('Оповещений больше нет, нажмите Enter')
         Interface.tasks_list.append(Interface.main_screen)
 
+    @staticmethod
+    def change_name_event():
+        "Изменить название события"
+        print('*********Выводим Ваши календари*********')
+        Interface.backend.load_file_calendars(Interface.id_user)  # загружаем в память календари пользователя
+        for elem in Interface.backend.info_calendars():
+            print(elem)
+        while True:
+            source_id_calendar = input("Введите id своего календаря, событие из которого хотите изменить\n")
+            if not Interface.backend.check_id_calendar(source_id_calendar):  # проверка, что выбрали
+                # существующий календарь
+                print("Некорректный ввод данных 😎")
+            else:
+                break
+        print('*********Выводим события выбранного календаря*********')
+        print("id, название, описание, дата, периодичность, создатель, участники")
+        for elem in Interface.backend.show_events(source_id_calendar):
+            print(elem.info_Event())
+        while True:
+            target_id_event = input("Введите id cобытия, название которого хотите изменить\n")
+            if not Interface.backend.check_id_event(target_id_event):  # проверка, что выбрали
+                # существующее событие в календаре
+                print("Некорректный ввод данных 😎")
+            else:
+                break
+        new_name_event = input("Введите новое название события\n")
+        Interface.backend.update_name_event(target_id_event, new_name_event)  # изменяем название события
+        print("Название события успешно изменено")
+        sleep(2)
+        Interface.tasks_list.append(Interface.edit_event)
 
+    @staticmethod
+    def change_description_event():
+        "Изменить описание события"
+        print('*********Выводим Ваши календари*********')
+        Interface.backend.load_file_calendars(Interface.id_user)  # загружаем в память календари пользователя
+        for elem in Interface.backend.info_calendars():
+            print(elem)
+        while True:
+            source_id_calendar = input("Введите id своего календаря, событие из которого хотите изменить\n")
+            if not Interface.backend.check_id_calendar(source_id_calendar):  # проверка, что выбрали
+                # существующий календарь
+                print("Некорректный ввод данных 😎")
+            else:
+                break
+        print('*********Выводим события выбранного календаря*********')
+        print("id, название, описание, дата, периодичность, создатель, участники")
+        for elem in Interface.backend.show_events(source_id_calendar):
+            print(elem.info_Event())
+        while True:
+            target_id_event = input("Введите id cобытия, название которого хотите изменить\n")
+            if not Interface.backend.check_id_event(target_id_event):  # проверка, что выбрали
+                # существующее событие в календаре
+                print("Некорректный ввод данных 😎")
+            else:
+                break
+        new_description_event = input("Введите новое описание события\n")
+        Interface.backend.update_description_event(target_id_event, new_description_event)  # изменяем описание события
+        print("Описание события успешно изменено")
+        sleep(2)
+        Interface.tasks_list.append(Interface.edit_event)
 
+    @staticmethod
+    def add_guests_event():
+        "Добавить список участников"
+        print('*********Выводим Ваши календари*********')
+        Interface.backend.load_file_calendars(Interface.id_user)  # загружаем в память календари пользователя
+        for elem in Interface.backend.info_calendars():
+            print(elem)
+        while True:
+            source_id_calendar = input("Введите id своего календаря, событие из которого хотите изменить\n")
+            if not Interface.backend.check_id_calendar(source_id_calendar):  # проверка, что выбрали
+                # существующий календарь
+                print("Некорректный ввод данных 😎")
+            else:
+                break
+        print('*********Выводим события выбранного календаря*********')
+        print("id, название, описание, дата, периодичность, создатель, участники")
+        for elem in Interface.backend.show_events(source_id_calendar):
+            print(elem.info_Event())
+        while True:
+            target_id_event = input("Введите id cобытия, в которое хотите добавить участников\n")
+            if not Interface.backend.check_id_event(target_id_event):  # проверка, что выбрали
+                # существующее событие в календаре
+                print("Некорректный ввод данных 😎")
+            else:
+                break
+        Interface.backend.load_file_users()  # загрузить всех пользователей в backend
+        for elem in Interface.backend.info_users():
+            info_user = elem.info_User()
+            print(f"имя {info_user[1]}, фамилия {info_user[2]}, id пользователя {info_user[0]}")
+        while True:
+            guests = input("Укажите id пользователей через пробел, которых хотите добавить в событие\n")
+            guests = guests.split()
+            result = ((Interface.backend.check_id_users(guests)) and (Interface.id_user not in guests) and
+                      not(Interface.backend.check_id_users_event(guests, target_id_event, "any")))
+            if result:
+                break
+            else:
+                print("Пользователи введены неверно, укажите id пользователей через пробел\n")
+                print("Себя указывать нельзя и уже имеющихся в событии пользователей\n")
+        Interface.backend.add_guests_in_event(target_id_event, guests)  # добавляем список участников в  событие
+        print("Список участников успешно добавлено в событие")
+        sleep(2)
+        Interface.tasks_list.append(Interface.edit_event)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @staticmethod
+    def del_guests_event():
+        "Удалить список участников из события"
+        print('*********Выводим Ваши календари*********')
+        Interface.backend.load_file_calendars(Interface.id_user)  # загружаем в память календари пользователя
+        for elem in Interface.backend.info_calendars():
+            print(elem)
+        while True:
+            source_id_calendar = input("Введите id своего календаря, событие из которого хотите изменить\n")
+            if not Interface.backend.check_id_calendar(source_id_calendar):  # проверка, что выбрали
+                # существующий календарь
+                print("Некорректный ввод данных 😎")
+            else:
+                break
+        print('*********Выводим события выбранного календаря*********')
+        print("id, название, описание, дата, периодичность, создатель, участники")
+        for elem in Interface.backend.show_events(source_id_calendar):
+            print(elem.info_Event())
+        while True:
+            target_id_event = input("Введите id cобытия, из которого хотите удалить участников\n")
+            if not Interface.backend.check_id_event(target_id_event):  # проверка, что выбрали
+                # существующее событие в календаре
+                print("Некорректный ввод данных 😎")
+            else:
+                break
+        while True:
+            guests = input("Укажите id пользователей через пробел, которых хотите удалить из события\n")
+            guests = guests.split()
+            result = (Interface.id_user not in guests) and (Interface.backend.check_id_users_event(guests, target_id_event, "all"))
+            if result:
+                break
+            else:
+                print("Пользователи введены неверно, укажите id пользователей через пробел\n")
+                print("Себя указывать нельзя\n")
+        Interface.backend.del_guests_in_event(target_id_event, guests)  # удаляем список участников из события
+        print("Участники успешно удалены из события")
+        sleep(2)
+        Interface.tasks_list.append(Interface.edit_event)
 
 
 if __name__ == "__main__":

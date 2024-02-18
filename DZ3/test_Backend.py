@@ -192,7 +192,7 @@ class MyTestCase(unittest.TestCase):
         shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
         Calendar.__id_counter__=1
         Backend.load_file_calendars('*********')
-        self.assertEqual(Calendar.__id_counter__,4)
+        self.assertEqual(Calendar.__id_counter__,5)
 
     def test_clear_users(self):
         "Очищаем список пользователей"
@@ -283,9 +283,24 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(Backend.check_id_event('1'))
         self.assertFalse(Backend.check_id_event('5'))
 
-#TODO: load\save users, load\save events, load\save notifications
-#TODO: show_events, search_events, add_event_into_calendar_guest, del_event_from_calendars
-#TODO: clear_notification, add_notification, check_id_notification, info_notifications
+    def test_move_event_from_calendars(self):
+        "Метод перемещения события"
+        shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
+        Backend.load_file_calendars("iduser1")
+        Backend.move_event_from_calendars('4','4', '1')
+        file_name = Backend._directory + 'saved_calendars.txt'
+        with open(file_name, "r") as f:
+            w = csv.DictReader(f, ["id", "name_calendar", "id_user", "id_events"])
+            next(w)
+            first_row = next(w)
+            next(w)
+            next(w)
+            fourth_row = next(w)
+        self.assertEqual(first_row, {'id': '1', 'name_calendar': 'work', 'id_user': 'iduser1',
+                                     'id_events': "['1', '2', '4']"})
+        self.assertEqual(fourth_row, {'id': '4', 'name_calendar': 'personal', 'id_user': 'iduser1',
+                                     'id_events': "[]"})
+        shutil.copyfile(Backend._directory + 'saved_calendars_etalon.txt', Backend._directory + 'saved_calendars.txt')
 
 if __name__ == '__main__':
     unittest.main()
