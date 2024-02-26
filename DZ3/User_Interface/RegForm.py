@@ -1,6 +1,6 @@
 import flet as ft
 from Backend import Backend
-
+import re
 
 class RegForm(ft.UserControl):
     def __init__(self, page):
@@ -9,33 +9,12 @@ class RegForm(ft.UserControl):
         # expand, это свойство нужно указывать на уровне объекта этого класса
         self.page = page
         self.login_new = ft.Ref[ft.TextField]()
-        self.name_new = ft.TextField(width=400, label="Имя", on_change=self.check_for_reg_button)
-        self.lastname_new = ft.TextField(width=400, label="Фамилия", on_change=self.check_for_reg_button)
-        self.password_new = ft.TextField(width=400, label="Пароль", on_change=self.check_for_reg_button)
-        self.info_failed = ft.Text("""Используйте только ЛАТИНСКИЕ буквы""")
-        self.button_reg_new = ft.ElevatedButton(
-            disabled=True,
-            adaptive=True,
-            bgcolor=ft.cupertino_colors.SYSTEM_TEAL,
-            content=ft.Row(
-                [
-                    ft.Icon(name=ft.icons.FAVORITE, color="pink"),
-                    ft.Text("Зарегистрироваться", size=18, weight=ft.FontWeight.BOLD),
-                ],
-                tight=True
-            ),
-            on_click=self.button_reg_new_click)
-        self.button_back = ft.ElevatedButton(    # кнопка "Назад"
-            width=150,
-            content=ft.Row(
-                [
-                    ft.Icon(name=ft.icons.BACKUP, color="blue"),
-                    ft.Text(value="Назад", size=20, color=ft.colors.LIGHT_BLUE_800),
-                ],
-                alignment=ft.MainAxisAlignment.SPACE_AROUND),
-            on_click=lambda _: self.page.go('/login')  # Возвращает на окно логина
-            )
-
+        self.name_new = ft.Ref[ft.TextField]()
+        self.lastname_new = ft.Ref[ft.TextField]()
+        self.password_new = ft.Ref[ft.TextField]()
+        self.info_failed = ft.Ref[ft.Text]()
+        self.button_reg_new = ft.Ref[ft.ElevatedButton]()
+        self.button_back = ft.Ref[ft.ElevatedButton]()
     def build(self):
         return ft.Container(
                 image_src='/8430432.jpg',
@@ -46,39 +25,82 @@ class RegForm(ft.UserControl):
                     [
                         ft.Container(width=20, height=20, alignment=ft.alignment.center),  # пустой контейнер
                         ft.Text("Введите логин", size=16, italic=True),
-                        ft.TextField(ref=self.login_new,  width=400, label="Логин", on_change=self.check_for_reg_button),
+                        ft.TextField(ref=self.login_new,  width=400, label="Логин",
+                                     on_change=self.check_for_reg_button),
                         ft.Text("Введите пароль", size=16, italic=True),
-                        self.password_new,
+                        ft.TextField(ref=self.password_new, width=400, label="Пароль",
+                                     on_change=self.check_for_reg_button),
                         ft.Text("Введите имя", size=16, italic=True),
-                        self.name_new,
+                        ft.TextField(ref=self.name_new, width=400, label="Имя",
+                                     on_change=self.check_for_reg_button),
                         ft.Text("Введите фамилию", size=16, italic=True),
-                        self.lastname_new,
-                        self.info_failed,
-                        self.button_reg_new,
-                        self.button_back
+                        ft.TextField(ref=self.lastname_new, width=400, label="Фамилия",
+                                     on_change=self.check_for_reg_button),
+                        ft.Text(ref=self.info_failed, value="""Используйте только ЛАТИНСКИЕ буквы и цифры"""),
+                        ft.ElevatedButton(
+                            ref=self.button_reg_new,
+                            disabled=True,
+                            adaptive=True,
+                            bgcolor=ft.cupertino_colors.SYSTEM_TEAL,
+                            content=ft.Row(
+                                [
+                                    ft.Icon(name=ft.icons.FAVORITE, color="pink"),
+                                    ft.Text("Зарегистрироваться", size=18, weight=ft.FontWeight.BOLD),
+                                ],
+                                tight=True
+                            ),
+                            on_click=self.button_reg_new_click),
+                        ft.ElevatedButton(
+                            ref=self.button_back,
+                            width=150,
+                            content=ft.Row(
+                                [
+                                    ft.Icon(name=ft.icons.BACKUP, color="blue"),
+                                    ft.Text(value="Назад", size=20, color=ft.colors.LIGHT_BLUE_800),
+                                ],
+                                alignment=ft.MainAxisAlignment.SPACE_AROUND),
+                            on_click=lambda _: self.page.go('/login')  # Возвращает на окно логина
+                        )
                     ]
                 )
             )
 
     def button_reg_new_click(self, e: ft.ControlEvent):
         "Обработка нажатия на кнопку - Зарегистрироваться"
-        if not Backend.originality_login(self.login_new.current.value):
-            dlg = ft.AlertDialog(title=ft.Text(f"Введите другой логин, данный логин уже существует"))
+        if ((check_latin(self.login_new.current.value) is None) or
+                (check_latin(self.name_new.current.value) is None) or
+                (check_latin(self.lastname_new.current.value) is None) or
+                (check_latin(self.password_new.current.value) is None)):
+            dlg = ft.AlertDialog(title=ft.Text(f"Используйте только ЛАТИНСКИЕ буквы и цифры"))
             self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
             dlg.open = True
         else:
-            result_back = Backend.reg_user(login_user=self.login_new.current.value, name_user=self.name_new.value, lastname_user=self.lastname_new.value, password_user=self.password_new.value)
-            dlg = ft.AlertDialog(title=ft.Text(f"Регистрация выполнена успешно, Ваш id {result_back}"))
-            self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
-            dlg.open = True
+            if not Backend.originality_login(self.login_new.current.value):
+                dlg = ft.AlertDialog(title=ft.Text(f"Введите другой логин, данный логин уже существует"))
+                self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
+                dlg.open = True
+            else:
+                result_back = Backend.reg_user(login_user=self.login_new.current.value,
+                                               name_user=self.name_new.current.value,
+                                               lastname_user=self.lastname_new.current.value,
+                                               password_user=self.password_new.current.value)
+                dlg = ft.AlertDialog(title=ft.Text(f"Регистрация выполнена успешно, Ваш id {result_back}"))
+                self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
+                dlg.open = True
         self.update()
         self.page.update()
 
     def check_for_reg_button(self, e: ft.ControlEvent):
         "Активация кнопки - Зарегистрироваться"
-        if len(self.login_new.current.value) > 0 and len(self.name_new.value) > 0 and len(self.lastname_new.value) > 0 and len(self.password_new.value) > 0:
-            self.button_reg_new.disabled = False
+        if (len(self.login_new.current.value) > 0 and len(self.name_new.current.value) > 0 and
+                len(self.lastname_new.current.value) > 0 and len(self.password_new.current.value) > 0):
+            self.button_reg_new.current.disabled = False
         else:
-            self.button_reg_new.disabled = True
+            self.button_reg_new.current.disabled = True
         self.update()
+
+def check_latin(text: str):
+    "Проверка на вхождение только правильных символов"
+    pattern = re.compile("^[a-zA-Z0-9]*$")
+    return pattern.match(text)
 

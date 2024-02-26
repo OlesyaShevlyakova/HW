@@ -1,10 +1,11 @@
 import flet as ft
-from Backend import Backend
 from User_Interface.LoginForm import LoginForm
 from User_Interface.RegForm import RegForm
 
+
+
 def run():
-    ft.app(target=main, assets_dir="../assets")
+    ft.app(target=main, assets_dir="assets")
 def main(page: ft.Page):
     def route_change(e: ft.RouteChangeEvent):
         "Обработка перехода между окнами"
@@ -39,4 +40,4 @@ def main(page: ft.Page):
 
 
 if __name__ == "__main__":
-    ft.app(target=main, assets_dir="../assets")
+    ft.app(target=main, assets_dir="assets")

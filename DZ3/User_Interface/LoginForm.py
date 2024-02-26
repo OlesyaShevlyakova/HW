@@ -6,28 +6,11 @@ class LoginForm(ft.UserControl):
         self.expand = True  # если объект котнейнер возвращается как объект класса, то у него не работает свойство
         # expand, это свойство нужно указывать на уровне объекта этого класса
         self.page = page
-        self.login_field = ft.TextField(width=400, label="Логин",
-                                        on_change=self.check_for_login_button)  # текстовое поле для ввода логина
-        self.password_field = ft.TextField(width=400, label="Пароль",
-                                           on_change=self.check_for_login_button)  # текстовое поле для ввода пароля
-        self.login_failed = ft.Text("""Неправильный логин\пароль, либо пользователя не существует! 
-                Повторите попытку или зарегистрируйте нового пользователя!""", visible=False)
-        self.button_come_in = ft.ElevatedButton(
-            width=150,
-            content=ft.Row(
-                [
-                    ft.Icon(name=ft.icons.CALENDAR_MONTH, color="pink"),
-                    ft.Text(value="Войти", size=20, weight=ft.FontWeight.BOLD, color=ft.colors.LIGHT_BLUE_800),
-                ],
-                alignment=ft.MainAxisAlignment.SPACE_AROUND),
-            on_click=self.button_come_in_click, disabled=True)  # кнопка "Войти"
-        self.button_reg = ft.TextButton(    # кнопка "Регистрация"
-            content=ft.Text(
-                value="Регистрация",
-                size=18,
-                weight=ft.FontWeight.BOLD
-            ),
-            on_click=lambda _: self.page.go('/reg'))  # Возвращает на окно регистрации
+        self.login_field = ft.Ref[ft.TextField]()   # текстовое поле для ввода логина
+        self.password_field = ft.Ref[ft.TextField]()   # текстовое поле для ввода пароля
+        self.login_failed = ft.Ref[ft.Text]()
+        self.button_come_in = ft.Ref[ft.ElevatedButton]()
+        self.button_reg = ft.Ref[ft.ElevatedButton]()
 
 
     def build(self):
@@ -41,34 +24,53 @@ class LoginForm(ft.UserControl):
                 [
                     ft.Container(width=100, height=100, alignment=ft.alignment.center),  # пустой контейнер
                     ft.Text("Введите логин", size=20, italic=True),
-                    self.login_field,
+                    ft.TextField(ref=self.login_field, width=400, label="Логин", on_change=self.check_for_login_button),
                     ft.Text("Введите пароль", size=20, italic=True),
-                    self.password_field,
-                    self.button_come_in,
-                    self.button_reg,
-                    self.login_failed
+                    ft.TextField(ref=self.password_field, width=400, label="Пароль",
+                                 on_change=self.check_for_login_button),
+                    ft.ElevatedButton(
+                        ref=self.button_come_in,
+                        width=150,
+                        content=ft.Row(
+                            [
+                                ft.Icon(name=ft.icons.CALENDAR_MONTH, color="pink"),
+                                ft.Text(value="Войти", size=20, weight=ft.FontWeight.BOLD,
+                                        color=ft.colors.LIGHT_BLUE_800),
+                            ],
+                            alignment=ft.MainAxisAlignment.SPACE_AROUND),
+                        on_click=self.button_come_in_click, disabled=True),  # кнопка "Войти"
+                    ft.ElevatedButton(
+                        ref=self.button_reg,
+                        content=ft.Text(
+                            value="Регистрация",
+                            size=18,
+                            weight=ft.FontWeight.BOLD
+                        ),
+                        on_click=lambda _: self.page.go('/reg')),  # Возвращает на окно регистрации
+                    ft.Text(ref=self.login_failed, value="""Неправильный логин\пароль, либо пользователя не существует! 
+                Повторите попытку или зарегистрируйте нового пользователя!""", visible=False)
                 ]
             )
         )
     def check_for_login_button(self, e: ft.ControlEvent):
         "Скрытие надписи об ошибке и активация кнопки"
-        self.login_failed.visible = False
-        if len(self.password_field.value) > 0 and len(self.login_field.value) > 0:
-            self.button_come_in.disabled = False
+        self.login_failed.current.visible = False
+        if len(self.password_field.current.value) > 0 and len(self.login_field.current.value) > 0:
+            self.button_come_in.current.disabled = False
         else:
-            self.button_come_in.disabled = True
+            self.button_come_in.current.disabled = True
         self.update()
 
     def button_come_in_click(self, e: ft.ControlEvent):
         "Обработка нажатия на кнопку - Войти"
-        flag = Backend.auth_user(self.login_field.value, self.password_field.value)
+        flag = Backend.auth_user(self.login_field.current.value, self.password_field.current.value)
         if not flag:
-            self.login_failed.visible = True
-            self.button_come_in.disabled = True
+            self.login_failed.current.visible = True
+            self.button_come_in.current.disabled = True
         else:
             dlg = ft.AlertDialog(title=ft.Text(f"Авторизация выполнена успешно, Ваш id {flag}"))
             self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
             dlg.open = True
-        self.password_field.value = ""
+        self.password_field.current.value = ""
         self.update()
         self.page.update()
