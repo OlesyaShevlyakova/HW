@@ -17,11 +17,18 @@ class LoginForm(ft.UserControl):
             content=ft.Row(
                 [
                     ft.Icon(name=ft.icons.CALENDAR_MONTH, color="pink"),
-                    ft.Text(value="Войти", size=20, color=ft.colors.LIGHT_BLUE_800),
+                    ft.Text(value="Войти", size=20, weight=ft.FontWeight.BOLD, color=ft.colors.LIGHT_BLUE_800),
                 ],
                 alignment=ft.MainAxisAlignment.SPACE_AROUND),
             on_click=self.button_come_in_click, disabled=True)  # кнопка "Войти"
-        self.button_reg = ft.TextButton(text="Регистрация", on_click=self.button_reg_click)  # кнопка "Регистрация"
+        self.button_reg = ft.TextButton(    # кнопка "Регистрация"
+            content=ft.Text(
+                value="Регистрация",
+                size=18,
+                weight=ft.FontWeight.BOLD
+            ),
+            on_click=lambda _: self.page.go('/reg'))  # Возвращает на окно регистрации
+
 
     def build(self):
         return ft.Container(
@@ -32,10 +39,10 @@ class LoginForm(ft.UserControl):
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 controls=
                 [
-                    ft.Container(width=100, height=100, alignment=ft.alignment.center),
-                    ft.Text("Введите логин"),
+                    ft.Container(width=100, height=100, alignment=ft.alignment.center),  # пустой контейнер
+                    ft.Text("Введите логин", size=20, italic=True),
                     self.login_field,
-                    ft.Text("Введите пароль"),
+                    ft.Text("Введите пароль", size=20, italic=True),
                     self.password_field,
                     self.button_come_in,
                     self.button_reg,
@@ -59,13 +66,9 @@ class LoginForm(ft.UserControl):
             self.login_failed.visible = True
             self.button_come_in.disabled = True
         else:
-            print('вошли')
             dlg = ft.AlertDialog(title=ft.Text(f"Авторизация выполнена успешно, Ваш id {flag}"))
             self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
             dlg.open = True
         self.password_field.value = ""
         self.update()
         self.page.update()
-
-    def button_reg_click(self, e: ft.ControlEvent):
-        pass
