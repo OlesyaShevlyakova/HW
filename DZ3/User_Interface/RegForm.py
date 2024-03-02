@@ -8,10 +8,13 @@ class RegForm(ft.UserControl):
         self.expand = True  # если объект котнейнер возвращается как объект класса, то у него не работает свойство
         # expand, это свойство нужно указывать на уровне объекта этого класса
         self.page = page
+        self.page.window_height = 700
+        self.page.window_width = 1000
         self.login_new = ft.Ref[ft.TextField]()
         self.name_new = ft.Ref[ft.TextField]()
         self.lastname_new = ft.Ref[ft.TextField]()
         self.password_new = ft.Ref[ft.TextField]()
+        self.calendar_new = ft.Ref[ft.TextField]()
         self.info_failed = ft.Ref[ft.Text]()
         self.button_reg_new = ft.Ref[ft.ElevatedButton]()
         self.button_back = ft.Ref[ft.ElevatedButton]()
@@ -23,7 +26,7 @@ class RegForm(ft.UserControl):
                     horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                     controls=
                     [
-                        ft.Container(width=20, height=20, alignment=ft.alignment.center),  # пустой контейнер
+                        ft.Container(width=10, height=10, alignment=ft.alignment.center),  # пустой контейнер
                         ft.Text("Введите логин", size=16, italic=True),
                         ft.TextField(ref=self.login_new,  width=400, label="Логин",
                                      on_change=self.check_for_reg_button),
@@ -35,6 +38,9 @@ class RegForm(ft.UserControl):
                                      on_change=self.check_for_reg_button),
                         ft.Text("Введите фамилию", size=16, italic=True),
                         ft.TextField(ref=self.lastname_new, width=400, label="Фамилия",
+                                     on_change=self.check_for_reg_button),
+                        ft.Text("Введите название календаря", size=16, italic=True),
+                        ft.TextField(ref=self.calendar_new, width=400, label="Название календаря",
                                      on_change=self.check_for_reg_button),
                         ft.Text(ref=self.info_failed, value="""Используйте только ЛАТИНСКИЕ буквы и цифры"""),
                         ft.ElevatedButton(
@@ -70,7 +76,8 @@ class RegForm(ft.UserControl):
         if ((check_latin(self.login_new.current.value) is None) or
                 (check_latin(self.name_new.current.value) is None) or
                 (check_latin(self.lastname_new.current.value) is None) or
-                (check_latin(self.password_new.current.value) is None)):
+                (check_latin(self.password_new.current.value) is None) or
+                (check_latin(self.calendar_new.current.value) is None)):
             dlg = ft.AlertDialog(title=ft.Text(f"Используйте только ЛАТИНСКИЕ буквы и цифры"))
             self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
             dlg.open = True
@@ -84,6 +91,7 @@ class RegForm(ft.UserControl):
                                                name_user=self.name_new.current.value,
                                                lastname_user=self.lastname_new.current.value,
                                                password_user=self.password_new.current.value)
+                Backend.add_new_calendar(id_user=result_back, name_calendar=self.calendar_new.current.value)
                 dlg = ft.AlertDialog(title=ft.Text(f"Регистрация выполнена успешно, Ваш id {result_back}"))
                 self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
                 dlg.open = True

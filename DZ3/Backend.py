@@ -680,6 +680,15 @@ class Backend:
         Backend.save_file_users(add_user=True)  # дополнили файл с пользователями новым пользователем
         return new_user.info_id_User()
 
+    @staticmethod
+    def add_new_calendar(id_user, name_calendar):
+        "Создание нового календаря"
+        Backend.load_file_calendars(target_id_user='*********')  # запускаем загрузку календарей без загрузки
+                                                                 # в память backend, чтобы обновить id_counter
+        new_calendar = Calendar(id_user=id_user, name_calendar=name_calendar)
+        Backend.add_calendar(new_calendar)  # добавляем календарь в память
+        Backend.save_file_calendars(add_calendar=True)  # дописываем файл с календарями
+
 
 
 

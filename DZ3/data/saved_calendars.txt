@@ -6,5 +6,4 @@ id,name_calendar,id_user,id_events
 5,personal,@AllaShpak*5,"['1', '2', '4', '5']"
 6,work,@NataNevskaya*6,"['2', '4', '1']"
 7,personal,@OlesyaShevlyakova*1,"['1', '2']"
-8,work,@LenaPush*7,[]
-9,work,@LesyaHungry*8,[]
+8,work,@OlgaVolkova*9,[]
