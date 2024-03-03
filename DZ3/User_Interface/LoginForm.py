@@ -69,6 +69,8 @@ class LoginForm(ft.UserControl):
             self.button_come_in.current.disabled = True
         else:
             dlg = ft.AlertDialog(title=ft.Text(f"Авторизация выполнена успешно, Ваш id {flag}"))
+            global gl_id_user
+            gl_id_user = flag  # чтобы сохранить id user для последующего использования
             self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
             dlg.open = True
         self.password_field.current.value = ""

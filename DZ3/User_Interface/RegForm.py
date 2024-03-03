@@ -93,6 +93,9 @@ class RegForm(ft.UserControl):
                                                password_user=self.password_new.current.value)
                 Backend.add_new_calendar(id_user=result_back, name_calendar=self.calendar_new.current.value)
                 dlg = ft.AlertDialog(title=ft.Text(f"Регистрация выполнена успешно, Ваш id {result_back}"))
+                global gl_id_user
+                gl_id_user = result_back  # чтобы сохранить id user для последующего использования
+                print(gl_id_user)
                 self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
                 dlg.open = True
         self.update()
