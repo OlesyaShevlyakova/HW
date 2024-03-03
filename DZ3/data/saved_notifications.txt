@@ -8,7 +8,6 @@ id,id_user,id_event,action,del_details
 3,@MaksimBazhin*3,2,C,
 4,@GrishaSidorov*4,2,C,
 5,@AllaShpak*5,2,C,
-6,@NataNevskaya*6,2,C,
 7,@GrishaSidorov*4,3,C,
 8,@MishaIvanov*2,4,C,Breakfast
 9,@MaksimBazhin*3,4,C,Breakfast
@@ -22,9 +21,7 @@ id,id_user,id_event,action,del_details
 17,@MishaIvanov*2,4,C,Breakfast
 18,@GrishaSidorov*4,4,C,Breakfast
 19,@AllaShpak*5,4,C,Breakfast
-20,@NataNevskaya*6,4,C,Breakfast
 21,@AllaShpak*5,5,C,Game
-22,@NataNevskaya*6,1,C,birthday party
 23,@GrishaSidorov*4,4,D,Breakfast
 24,@LenaPush*7,5,C,Game
 25,@LenaPush*7,5,D,Game

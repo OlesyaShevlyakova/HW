@@ -5,6 +5,7 @@ from User_Interface.UserForm import UserForm
 from User_Interface.CalendarForm import CalendarForm
 from User_Interface.MainScreenForm import MainScreen
 from User_Interface.CreateCalForm import CreateCalForm
+from User_Interface.NotiForm import NotiForm
 gl_id_user = None
 
 def run():
@@ -67,12 +68,21 @@ def main(page: ft.Page):
                     ]
                 )
             )
+        elif page.route == "/noti":
+            page.views.append(
+                ft.View(
+                    route="/noti",
+                    controls=[
+                        NotiForm(page, gl_id_user="@MishaIvanov*2")
+                    ]
+                )
+            )
 
     gl_id_user = None
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER  # расположение внутренних окон по центру относительно ширины
     page.on_route_change = route_change
     #page.go('/login')
-    page.go('/create_cal')
+    page.go('/noti')
 
 
 
