@@ -4,7 +4,7 @@ import re
 
 class RegForm(ft.UserControl):
     "Создание страницы регистрации"
-    def __init__(self, page):
+    def __init__(self, page, gl_id_user):
         super().__init__()
         self.expand = True  # если объект котнейнер возвращается как объект класса, то у него не работает свойство
         # expand, это свойство нужно указывать на уровне объекта этого класса
@@ -20,6 +20,7 @@ class RegForm(ft.UserControl):
         self.info_failed = ft.Ref[ft.Text]()
         self.button_reg_new = ft.Ref[ft.ElevatedButton]()
         self.button_back = ft.Ref[ft.ElevatedButton]()
+        self.gl_id_user = gl_id_user
     def build(self):
         return ft.Container(
                 image_src='/8430432.jpg',
@@ -95,9 +96,7 @@ class RegForm(ft.UserControl):
                                                password_user=self.password_new.current.value)
                 Backend.add_new_calendar(id_user=result_back, name_calendar=self.calendar_new.current.value)
                 dlg = ft.AlertDialog(title=ft.Text(f"Регистрация выполнена успешно, Ваш id {result_back}"))
-                global gl_id_user
-                gl_id_user = result_back  # чтобы сохранить id user для последующего использования
-                print(gl_id_user)
+                self.gl_id_user = result_back  # чтобы сохранить id user для последующего использования
                 self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
                 dlg.open = True
         self.update()
@@ -106,7 +105,8 @@ class RegForm(ft.UserControl):
     def check_for_reg_button(self, e: ft.ControlEvent):
         "Активация кнопки - Зарегистрироваться"
         if (len(self.login_new.current.value) > 0 and len(self.name_new.current.value) > 0 and
-                len(self.lastname_new.current.value) > 0 and len(self.password_new.current.value) > 0):
+                len(self.lastname_new.current.value) > 0 and len(self.password_new.current.value) > 0 and
+                len(self.calendar_new.current.value) > 0):
             self.button_reg_new.current.disabled = False
         else:
             self.button_reg_new.current.disabled = True

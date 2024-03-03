@@ -11,6 +11,7 @@ class CalendarForm(ft.UserControl):
         self.page = page
         self.page.window_height = 600
         self.page.window_width = 850
+        self.page.title = "Окно редактирования информации о календаре"
         self.name_new_calendar = ft.Ref[ft.TextField]()
         self.info_failed = ft.Ref[ft.Text]()
         self.info_failed_user = ft.Ref[ft.Text]()
