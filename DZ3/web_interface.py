@@ -43,7 +43,7 @@ def main(page: ft.Page):
                 ft.View(
                     route="/calendar",
                     controls=[
-                        CalendarForm(page, "2", "work")
+                        CalendarForm(page, gl_id_user="@MishaIvanov*2", target_id_calendar="2", name_calendar="personal")
                     ]
                 )
             )
@@ -55,9 +55,7 @@ def main(page: ft.Page):
     page.window_resizable = False  # запрет изменения размера окна
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER  # расположение внутренних окон по центру относительно ширины
     page.on_route_change = route_change
-    #page.go('/login')
-    #page.go('/user')
-    page.go('/calendar')
+    page.go('/login')
 
 
 

@@ -3,6 +3,7 @@ from Backend import Backend
 import re
 
 class UserForm(ft.UserControl):
+    "Создание страницы редактирования информации о пользователе"
     def __init__(self, page, gl_id_user):
         super().__init__()
         self.expand = True  # если объект котнейнер возвращается как объект класса, то у него не работает свойство

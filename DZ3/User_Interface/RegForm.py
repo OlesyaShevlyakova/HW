@@ -3,6 +3,7 @@ from Backend import Backend
 import re
 
 class RegForm(ft.UserControl):
+    "Создание страницы регистрации"
     def __init__(self, page):
         super().__init__()
         self.expand = True  # если объект котнейнер возвращается как объект класса, то у него не работает свойство
