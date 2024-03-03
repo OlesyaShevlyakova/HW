@@ -11,6 +11,10 @@ class LoginForm(ft.UserControl):
         self.login_failed = ft.Ref[ft.Text]()
         self.button_come_in = ft.Ref[ft.ElevatedButton]()
         self.button_reg = ft.Ref[ft.ElevatedButton]()
+        self.page.title = "Окно авторизации"
+        self.page.window_width = 850  # ширина внешнего окна
+        self.page.window_height = 600  # высота внешнего окна
+        #self.page.window_resizable = False  # запрет изменения размера окна
 
 
     def build(self):
@@ -67,12 +71,15 @@ class LoginForm(ft.UserControl):
         if not flag:
             self.login_failed.current.visible = True
             self.button_come_in.current.disabled = True
+            self.update()
+            self.page.update()
         else:
-            dlg = ft.AlertDialog(title=ft.Text(f"Авторизация выполнена успешно, Ваш id {flag}"))
+            #dlg = ft.AlertDialog(title=ft.Text(f"Авторизация выполнена успешно, Ваш id {flag}"))
             global gl_id_user
             gl_id_user = flag  # чтобы сохранить id user для последующего использования
-            self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
-            dlg.open = True
+            #self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
+            #dlg.open = True
+            self.page.go('/mainscreen')
         self.password_field.current.value = ""
-        self.update()
-        self.page.update()
+        #self.update()
+        #self.page.update()

@@ -11,6 +11,7 @@ class RegForm(ft.UserControl):
         self.page = page
         self.page.window_height = 700
         self.page.window_width = 1000
+        self.page.title = "Окно регистрации"
         self.login_new = ft.Ref[ft.TextField]()
         self.name_new = ft.Ref[ft.TextField]()
         self.lastname_new = ft.Ref[ft.TextField]()
