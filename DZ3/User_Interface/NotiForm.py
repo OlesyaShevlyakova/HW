@@ -54,22 +54,5 @@ class NotiForm(ft.UserControl):
             )
         )
 
-    def button_save_new_click(self, e: ft.ControlEvent):
-        "Обработка нажатия на кнопку - Сохранить"
-        if check_latin(self.name_new_calendar.current.value) is None:
-            dlg = ft.AlertDialog(title=ft.Text(f"Используйте только ЛАТИНСКИЕ буквы и цифры"))
-            self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
-            dlg.open = True
-        else:
-            Backend.update_calendar(target_id_calendar=self.target_id_calendar,
-                                    new_name_calendar=self.name_new_calendar.current.value)
-            dlg = ft.AlertDialog(title=ft.Text(f"Изменения выполнены успешно"))
-            self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
-            dlg.open = True
-        self.update()
-        self.page.update()
-
-
-
 if __name__ == "__main__":
     ft.app(target=test_run, assets_dir="../assets")

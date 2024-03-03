@@ -6,6 +6,9 @@ from User_Interface.CalendarForm import CalendarForm
 from User_Interface.MainScreenForm import MainScreen
 from User_Interface.CreateCalForm import CreateCalForm
 from User_Interface.NotiForm import NotiForm
+from User_Interface.CreateEvForm import CreateEvForm
+
+gl_id_user = None
 
 def run():
     ft.app(target=main, assets_dir="assets")
@@ -54,7 +57,7 @@ def main(page: ft.Page):
                 ft.View(
                     route="/mainscreen",
                     controls=[
-                        MainScreen(page, gl_id_user)
+                        MainScreen(page)
                     ]
                 )
             )
@@ -77,6 +80,16 @@ def main(page: ft.Page):
                 )
             )
 
+        elif page.route == "/create_ev":
+            page.views.append(
+                ft.View(
+                    route="/create_ev",
+                    controls=[
+                        CreateEvForm(page, gl_id_user="@MishaIvanov*2")
+                    ]
+                )
+            )
+
     # Глобальный словарь, пока не поняла как правильно передавать данные между view
     gl_id_user = {
         'id_user': "",
@@ -85,8 +98,8 @@ def main(page: ft.Page):
     }
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER  # расположение внутренних окон по центру относительно ширины
     page.on_route_change = route_change
-    page.go('/login')
-    #page.go('/noti')
+    #page.go('/login')
+    page.go('/create_ev')
 
 
 
