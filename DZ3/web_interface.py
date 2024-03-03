@@ -78,7 +78,12 @@ def main(page: ft.Page):
                 )
             )
 
-    gl_id_user = None
+    # Глобальный словарь, пока не поняла как правильно передавать данные между view
+    gl_id_user = {
+        'id_user': "",
+        'id_calendar': "",
+        'name_calendar': ""
+    }
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER  # расположение внутренних окон по центру относительно ширины
     page.on_route_change = route_change
     #page.go('/login')

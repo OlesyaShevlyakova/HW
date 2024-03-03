@@ -34,14 +34,16 @@ class Event(ft.UserControl):
 
 class EventsSection(ft.UserControl):
     """Центральная секция, где отображаются события из календарей пользователей"""
-    def __init__(self, page:ft.Page):
+    def __init__(self, page:ft.Page, gl_id_user: dict):
         super().__init__()
         self.page = page
         self.expand = True
         self.lst_events = []
+        self.gl_id_user = gl_id_user
 
     def load_events(self):
-        self.lst_events = Backend.show_events(id_calendar) # загружаем календари конкретного пользователя
+        if self.gl_id_user["id_calendar"] != "":
+            self.lst_events = Backend.show_events(self.id_calendar["id_calendar"]) # загружаем календари конкретного пользователя
 
     def build(self):
         self.load_events()
@@ -62,22 +64,26 @@ class EventsSection(ft.UserControl):
             border_radius=10,
             padding=20,
         )
-        for elem in self.lst_events:
-            grid_events.controls.append(
-                ft.Container(
-                    content=
-                    ft.Row(
-                        [
-                            Event(elem.info_Event()),
-                        ],
-                        alignment=ft.MainAxisAlignment.CENTER,
-                    ),
-                    width=100,
-                    height=100,
-                    border=ft.border.all(1, ft.colors.PINK_600),
-                    border_radius=10,
+        if len(self.lst_events) != 0:
+            grid_events.controls = []
+            for elem in self.lst_events:
+                grid_events.controls.append(
+                    ft.Container(
+                        content=
+                        ft.Row(
+                            [
+                                Event(elem.info_Event()),
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER,
+                        ),
+                        width=100,
+                        height=100,
+                        border=ft.border.all(1, ft.colors.PINK_600),
+                        border_radius=10,
 
-                ),
-            )
+                    ),
+                )
+        else:
+            grid_events.controls.append(ft.Text('Выберите слева календарь, щёлкнув по его имени.'))
 
         return result

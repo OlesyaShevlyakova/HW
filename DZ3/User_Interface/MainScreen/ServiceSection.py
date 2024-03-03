@@ -40,9 +40,10 @@ class ServiceSectionButton(ft.UserControl):
 
 
 class ServiceSection(ft.UserControl):
-    def __init__(self, page:ft.Page):
+    def __init__(self, page:ft.Page, gl_id_user: dict):
         super().__init__()
         self.page = page
+        self.gl_id_user = gl_id_user
 
     def build(self):
         return ft.Container(
