@@ -75,7 +75,7 @@ class LoginForm(ft.UserControl):
             self.update()
             self.page.update()
         else:
-            dlg = ft.AlertDialog(title=ft.Text(f"Авторизация выполнена успешно, Ваш id {flag}"))
+            dlg = ft.AlertDialog(title=ft.Text(f"Авторизация выполнена успешно, выберите слева календарь."))
             self.gl_id_user['id_user'] = flag  # чтобы сохранить id user для последующего использования
             self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
             dlg.open = True

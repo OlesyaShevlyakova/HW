@@ -43,7 +43,7 @@ class EventsSection(ft.UserControl):
 
     def load_events(self):
         if self.gl_id_user["id_calendar"] != "":
-            self.lst_events = Backend.show_events(self.id_calendar["id_calendar"]) # загружаем календари конкретного пользователя
+            self.lst_events = Backend.show_events(self.gl_id_user["id_calendar"]) # загружаем календари конкретного пользователя
 
     def build(self):
         self.load_events()
@@ -64,6 +64,7 @@ class EventsSection(ft.UserControl):
             border_radius=10,
             padding=20,
         )
+        print('event section')
         if len(self.lst_events) != 0:
             grid_events.controls = []
             for elem in self.lst_events:

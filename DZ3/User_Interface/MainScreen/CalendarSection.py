@@ -46,13 +46,20 @@ class CalendarIcon(ft.UserControl):
     Кнопка календаря пользователя
     На вход подается text - название календаря пользователя
     """
-    def __init__(self, page:ft.Page, text=None):
+    def __init__(self, page:ft.Page, info_calendar: list, gl_id_user: dict):
         super().__init__()
-        self.text = text
+        self.info_calendar = info_calendar # (self._id, self._name_calendar, self._id_user, self._events)
         self.page = page
-    def popup(self, e: ft.ContainerTapEvent):
+        self.gl_id_user = gl_id_user
+
+    def popup(self, e: ft.ControlEvent):
         """Обработка события нажатия на кнопку редактирования календаря пользователя"""
         self.page.go('/calendar')
+
+    def click_calendar(self, e: ft.ControlEvent):
+        self.gl_id_user['id_calendar'] = self.info_calendar[0]
+        self.page.update()
+
 
     def build(self):
         return ft.Container(
@@ -78,7 +85,10 @@ class CalendarIcon(ft.UserControl):
                         alignment=ft.MainAxisAlignment.END
                     ),
                     ft.Container(
-                        content=ft.TextButton(text=self.text),
+                        content=ft.TextButton(
+                            text=self.info_calendar[1],
+                            on_click=self.click_calendar,
+                        ),
                         alignment=ft.alignment.bottom_center,
                     )
                 ],
@@ -125,7 +135,7 @@ class CalendarSection(ft.UserControl):
                             ft.Container(
                                 content=ft.Column(
                                     [
-                                        CalendarIcon(self.page, elem.info_calendars()[1]) for elem in self.lst_cal
+                                        CalendarIcon(self.page, elem.info_calendars(), self.gl_id_user) for elem in self.lst_cal
                                     ],
                                     ref=calendar_column
                                 ),
