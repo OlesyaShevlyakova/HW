@@ -57,7 +57,7 @@ def main(page: ft.Page):
                 ft.View(
                     route="/mainscreen",
                     controls=[
-                        MainScreen(page)
+                        MainScreen(page, gl_id_user)
                     ]
                 )
             )
