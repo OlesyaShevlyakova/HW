@@ -1,7 +1,7 @@
 import flet as ft
 from Backend import Backend
 class LoginForm(ft.UserControl):
-    def __init__(self, page, gl_id_user):
+    def __init__(self, page, global_dict_state):
         super().__init__()
         self.expand = True  # если объект котнейнер возвращается как объект класса, то у него не работает свойство
         # expand, это свойство нужно указывать на уровне объекта этого класса
@@ -14,7 +14,7 @@ class LoginForm(ft.UserControl):
         self.page.title = "Окно авторизации"
         self.page.window_width = 850  # ширина внешнего окна
         self.page.window_height = 600  # высота внешнего окна
-        self.gl_id_user = gl_id_user
+        self.global_dict_state = global_dict_state
         #self.page.window_resizable = False  # запрет изменения размера окна
 
 
@@ -76,7 +76,7 @@ class LoginForm(ft.UserControl):
             self.page.update()
         else:
             dlg = ft.AlertDialog(title=ft.Text(f"Авторизация выполнена успешно, выберите слева календарь."))
-            self.gl_id_user['id_user'] = flag  # чтобы сохранить id user для последующего использования
+            self.global_dict_state['id_user'] = flag  # чтобы сохранить id user для последующего использования
             self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
             dlg.open = True
             self.page.go('/mainscreen')

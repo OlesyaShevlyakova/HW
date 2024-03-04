@@ -4,7 +4,7 @@ import re
 
 class CalendarForm(ft.UserControl):
     "Создание страницы редактирования информации о календаре"
-    def __init__(self, page, gl_id_user, target_id_calendar, name_calendar):
+    def __init__(self, page, global_dict_state, target_id_calendar, name_calendar):
         super().__init__()
         self.expand = True  # если объект котнейнер возвращается как объект класса, то у него не работает свойство
         # expand, это свойство нужно указывать на уровне объекта этого класса
@@ -19,7 +19,7 @@ class CalendarForm(ft.UserControl):
         self.button_back = ft.Ref[ft.ElevatedButton]()
         self.target_id_calendar = target_id_calendar
         self.name_calendar = name_calendar
-        self.gl_id_user = gl_id_user
+        self.global_dict_state = global_dict_state
 
     def build(self):
         self.load_calendars()
@@ -69,7 +69,7 @@ class CalendarForm(ft.UserControl):
         )
 
     def load_calendars(self):
-        Backend.load_file_calendars(self.gl_id_user)  # загружаем календари конкретного пользователя в Backend
+        Backend.load_file_calendars(self.global_dict_state)  # загружаем календари конкретного пользователя в Backend
 
 
     def button_save_new_click(self, e: ft.ControlEvent):
@@ -101,7 +101,7 @@ def check_latin(text: str):
     return pattern.match(text)
 
 def test_run(page: ft.Page):
-    page.add(CalendarForm(page, gl_id_user="@MishaIvanov*2", target_id_calendar="2", name_calendar="work"))
+    page.add(CalendarForm(page, global_dict_state="@MishaIvanov*2", target_id_calendar="2", name_calendar="work"))
 
 if __name__ == "__main__":
     ft.app(target=test_run, assets_dir="../assets")

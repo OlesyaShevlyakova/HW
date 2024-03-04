@@ -4,7 +4,7 @@ import re
 
 class UserForm(ft.UserControl):
     "Создание страницы редактирования информации о пользователе"
-    def __init__(self, page, gl_id_user):
+    def __init__(self, page, global_dict_state):
         super().__init__()
         self.expand = True  # если объект котнейнер возвращается как объект класса, то у него не работает свойство
         # expand, это свойство нужно указывать на уровне объекта этого класса
@@ -20,7 +20,7 @@ class UserForm(ft.UserControl):
         self.button_save_new = ft.Ref[ft.ElevatedButton]()
         self.button_back = ft.Ref[ft.ElevatedButton]()
         self.info_our_user = None
-        self.gl_id_user = gl_id_user
+        self.global_dict_state = global_dict_state
 
     def build(self):
         self.load_user()
@@ -74,7 +74,7 @@ class UserForm(ft.UserControl):
             )
 
     def load_user(self):
-        Backend.load_file_users(self.gl_id_user)  # загружаем конкретного пользователя в Backend
+        Backend.load_file_users(self.global_dict_state)  # загружаем конкретного пользователя в Backend
         self.info_our_user = Backend.info_users()[0].info_User()  # информация о текущем пользователе
 
     def button_save_new_click(self, e: ft.ControlEvent):
@@ -119,9 +119,3 @@ def check_latin(text: str):
     "Проверка на вхождение только правильных символов"
     pattern = re.compile("^[a-zA-Z0-9]*$")
     return pattern.match(text)
-
-def test_run(page: ft.Page):
-    page.add(UserForm(page, gl_id_user))
-
-if __name__ == "__main__":
-    ft.app(target=test_run, assets_dir="../assets")

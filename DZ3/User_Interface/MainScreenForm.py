@@ -4,9 +4,12 @@ from User_Interface.MainScreen.EventSection import EventsSection
 from User_Interface.MainScreen.ServiceSection import ServiceSection
 
 
-
 class MainScreen(ft.UserControl):
-    def __init__(self, page:ft.Page, gl_id_user: dict):
+    """
+    Класс реализующий отображение ссновного экрана приложения,
+    где отображаются календари, события и сервисные элементы.
+    """
+    def __init__(self, page:ft.Page, global_dict_state: dict):
         super().__init__()
         self.page = page
         self.page.window_center()
@@ -14,8 +17,13 @@ class MainScreen(ft.UserControl):
         self.page.window_height = 700  # высота внешнего окна
         self.page.title = 'Главное окно'
         self.expand = True
-        self.gl_id_user = gl_id_user
+        self.global_dict_state = global_dict_state # Прокидываем глобальный словарь
 
+        # Прописываем в переменные классы отвечающий каждый за свой блок.
+        # Делается для того, чтобы можно было их обновлять в callback.
+        self.calendar_section = CalendarSection(self.page, self.global_dict_state, self.callback_update_events)
+        self.event_section = EventsSection(self.page, self.global_dict_state)
+        self.service_section = ServiceSection(self.page, self.global_dict_state)
 
     def build(self):
         return ft.Container(
@@ -24,12 +32,10 @@ class MainScreen(ft.UserControl):
                 [
                     ft.Row(
                         [
-                            CalendarSection(self.page, self.gl_id_user),
-                            #ft.VerticalDivider(width=1, thickness=1, color="black"),
-                            #ft.VerticalDivider(width=90, thickness=30),
-                            EventsSection(self.page, self.gl_id_user),
-                            ServiceSection(self.page, self.gl_id_user),
-                        ],
+                            self.calendar_section,
+                            self.event_section,
+                            self.service_section,
+        ],
                     expand=True,
                     alignment=ft.MainAxisAlignment.START,
                     )
@@ -37,3 +43,10 @@ class MainScreen(ft.UserControl):
                 expand=True
             )
         )
+
+    def callback_update_events(self):
+        """
+        Колбек вызова обновления секции ивентов
+        Вызывается при выборе конкретного календаря
+        """
+        self.event_section.update_state()

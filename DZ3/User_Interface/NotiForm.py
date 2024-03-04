@@ -4,7 +4,7 @@ from Backend import Backend
 
 class NotiForm(ft.UserControl):
     "Создание страницы просмотра сообщений"
-    def __init__(self, page, gl_id_user):
+    def __init__(self, page, global_dict_state):
         super().__init__()
         self.expand = True  # если объект котнейнер возвращается как объект класса, то у него не работает свойство
         # expand, это свойство нужно указывать на уровне объекта этого класса
@@ -14,10 +14,10 @@ class NotiForm(ft.UserControl):
         self.page.title = "Окно оповещений"
         self.info_failed_user = ft.Ref[ft.Text]()
         self.button_back = ft.Ref[ft.ElevatedButton]()
-        self.gl_id_user = gl_id_user
+        self.global_dict_state = global_dict_state
 
     def build(self):
-        noti = Backend.show_notifications_user(self.gl_id_user)
+        noti = Backend.show_notifications_user(self.global_dict_state)
         return ft.Container(
             image_src='/Noti.jpg',
             alignment=ft.alignment.center_right,

@@ -4,7 +4,7 @@ import re
 
 class CreateCalForm(ft.UserControl):
     "Создание календаря"
-    def __init__(self, page, gl_id_user):
+    def __init__(self, page, global_dict_state):
         super().__init__()
         self.expand = True  # если объект котнейнер возвращается как объект класса, то у него не работает свойство
         # expand, это свойство нужно указывать на уровне объекта этого класса
@@ -16,7 +16,7 @@ class CreateCalForm(ft.UserControl):
         self.info_failed = ft.Ref[ft.Text]()
         self.button_save_new = ft.Ref[ft.ElevatedButton]()
         self.button_back = ft.Ref[ft.ElevatedButton]()
-        self.gl_id_user = gl_id_user
+        self.global_dict_state = global_dict_state
     def build(self):
         self.load_calendars()
         return ft.Container(
@@ -75,14 +75,14 @@ class CreateCalForm(ft.UserControl):
             self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
             dlg.open = True
         else:
-            Backend.add_new_calendar(id_user=self.gl_id_user, name_calendar=self.calendar_new.current.value)
+            Backend.add_new_calendar(id_user=self.global_dict_state, name_calendar=self.calendar_new.current.value)
             dlg = ft.AlertDialog(title=ft.Text(f"Календарь успешно создан"))
             self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
             dlg.open = True
         self.update()
         self.page.update()
     def load_calendars(self):
-        Backend.load_file_calendars(self.gl_id_user)  # загружаем календари конкретного пользователя в Backend
+        Backend.load_file_calendars(self.global_dict_state)  # загружаем календари конкретного пользователя в Backend
     def check_for_save_button(self, e: ft.ControlEvent):
         "Активация кнопки - Сохранить"
         if len(self.calendar_new.current.value) > 0:
@@ -97,7 +97,7 @@ def check_latin(text: str):
     return pattern.match(text)
 
 def test_run(page: ft.Page):
-    page.add(CreateCalForm(page, gl_id_user="@OlesyaShevlyakova*1"))
+    page.add(CreateCalForm(page, global_dict_state="@OlesyaShevlyakova*1"))
 
 if __name__ == "__main__":
     ft.app(target=test_run, assets_dir="../assets")

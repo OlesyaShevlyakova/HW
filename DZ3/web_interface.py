@@ -8,101 +8,100 @@ from User_Interface.CreateCalForm import CreateCalForm
 from User_Interface.NotiForm import NotiForm
 from User_Interface.CreateEvForm import CreateEvForm
 
-gl_id_user = None
 
 def run():
     ft.app(target=main, assets_dir="assets")
+
+
 def main(page: ft.Page):
     def route_change(e: ft.RouteChangeEvent):
         "Обработка перехода между окнами"
         page.views.clear()
-        if page.route == "/login":
+        if page.route == "/login": # Форма логина в приложение
             page.views.append(
                 ft.View(
                     route="/login",
                     controls=[
-                        LoginForm(page, gl_id_user)
+                        LoginForm(page, global_dict_state)
                     ]
                 )
             )
-        elif page.route == "/reg":
+        elif page.route == "/reg": # Форма регистрации нового пользователя
             page.views.append(
                 ft.View(
                     route="/reg",
                     controls=[
-                        RegForm(page, gl_id_user)
+                        RegForm(page, global_dict_state)
                     ]
                 )
             )
-        elif page.route == "/user":
+        elif page.route == "/user": # Форма редактирования информации о пользователе
             page.views.append(
                 ft.View(
                     route="/user",
                     controls=[
-                        UserForm(page, gl_id_user)
+                        UserForm(page, global_dict_state)
                     ]
                 )
             )
-        elif page.route == "/calendar":
+        elif page.route == "/calendar": # Форма редактирования информации о календаре
             page.views.append(
                 ft.View(
                     route="/calendar",
                     controls=[
-                        CalendarForm(page, gl_id_user="@MishaIvanov*2", target_id_calendar="2", name_calendar="personal")
+                        CalendarForm(page, global_dict_state="@MishaIvanov*2", target_id_calendar="2", name_calendar="personal")
                     ]
                 )
             )
-        elif page.route == "/mainscreen":
+        elif page.route == "/mainscreen": # Форма главного окна приложения
             page.views.append(
                 ft.View(
                     route="/mainscreen",
                     controls=[
-                        MainScreen(page, gl_id_user)
+                        MainScreen(page, global_dict_state)
                     ]
                 )
             )
-        elif page.route == "/create_cal":
+        elif page.route == "/create_cal": # Форма создания календаря
             page.views.append(
                 ft.View(
                     route="/create_cal",
                     controls=[
-                        CreateCalForm(page, gl_id_user="@OlesyaShevlyakova*1")
+                        CreateCalForm(page, global_dict_state="@OlesyaShevlyakova*1")
                     ]
                 )
             )
-        elif page.route == "/noti":
+        elif page.route == "/noti": # Форма просмотра оповещений
             page.views.append(
                 ft.View(
                     route="/noti",
                     controls=[
-                        NotiForm(page, gl_id_user="@MishaIvanov*2")
+                        NotiForm(page, global_dict_state="@MishaIvanov*2")
                     ]
                 )
             )
 
-        elif page.route == "/create_ev":
+        elif page.route == "/create_ev": # Форма создания событий
             page.views.append(
                 ft.View(
                     route="/create_ev",
                     controls=[
-                        CreateEvForm(page, gl_id_user="@MishaIvanov*2")
+                        CreateEvForm(page, global_dict_state="@MishaIvanov*2")
                     ]
                 )
             )
 
-    # Глобальный словарь, пока не поняла как правильно передавать данные между view
-    gl_id_user = {
+    # Глобальный словарь, пока не поняла как правильно передавать данные между view, буду прокидывать словарь, которы
+    # передаются не как значение, а как ссылка, так как является словарем, а не просто переменной
+    global_dict_state = {
         'id_user': "",
         'id_calendar': "",
         'name_calendar': ""
     }
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER  # расположение внутренних окон по центру относительно ширины
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER  # помещаем внутренние окна по центру относительно ширины
     page.on_route_change = route_change
-    #page.go('/login')
-    page.go('/create_ev')
-
-
-
+    page.go('/login')
+    #page.go('/create_ev')
 
 
 if __name__ == "__main__":

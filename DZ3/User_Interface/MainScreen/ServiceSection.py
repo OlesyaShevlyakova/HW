@@ -1,6 +1,59 @@
 import flet as ft
 
 
+class ServiceSection(ft.UserControl):
+    def __init__(self, page: ft.Page, global_dict_state: dict):
+        super().__init__()
+        self.page = page
+        self.global_dict_state = global_dict_state
+
+    def build(self):
+        return ft.Container(
+            content=ft.Column(
+                [
+                    ft.Container(
+                        content=ft.Text(
+                            # value='Пользователь',
+                            value='',
+                            size=13),
+                        alignment=ft.alignment.top_center,
+                        # width = 100,
+                    ),
+                    ft.Container(
+                        content=ServiceSectionButton(
+                            page=self.page,
+                            text='Изменить информацию о пользователе',
+                            route='change_user_info',
+                            icon=ft.icons.SETTINGS,
+                        )
+                    ),
+                    ft.Container(
+                        content=ServiceSectionButton(
+                            page=self.page,
+                            text='Посмотреть события',
+                            route='view_notifications',
+                            icon=ft.icons.NOTIFICATIONS,
+                        )
+                    ),
+                    ft.Container(expand=True),
+                    ft.Container(
+                        content=ServiceSectionButton(
+                            page=self.page,
+                            text='Выйти на страницу авторизации',
+                            route='back_to_login',
+                            icon=ft.icons.EXIT_TO_APP,
+                        )
+                    ),
+                ],
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER
+            ),
+            # content=ft.Container(ft.Text('123')),
+            width=120,
+            border=ft.border.all(1, ft.colors.PINK_600),
+            border_radius=10,
+        )
+
+
 class ServiceSectionButton(ft.UserControl):
     def __init__(self, page:ft.Page,text,route,icon):
         super().__init__()
@@ -36,57 +89,4 @@ class ServiceSectionButton(ft.UserControl):
             height=50,
             width=50,
             #border=ft.border.all(1, ft.colors.PINK_600),
-        )
-
-
-class ServiceSection(ft.UserControl):
-    def __init__(self, page:ft.Page, gl_id_user: dict):
-        super().__init__()
-        self.page = page
-        self.gl_id_user = gl_id_user
-
-    def build(self):
-        return ft.Container(
-                    content=ft.Column(
-                        [
-                            ft.Container(
-                                content=ft.Text(
-                                    #value='Пользователь',
-                                    value='',
-                                    size=13),
-                                alignment=ft.alignment.top_center,
-                                #width = 100,
-                            ),
-                            ft.Container(
-                                content=ServiceSectionButton(
-                                    page=self.page,
-                                    text='Изменить информацию о пользователе',
-                                    route='change_user_info',
-                                    icon=ft.icons.SETTINGS,
-                                )
-                            ),
-                            ft.Container(
-                                content=ServiceSectionButton(
-                                    page=self.page,
-                                    text='Посмотреть события',
-                                    route='view_notifications',
-                                    icon=ft.icons.NOTIFICATIONS,
-                                )
-                            ),
-                            ft.Container(expand=True),
-                            ft.Container(
-                                content=ServiceSectionButton(
-                                    page=self.page,
-                                    text='Выйти на страницу авторизации',
-                                    route='back_to_login',
-                                    icon=ft.icons.EXIT_TO_APP,
-                                )
-                            ),
-                        ],
-                        horizontal_alignment=ft.CrossAxisAlignment.CENTER
-                    ),
-            #content=ft.Container(ft.Text('123')),
-            width=120,
-            border=ft.border.all(1, ft.colors.PINK_600),
-            border_radius=10,
         )
