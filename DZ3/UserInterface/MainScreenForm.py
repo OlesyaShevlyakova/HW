@@ -1,7 +1,7 @@
 import flet as ft
-from User_Interface.MainScreen.CalendarSection import CalendarSection
-from User_Interface.MainScreen.EventSection import EventsSection
-from User_Interface.MainScreen.ServiceSection import ServiceSection
+from UserInterface.MainScreen.CalendarSection import CalendarSection
+from UserInterface.MainScreen.EventSection import EventsSection
+from UserInterface.MainScreen.ServiceSection import ServiceSection
 
 
 class MainScreen(ft.UserControl):
@@ -9,7 +9,8 @@ class MainScreen(ft.UserControl):
     Класс реализующий отображение ссновного экрана приложения,
     где отображаются календари, события и сервисные элементы.
     """
-    def __init__(self, page:ft.Page, global_dict_state: dict):
+
+    def __init__(self, page: ft.Page, global_dict_state: dict):
         super().__init__()
         self.page = page
         self.page.window_center()
@@ -17,7 +18,7 @@ class MainScreen(ft.UserControl):
         self.page.window_height = 700  # высота внешнего окна
         self.page.title = 'Главное окно'
         self.expand = True
-        self.global_dict_state = global_dict_state # Прокидываем глобальный словарь
+        self.global_dict_state = global_dict_state  # Прокидываем глобальный словарь
 
         # Прописываем в переменные классы отвечающий каждый за свой блок.
         # Делается для того, чтобы можно было их обновлять в callback.
@@ -35,9 +36,9 @@ class MainScreen(ft.UserControl):
                             self.calendar_section,
                             self.event_section,
                             self.service_section,
-        ],
-                    expand=True,
-                    alignment=ft.MainAxisAlignment.START,
+                        ],
+                        expand=True,
+                        alignment=ft.MainAxisAlignment.START,
                     )
                 ],
                 expand=True

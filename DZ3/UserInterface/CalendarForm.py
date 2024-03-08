@@ -2,8 +2,10 @@ import flet as ft
 from Backend import Backend
 import re
 
+
 class CalendarForm(ft.UserControl):
     "Создание страницы редактирования информации о календаре"
+
     def __init__(self, page, global_dict_state, target_id_calendar, name_calendar):
         super().__init__()
         self.expand = True  # если объект котнейнер возвращается как объект класса, то у него не работает свойство
@@ -71,7 +73,6 @@ class CalendarForm(ft.UserControl):
     def load_calendars(self):
         Backend.load_file_calendars(self.global_dict_state)  # загружаем календари конкретного пользователя в Backend
 
-
     def button_save_new_click(self, e: ft.ControlEvent):
         "Обработка нажатия на кнопку - Сохранить"
         if check_latin(self.name_new_calendar.current.value) is None:
@@ -95,15 +96,16 @@ class CalendarForm(ft.UserControl):
             self.button_save_new.current.disabled = True
         self.update()
 
+
 def check_latin(text: str):
     "Проверка на вхождение только правильных символов"
     pattern = re.compile("^[a-zA-Z0-9]*$")
     return pattern.match(text)
 
+
 def test_run(page: ft.Page):
     page.add(CalendarForm(page, global_dict_state="@MishaIvanov*2", target_id_calendar="2", name_calendar="work"))
 
+
 if __name__ == "__main__":
     ft.app(target=test_run, assets_dir="../assets")
-
-

@@ -1,4 +1,4 @@
-import web_interface
+import WebInterface
 
 if __name__ == "__main__":
-    web_interface.run()
+    WebInterface.run()

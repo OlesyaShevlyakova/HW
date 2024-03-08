@@ -1,13 +1,15 @@
 import flet as ft
 from Backend import Backend
+
+
 class LoginForm(ft.UserControl):
     def __init__(self, page, global_dict_state):
         super().__init__()
         self.expand = True  # если объект котнейнер возвращается как объект класса, то у него не работает свойство
         # expand, это свойство нужно указывать на уровне объекта этого класса
         self.page = page
-        self.login_field = ft.Ref[ft.TextField]()   # текстовое поле для ввода логина
-        self.password_field = ft.Ref[ft.TextField]()   # текстовое поле для ввода пароля
+        self.login_field = ft.Ref[ft.TextField]()  # текстовое поле для ввода логина
+        self.password_field = ft.Ref[ft.TextField]()  # текстовое поле для ввода пароля
         self.login_failed = ft.Ref[ft.Text]()
         self.button_come_in = ft.Ref[ft.ElevatedButton]()
         self.button_reg = ft.Ref[ft.ElevatedButton]()
@@ -15,8 +17,7 @@ class LoginForm(ft.UserControl):
         self.page.window_width = 850  # ширина внешнего окна
         self.page.window_height = 600  # высота внешнего окна
         self.global_dict_state = global_dict_state
-        #self.page.window_resizable = False  # запрет изменения размера окна
-
+        # self.page.window_resizable = False  # запрет изменения размера окна
 
     def build(self):
         return ft.Container(
@@ -57,6 +58,7 @@ class LoginForm(ft.UserControl):
                 ]
             )
         )
+
     def check_for_login_button(self, e: ft.ControlEvent):
         "Скрытие надписи об ошибке и активация кнопки"
         self.login_failed.current.visible = False
@@ -81,5 +83,5 @@ class LoginForm(ft.UserControl):
             dlg.open = True
             self.page.go('/mainscreen')
         self.password_field.current.value = ""
-        #self.update()
-        #self.page.update()
+        # self.update()
+        # self.page.update()

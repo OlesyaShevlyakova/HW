@@ -1,12 +1,12 @@
 import flet as ft
-from User_Interface.LoginForm import LoginForm
-from User_Interface.RegForm import RegForm
-from User_Interface.UserForm import UserForm
-from User_Interface.CalendarForm import CalendarForm
-from User_Interface.MainScreenForm import MainScreen
-from User_Interface.CreateCalForm import CreateCalForm
-from User_Interface.NotiForm import NotiForm
-from User_Interface.CreateEvForm import CreateEvForm
+from UserInterface.LoginForm import LoginForm
+from UserInterface.RegForm import RegForm
+from UserInterface.UserForm import UserForm
+from UserInterface.CalendarForm import CalendarForm
+from UserInterface.MainScreenForm import MainScreen
+from UserInterface.CreateCalForm import CreateCalForm
+from UserInterface.NotiForm import NotiForm
+from UserInterface.CreateEvForm import CreateEvForm
 
 
 def run():

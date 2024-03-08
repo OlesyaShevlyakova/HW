@@ -4,6 +4,7 @@ from Backend import Backend
 
 class NotiForm(ft.UserControl):
     "Создание страницы просмотра сообщений"
+
     def __init__(self, page, global_dict_state):
         super().__init__()
         self.expand = True  # если объект котнейнер возвращается как объект класса, то у него не работает свойство
@@ -43,9 +44,9 @@ class NotiForm(ft.UserControl):
                     ft.Container(width=10, height=10, alignment=ft.alignment.center),  # пустой контейнер
                     ft.Container(
                         content=ft.Column(
-                                    [
-                                        ft.Text(elem) for elem in noti
-                                    ],
+                            [
+                                ft.Text(elem) for elem in noti
+                            ],
                         ),
                         width=350,
                     ),  # контейнер с оповещениями
@@ -53,6 +54,7 @@ class NotiForm(ft.UserControl):
                 ]
             )
         )
+
 
 if __name__ == "__main__":
     ft.app(target=test_run, assets_dir="../assets")

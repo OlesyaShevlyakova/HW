@@ -2,8 +2,10 @@ import flet as ft
 from Backend import Backend
 import re
 
+
 class RegForm(ft.UserControl):
     "Создание страницы регистрации"
+
     def __init__(self, page, global_dict_state):
         super().__init__()
         self.expand = True  # если объект котнейнер возвращается как объект класса, то у него не работает свойство
@@ -21,58 +23,59 @@ class RegForm(ft.UserControl):
         self.button_reg_new = ft.Ref[ft.ElevatedButton]()
         self.button_back = ft.Ref[ft.ElevatedButton]()
         self.global_dict_state = global_dict_state
+
     def build(self):
         return ft.Container(
-                image_src='/8430432.jpg',
-                alignment=ft.alignment.center, expand=True,
-                content=ft.Column(
-                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                    controls=
-                    [
-                        ft.Container(width=10, height=10, alignment=ft.alignment.center),  # пустой контейнер
-                        ft.Text("Введите логин", size=16, italic=True),
-                        ft.TextField(ref=self.login_new,  width=400, label="Логин",
-                                     on_change=self.check_for_reg_button),
-                        ft.Text("Введите пароль", size=16, italic=True),
-                        ft.TextField(ref=self.password_new, width=400, label="Пароль",
-                                     on_change=self.check_for_reg_button),
-                        ft.Text("Введите имя", size=16, italic=True),
-                        ft.TextField(ref=self.name_new, width=400, label="Имя",
-                                     on_change=self.check_for_reg_button),
-                        ft.Text("Введите фамилию", size=16, italic=True),
-                        ft.TextField(ref=self.lastname_new, width=400, label="Фамилия",
-                                     on_change=self.check_for_reg_button),
-                        ft.Text("Введите название календаря", size=16, italic=True),
-                        ft.TextField(ref=self.calendar_new, width=400, label="Название календаря",
-                                     on_change=self.check_for_reg_button),
-                        ft.Text(ref=self.info_failed, value="""Используйте только ЛАТИНСКИЕ буквы и цифры"""),
-                        ft.ElevatedButton(
-                            ref=self.button_reg_new,
-                            disabled=True,
-                            adaptive=True,
-                            bgcolor=ft.cupertino_colors.SYSTEM_TEAL,
-                            content=ft.Row(
-                                [
-                                    ft.Icon(name=ft.icons.FAVORITE, color="pink"),
-                                    ft.Text("Зарегистрироваться", size=18, weight=ft.FontWeight.BOLD),
-                                ],
-                                tight=True
-                            ),
-                            on_click=self.button_reg_new_click),
-                        ft.ElevatedButton(
-                            ref=self.button_back,
-                            width=150,
-                            content=ft.Row(
-                                [
-                                    ft.Icon(name=ft.icons.BACKUP, color="blue"),
-                                    ft.Text(value="Назад", size=20, color=ft.colors.LIGHT_BLUE_800),
-                                ],
-                                alignment=ft.MainAxisAlignment.SPACE_AROUND),
-                            on_click=lambda _: self.page.go('/login')  # Возвращает на окно логина
-                        )
-                    ]
-                )
+            image_src='/8430432.jpg',
+            alignment=ft.alignment.center, expand=True,
+            content=ft.Column(
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                controls=
+                [
+                    ft.Container(width=10, height=10, alignment=ft.alignment.center),  # пустой контейнер
+                    ft.Text("Введите логин", size=16, italic=True),
+                    ft.TextField(ref=self.login_new, width=400, label="Логин",
+                                 on_change=self.check_for_reg_button),
+                    ft.Text("Введите пароль", size=16, italic=True),
+                    ft.TextField(ref=self.password_new, width=400, label="Пароль",
+                                 on_change=self.check_for_reg_button),
+                    ft.Text("Введите имя", size=16, italic=True),
+                    ft.TextField(ref=self.name_new, width=400, label="Имя",
+                                 on_change=self.check_for_reg_button),
+                    ft.Text("Введите фамилию", size=16, italic=True),
+                    ft.TextField(ref=self.lastname_new, width=400, label="Фамилия",
+                                 on_change=self.check_for_reg_button),
+                    ft.Text("Введите название календаря", size=16, italic=True),
+                    ft.TextField(ref=self.calendar_new, width=400, label="Название календаря",
+                                 on_change=self.check_for_reg_button),
+                    ft.Text(ref=self.info_failed, value="""Используйте только ЛАТИНСКИЕ буквы и цифры"""),
+                    ft.ElevatedButton(
+                        ref=self.button_reg_new,
+                        disabled=True,
+                        adaptive=True,
+                        bgcolor=ft.cupertino_colors.SYSTEM_TEAL,
+                        content=ft.Row(
+                            [
+                                ft.Icon(name=ft.icons.FAVORITE, color="pink"),
+                                ft.Text("Зарегистрироваться", size=18, weight=ft.FontWeight.BOLD),
+                            ],
+                            tight=True
+                        ),
+                        on_click=self.button_reg_new_click),
+                    ft.ElevatedButton(
+                        ref=self.button_back,
+                        width=150,
+                        content=ft.Row(
+                            [
+                                ft.Icon(name=ft.icons.BACKUP, color="blue"),
+                                ft.Text(value="Назад", size=20, color=ft.colors.LIGHT_BLUE_800),
+                            ],
+                            alignment=ft.MainAxisAlignment.SPACE_AROUND),
+                        on_click=lambda _: self.page.go('/login')  # Возвращает на окно логина
+                    )
+                ]
             )
+        )
 
     def button_reg_new_click(self, e: ft.ControlEvent):
         "Обработка нажатия на кнопку - Зарегистрироваться"
@@ -112,8 +115,8 @@ class RegForm(ft.UserControl):
             self.button_reg_new.current.disabled = True
         self.update()
 
+
 def check_latin(text: str):
     "Проверка на вхождение только правильных символов"
     pattern = re.compile("^[a-zA-Z0-9]*$")
     return pattern.match(text)
-
