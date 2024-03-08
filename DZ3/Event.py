@@ -25,7 +25,7 @@ class Event:
     _description = None   # описание события
     _name_event = None    # название события
     _event_owner = None    # создатель события, логин User
-    _event_guests = []  # участники события, список логинов User
+    _event_guests = []  # участники события, список id User
     _repeat_type = None   # периодичность события - D W M Y
     _data_event = None    # дата события
     _id = None   # id номер события

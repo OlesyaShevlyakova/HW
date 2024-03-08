@@ -25,3 +25,5 @@ id,id_user,id_event,action,del_details
 23,@GrishaSidorov*4,4,D,Breakfast
 24,@LenaPush*7,5,C,Game
 25,@LenaPush*7,5,D,Game
+1,@MishaIvanov*2,6,C,game
+2,@MaksimBazhin*3,6,C,game

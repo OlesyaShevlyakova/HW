@@ -672,7 +672,7 @@ class Backend:
 
     @staticmethod
     def reg_user(login_user, name_user, lastname_user, password_user):
-        "Регистрация нового user"
+        "Регистрация нового user для веб-интерфейса"
         Backend.load_file_users(target_login='*********')  # запускаем загрузку пользователей без загрузки
         # в память backend, чтобы обновить id_counter
         new_user = User(login=login_user, name=name_user, lastname=lastname_user, password=password_user)
@@ -682,12 +682,34 @@ class Backend:
 
     @staticmethod
     def add_new_calendar(id_user, name_calendar):
-        "Создание нового календаря"
+        "Создание нового календаря для веб-интерфейса"
         Backend.load_file_calendars(target_id_user='*********')  # запускаем загрузку календарей без загрузки
                                                                  # в память backend, чтобы обновить id_counter
         new_calendar = Calendar(id_user=id_user, name_calendar=name_calendar)
         Backend.add_calendar(new_calendar)  # добавляем календарь в память
         Backend.save_file_calendars(add_calendar=True)  # дописываем файл с календарями
+
+    @staticmethod
+    def add_new_event(name_event, description, event_owner, guests, data_event, repeat_type, target_id_calendar):
+        "Создание нового события для веб-интерфейса"
+        Backend.load_file_events(target_id_events=['*********'])  # запускаем загрузку событий без загрузки
+        # в память backend, чтобы обновить id_counter
+        new_event = Event(name_event=name_event, description=description, event_owner=event_owner, guests=guests,
+                          data_event=data_event, repeat_type=repeat_type)
+        Backend.clear_events()  # очищаем память backend от событий
+        Backend.add_event(new_event)  # добавляем событие в память backend
+        Backend.save_file_events(add_event=True)  # добавляем событие в файл
+        Backend.load_file_calendars(event_owner)  # загружаем в память календари пользователя
+        Backend.add_event_into_calendar(target_id_calendar, new_event.info_id_event())  # добавление
+        # события в календарь
+        Backend.add_event_into_calendar_guest(new_event.info_id_event(), guests,
+                                              name_event)  # добавление события в
+        # календарь гостей
+
+
+
+
+
 
 
 

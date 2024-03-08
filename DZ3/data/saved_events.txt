@@ -4,3 +4,4 @@ id,name_event,description,data_event,repeat_type,event_owner,guests
 3,Game,tennis,2024-09-07,Y,@MishaIvanov*2,['@GrishaSidorov*4']
 4,Breakfast,tasty,2024-03-07,M,@OlesyaShevlyakova*1,"['@MaksimBazhin*3', '@AllaShpak*5', '@NataNevskaya*6']"
 5,Game,Football table,2024-02-02,,@OlesyaShevlyakova*1,"['@MishaIvanov*2', '@AllaShpak*5']"
+6,game,basketball,2024-01-01,,@OlesyaShevlyakova*1,"['@MishaIvanov*2', '@MaksimBazhin*3']"
