@@ -65,7 +65,7 @@ class CreateCalForm(ft.UserControl):
                                 ft.Text(value="Назад", size=20, color=ft.colors.LIGHT_BLUE_800),
                             ],
                             alignment=ft.MainAxisAlignment.SPACE_AROUND),
-                        on_click=lambda _: self.page.go('/login')  # Возвращает на окно логина  #TODO
+                        on_click=lambda _: self.page.go('/mainscreen')  # Возвращает на окно логина
                     )
                 ]
             )
@@ -78,7 +78,7 @@ class CreateCalForm(ft.UserControl):
             self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
             dlg.open = True
         else:
-            Backend.add_new_calendar(id_user=self.global_dict_state, name_calendar=self.calendar_new.current.value)
+            Backend.add_new_calendar(id_user=self.global_dict_state['id_user'], name_calendar=self.calendar_new.current.value)
             dlg = ft.AlertDialog(title=ft.Text(f"Календарь успешно создан"))
             self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
             dlg.open = True
@@ -86,7 +86,7 @@ class CreateCalForm(ft.UserControl):
         self.page.update()
 
     def load_calendars(self):
-        Backend.load_file_calendars(self.global_dict_state)  # загружаем календари конкретного пользователя в Backend
+        Backend.load_file_calendars(self.global_dict_state['id_user'])  # загружаем календари конкретного пользователя в Backend
 
     def check_for_save_button(self, e: ft.ControlEvent):
         "Активация кнопки - Сохранить"

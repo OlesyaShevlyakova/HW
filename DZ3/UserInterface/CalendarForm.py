@@ -6,7 +6,7 @@ import re
 class CalendarForm(ft.UserControl):
     "Создание страницы редактирования информации о календаре"
 
-    def __init__(self, page, global_dict_state, target_id_calendar, name_calendar):
+    def __init__(self, page, global_dict_state):
         super().__init__()
         self.expand = True  # если объект котнейнер возвращается как объект класса, то у него не работает свойство
         # expand, это свойство нужно указывать на уровне объекта этого класса
@@ -19,8 +19,6 @@ class CalendarForm(ft.UserControl):
         self.info_failed_user = ft.Ref[ft.Text]()
         self.button_save_new = ft.Ref[ft.ElevatedButton]()
         self.button_back = ft.Ref[ft.ElevatedButton]()
-        self.target_id_calendar = target_id_calendar
-        self.name_calendar = name_calendar
         self.global_dict_state = global_dict_state
 
     def build(self):
@@ -37,7 +35,7 @@ class CalendarForm(ft.UserControl):
                             color=ft.colors.BLUE),
                     ft.Container(width=70, height=70, alignment=ft.alignment.center),  # пустой контейнер
                     ft.Text("Введите новое наименование календаря", size=18, italic=True),
-                    ft.TextField(ref=self.name_new_calendar, width=350, label=self.name_calendar,
+                    ft.TextField(ref=self.name_new_calendar, width=350, label=self.global_dict_state['CalendarForm_name_calendar'],
                                  on_change=self.check_for_save_button),
                     ft.Text(ref=self.info_failed, value="""Используйте только ЛАТИНСКИЕ буквы и цифры"""),
                     ft.Container(width=20, height=20, alignment=ft.alignment.center),  # пустой контейнер
@@ -64,14 +62,14 @@ class CalendarForm(ft.UserControl):
                                 ft.Text(value="Назад", size=20, color=ft.colors.LIGHT_BLUE_800),
                             ],
                             alignment=ft.MainAxisAlignment.SPACE_AROUND),
-                        on_click=lambda _: self.page.go('/login')  # Возвращает на окно логина  #TODO
+                        on_click=lambda _: self.page.go('/mainscreen')  # Возвращает на окно логина
                     )
                 ]
             )
         )
 
     def load_calendars(self):
-        Backend.load_file_calendars(self.global_dict_state)  # загружаем календари конкретного пользователя в Backend
+        Backend.load_file_calendars(self.global_dict_state['id_user'])  # загружаем календари конкретного пользователя в Backend
 
     def button_save_new_click(self, e: ft.ControlEvent):
         "Обработка нажатия на кнопку - Сохранить"
@@ -80,7 +78,7 @@ class CalendarForm(ft.UserControl):
             self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
             dlg.open = True
         else:
-            Backend.update_calendar(target_id_calendar=self.target_id_calendar,
+            Backend.update_calendar(target_id_calendar=self.global_dict_state['CalendarForm_id_calendar'],
                                     new_name_calendar=self.name_new_calendar.current.value)
             dlg = ft.AlertDialog(title=ft.Text(f"Изменения выполнены успешно"))
             self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог

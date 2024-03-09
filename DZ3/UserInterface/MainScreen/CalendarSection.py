@@ -75,10 +75,12 @@ class CalendarIcon(ft.UserControl):
         self.global_dict_state = global_dict_state
         self.callback_update_events = callback_update_events
 
-    def popup(self, e: ft.ControlEvent):
+    def click_calendar_edit(self, e: ft.ControlEvent):
         """
         Обработка события нажатия на кнопку редактирования календаря пользователя
         """
+        self.global_dict_state['CalendarForm_id_calendar'] = self.info_calendar[0]
+        self.global_dict_state['CalendarForm_name_calendar'] = self.info_calendar[1]
         self.page.go('/calendar')
 
     def click_calendar(self, e: ft.ControlEvent):
@@ -99,7 +101,7 @@ class CalendarIcon(ft.UserControl):
                                     ft.IconButton(
                                         icon=ft.icons.EDIT,
                                         icon_size=30,
-                                        on_click=self.popup,
+                                        on_click=self.click_calendar_edit,
                                         tooltip='Изменить календарь',
                                         #icon_color=ft.colors.BLACK,
 
@@ -119,7 +121,8 @@ class CalendarIcon(ft.UserControl):
                         alignment=ft.alignment.bottom_center,
                     )
                 ],
-                alignment=ft.MainAxisAlignment.START
+                alignment=ft.MainAxisAlignment.START,
+                scroll=ft.ScrollMode.ALWAYS,
             ),
         # border = ft.border.all(1, ft.colors.PINK_600),
         # alignment=ft.alignment.top_center
@@ -145,14 +148,12 @@ class CalendarIconAdd(ft.UserControl):
         self.text = text
         self.page = page
 
-    def popup(self, e: ft.ContainerTapEvent):
+    def click_add_new_calendar(self, e: ft.ContainerTapEvent):
         """
         Обработка события нажатия на кнопку нового календаря
         """
-        dlg = ft.AlertDialog(title=ft.Text("Форма добавления календаря"))
-        self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
-        dlg.open = True
-        self.page.update()
+        self.page.go("/create_cal")
+
 
     def build(self):
         return ft.Container(
@@ -160,7 +161,7 @@ class CalendarIconAdd(ft.UserControl):
             content=ft.IconButton(
                 icon=ft.icons.ADD,
                 tooltip='Добавить новый календарь',
-                on_click=self.popup,
+                on_click=self.click_add_new_calendar,
             ),
             alignment=ft.alignment.center,
             #border = ft.border.all(1, ft.colors.PINK_600),

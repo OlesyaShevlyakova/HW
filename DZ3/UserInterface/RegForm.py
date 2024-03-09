@@ -87,11 +87,15 @@ class RegForm(ft.UserControl):
             dlg = ft.AlertDialog(title=ft.Text(f"Используйте только ЛАТИНСКИЕ буквы и цифры"))
             self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
             dlg.open = True
+            self.update()
+            self.page.update()
         else:
             if not Backend.originality_login(self.login_new.current.value):
                 dlg = ft.AlertDialog(title=ft.Text(f"Введите другой логин, данный логин уже существует"))
                 self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
                 dlg.open = True
+                self.update()
+                self.page.update()
             else:
                 result_back = Backend.reg_user(login_user=self.login_new.current.value,
                                                name_user=self.name_new.current.value,
@@ -99,11 +103,11 @@ class RegForm(ft.UserControl):
                                                password_user=self.password_new.current.value)
                 Backend.add_new_calendar(id_user=result_back, name_calendar=self.calendar_new.current.value)
                 dlg = ft.AlertDialog(title=ft.Text(f"Регистрация выполнена успешно, Ваш id {result_back}"))
-                self.global_dict_state = result_back  # чтобы сохранить id user для последующего использования
+                self.global_dict_state['id_user'] = result_back  # чтобы сохранить id user для последующего использования
                 self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
                 dlg.open = True
-        self.update()
-        self.page.update()
+                self.page.go('/mainscreen')
+
 
     def check_for_reg_button(self, e: ft.ControlEvent):
         "Активация кнопки - Зарегистрироваться"

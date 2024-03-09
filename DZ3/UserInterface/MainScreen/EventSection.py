@@ -65,9 +65,45 @@ class EventsSection(ft.UserControl):
                         border_radius=10,
 
                     ),
-                )
-        else:
+                ),
+            self.grid_events.controls.append(
+                ft.Container(
+                    content=
+                    ft.Row(
+                        [
+                            EventAdd(),
+                        ],
+                        alignment=ft.MainAxisAlignment.CENTER,
+                    ),
+                    width=100,
+                    height=100,
+                    border=ft.border.all(1, ft.colors.PINK_600),
+                    border_radius=10,
+
+                ),
+            )
+        elif self.global_dict_state['id_calendar'] == '':
+            self.grid_events.controls = []
             self.grid_events.controls.append(ft.Text('Выберите слева календарь, щёлкнув по его имени.'))
+        else:
+            self.grid_events.controls = []
+            self.grid_events.controls.append(
+                ft.Container(
+                    content=
+                    ft.Row(
+                        [
+                            EventAdd(),
+                        ],
+                        alignment=ft.MainAxisAlignment.CENTER,
+                    ),
+                    width=100,
+                    height=100,
+                    border=ft.border.all(1, ft.colors.PINK_600),
+                    border_radius=10,
+
+                )
+            )
+
 
     def update_state(self):
         """
@@ -106,3 +142,35 @@ class Event(ft.UserControl):
             #width=500,
             #height=500
         )
+
+
+class EventAdd(ft.UserControl):
+    """
+    Класс реализующий форму отображения события из календаря пользователя
+    """
+
+    def __init__(self):
+        super().__init__()
+
+    def popup(self):
+        pass
+
+    def build(self):
+        return ft.Container(
+            content=ft.IconButton(
+                icon=ft.icons.ADD_CIRCLE_OUTLINE,
+                tooltip='Добавить новое событие',
+                on_click=self.popup,
+            ),
+            alignment=ft.alignment.center,
+            #border = ft.border.all(1, ft.colors.PINK_600),
+            # alignment=ft.alignment.top_center
+            #bgcolor=ft.colors.AMBER,
+            # alignment=ft.alignment.center,
+            # alignment=ft.alignment.top_right,
+            # expand=True,
+            #height=100,
+            #width=100,
+            #border=ft.border.all(1, ft.colors.PINK_600),
+            #border_radius=10,
+    )

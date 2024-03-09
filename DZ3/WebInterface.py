@@ -49,7 +49,7 @@ def main(page: ft.Page):
                 ft.View(
                     route="/calendar",
                     controls=[
-                        CalendarForm(page, global_dict_state="@MishaIvanov*2", target_id_calendar="2", name_calendar="personal")
+                        CalendarForm(page, global_dict_state)
                     ]
                 )
             )
@@ -67,7 +67,7 @@ def main(page: ft.Page):
                 ft.View(
                     route="/create_cal",
                     controls=[
-                        CreateCalForm(page, global_dict_state="@OlesyaShevlyakova*1")
+                        CreateCalForm(page, global_dict_state)
                     ]
                 )
             )
@@ -96,7 +96,9 @@ def main(page: ft.Page):
     global_dict_state = {
         'id_user': "",
         'id_calendar': "",
-        'name_calendar': ""
+        'name_calendar': "",
+        'CalendarForm_id_calendar':'',
+        'CalendarForm_name_calendar':''
     }
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER  # помещаем внутренние окна по центру относительно ширины
     page.on_route_change = route_change

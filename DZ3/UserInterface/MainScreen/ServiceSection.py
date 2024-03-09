@@ -42,7 +42,8 @@ class ServiceSection(ft.UserControl):
                             text='Выйти на страницу авторизации',
                             route='back_to_login',
                             icon=ft.icons.EXIT_TO_APP,
-                        )
+                        ),
+                        bgcolor=ft.colors.TRANSPARENT,
                     ),
                 ],
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER
@@ -82,7 +83,7 @@ class ServiceSectionButton(ft.UserControl):
             #on_click=self.popup,
             #border = ft.border.all(1, ft.colors.PINK_600),
             # alignment=ft.alignment.top_center
-            bgcolor=ft.colors.WHITE,
+            #bgcolor=ft.colors.WHITE,
             # alignment=ft.alignment.center,
             # alignment=ft.alignment.top_right,
             # expand=True,
