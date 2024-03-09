@@ -7,6 +7,7 @@ from UserInterface.MainScreenForm import MainScreen
 from UserInterface.CreateCalForm import CreateCalForm
 from UserInterface.NotiForm import NotiForm
 from UserInterface.CreateEvForm import CreateEvForm
+from UserInterface.EditEvent import EditEvent
 
 
 def run():
@@ -17,7 +18,7 @@ def main(page: ft.Page):
     def route_change(e: ft.RouteChangeEvent):
         "Обработка перехода между окнами"
         page.views.clear()
-        if page.route == "/login": # Форма логина в приложение
+        if page.route == "/login":  # Форма логина в приложение
             page.views.append(
                 ft.View(
                     route="/login",
@@ -26,7 +27,7 @@ def main(page: ft.Page):
                     ]
                 )
             )
-        elif page.route == "/reg": # Форма регистрации нового пользователя
+        elif page.route == "/reg":  # Форма регистрации нового пользователя
             page.views.append(
                 ft.View(
                     route="/reg",
@@ -35,7 +36,7 @@ def main(page: ft.Page):
                     ]
                 )
             )
-        elif page.route == "/user": # Форма редактирования информации о пользователе
+        elif page.route == "/user":  # Форма редактирования информации о пользователе
             page.views.append(
                 ft.View(
                     route="/user",
@@ -44,7 +45,7 @@ def main(page: ft.Page):
                     ]
                 )
             )
-        elif page.route == "/calendar": # Форма редактирования информации о календаре
+        elif page.route == "/calendar":  # Форма редактирования информации о календаре
             page.views.append(
                 ft.View(
                     route="/calendar",
@@ -53,7 +54,7 @@ def main(page: ft.Page):
                     ]
                 )
             )
-        elif page.route == "/mainscreen": # Форма главного окна приложения
+        elif page.route == "/mainscreen":  # Форма главного окна приложения
             page.views.append(
                 ft.View(
                     route="/mainscreen",
@@ -62,7 +63,7 @@ def main(page: ft.Page):
                     ]
                 )
             )
-        elif page.route == "/create_cal": # Форма создания календаря
+        elif page.route == "/create_cal":  # Форма создания календаря
             page.views.append(
                 ft.View(
                     route="/create_cal",
@@ -71,7 +72,7 @@ def main(page: ft.Page):
                     ]
                 )
             )
-        elif page.route == "/noti": # Форма просмотра оповещений
+        elif page.route == "/noti":  # Форма просмотра оповещений
             page.views.append(
                 ft.View(
                     route="/noti",
@@ -81,12 +82,22 @@ def main(page: ft.Page):
                 )
             )
 
-        elif page.route == "/create_ev": # Форма создания событий
+        elif page.route == "/create_ev":  # Форма создания событий
             page.views.append(
                 ft.View(
                     route="/create_ev",
                     controls=[
                         CreateEvForm(page, global_dict_state="@MishaIvanov*2")
+                    ]
+                )
+            )
+
+        elif page.route == "/edit_event":  # Форма создания событий
+            page.views.append(
+                ft.View(
+                    route="/edit_event",
+                    controls=[
+                        EditEvent(page, global_dict_state)
                     ]
                 )
             )
@@ -97,8 +108,8 @@ def main(page: ft.Page):
         'id_user': "",
         'id_calendar': "",
         'name_calendar': "",
-        'CalendarForm_id_calendar':'',
-        'CalendarForm_name_calendar':''
+        'CalendarForm_id_calendar': '',
+        'CalendarForm_name_calendar': ''
     }
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER  # помещаем внутренние окна по центру относительно ширины
     page.on_route_change = route_change
