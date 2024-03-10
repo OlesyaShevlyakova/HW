@@ -17,8 +17,6 @@ class UserForm(ft.UserControl):
         self.name_new = ft.Ref[ft.TextField]()
         self.lastname_new = ft.Ref[ft.TextField]()
         self.password_new = ft.Ref[ft.TextField]()
-        self.info_failed = ft.Ref[ft.Text]()
-        self.info_failed_user = ft.Ref[ft.Text]()
         self.button_save_new = ft.Ref[ft.ElevatedButton]()
         self.button_back = ft.Ref[ft.ElevatedButton]()
         self.info_our_user = None
@@ -33,7 +31,7 @@ class UserForm(ft.UserControl):
                 horizontal_alignment=ft.CrossAxisAlignment.END,
                 controls=
                 [
-                    ft.Text(ref=self.info_failed_user, value="""Изменение информации о пользователе""",
+                    ft.Text("""Изменение информации о пользователе""",
                             size=40,
                             color=ft.colors.BROWN),
                     ft.Container(width=15, height=15, alignment=ft.alignment.center),  # пустой контейнер
@@ -46,7 +44,7 @@ class UserForm(ft.UserControl):
                     ft.Text("Введите новый пароль", size=16, italic=True),
                     ft.TextField(ref=self.password_new, width=400, label="Пароль",
                                  on_change=self.check_for_save_button),
-                    ft.Text(ref=self.info_failed, value="""Используйте только ЛАТИНСКИЕ буквы и цифры"""),
+                    ft.Text("""Используйте только ЛАТИНСКИЕ буквы и цифры"""),
                     ft.ElevatedButton(
                         ref=self.button_save_new,
                         disabled=True,

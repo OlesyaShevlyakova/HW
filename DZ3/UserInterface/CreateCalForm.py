@@ -15,7 +15,6 @@ class CreateCalForm(ft.UserControl):
         self.page.window_width = 1000
         self.page.title = "Окно создания календаря"
         self.calendar_new = ft.Ref[ft.TextField]()
-        self.info_failed = ft.Ref[ft.Text]()
         self.button_save_new = ft.Ref[ft.ElevatedButton]()
         self.button_back = ft.Ref[ft.ElevatedButton]()
         self.global_dict_state = global_dict_state
@@ -31,7 +30,7 @@ class CreateCalForm(ft.UserControl):
                 controls=
                 [
                     ft.Container(width=10, height=10, alignment=ft.alignment.center),  # пустой контейнер
-                    ft.Text(ref=self.info_failed, value="""Создание календаря""",
+                    ft.Text("""Создание календаря""",
                             size=40,
                             weight=ft.FontWeight.BOLD,
                             color=ft.colors.BLUE),
@@ -41,7 +40,7 @@ class CreateCalForm(ft.UserControl):
                     ft.TextField(ref=self.calendar_new, width=400, label="Название календаря",
                                  on_change=self.check_for_save_button),
                     ft.Container(width=5, height=5, alignment=ft.alignment.center),  # пустой контейнер
-                    ft.Text(ref=self.info_failed, value="""Используйте только ЛАТИНСКИЕ буквы и цифры""", size=16),
+                    ft.Text("""Используйте только ЛАТИНСКИЕ буквы и цифры""", size=16),
                     ft.Container(width=5, height=5, alignment=ft.alignment.center),  # пустой контейнер
                     ft.ElevatedButton(
                         ref=self.button_save_new,
@@ -107,10 +106,3 @@ def check_latin(text: str):
     pattern = re.compile("^[a-zA-Z0-9]*$")
     return pattern.match(text)
 
-
-def test_run(page: ft.Page):
-    page.add(CreateCalForm(page, global_dict_state="@OlesyaShevlyakova*1"))
-
-
-if __name__ == "__main__":
-    ft.app(target=test_run, assets_dir="../assets")

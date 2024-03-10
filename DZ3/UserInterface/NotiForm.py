@@ -13,7 +13,6 @@ class NotiForm(ft.UserControl):
         self.page.window_height = 600
         self.page.window_width = 850
         self.page.title = "Окно оповещений"
-        self.info_failed_user = ft.Ref[ft.Text]()
         self.button_back = ft.Ref[ft.ElevatedButton]()
         self.global_dict_state = global_dict_state
 
@@ -38,7 +37,7 @@ class NotiForm(ft.UserControl):
                             alignment=ft.MainAxisAlignment.SPACE_AROUND),
                         on_click=lambda _: self.page.go('/login')  # Возвращает на окно логина  #TODO
                     ),
-                    ft.Text(ref=self.info_failed_user, value="""Ваши оповещения""",
+                    ft.Text("""Ваши оповещения""",
                             size=40,
                             color=ft.colors.RED),
                     ft.Container(width=10, height=10, alignment=ft.alignment.center),  # пустой контейнер
@@ -55,6 +54,3 @@ class NotiForm(ft.UserControl):
             )
         )
 
-
-if __name__ == "__main__":
-    ft.app(target=test_run, assets_dir="../assets")

@@ -15,8 +15,6 @@ class CalendarForm(ft.UserControl):
         self.page.window_width = 850
         self.page.title = "Окно редактирования информации о календаре"
         self.name_new_calendar = ft.Ref[ft.TextField]()
-        self.info_failed = ft.Ref[ft.Text]()
-        self.info_failed_user = ft.Ref[ft.Text]()
         self.button_save_new = ft.Ref[ft.ElevatedButton]()
         self.button_back = ft.Ref[ft.ElevatedButton]()
         self.global_dict_state = global_dict_state
@@ -30,14 +28,14 @@ class CalendarForm(ft.UserControl):
                 horizontal_alignment=ft.CrossAxisAlignment.END,
                 controls=
                 [
-                    ft.Text(ref=self.info_failed_user, value="""Изменение информации о календаре""",
+                    ft.Text("""Изменение информации о календаре""",
                             size=40,
                             color=ft.colors.BLUE),
                     ft.Container(width=70, height=70, alignment=ft.alignment.center),  # пустой контейнер
                     ft.Text("Введите новое наименование календаря", size=18, italic=True),
                     ft.TextField(ref=self.name_new_calendar, width=350, label=self.global_dict_state['CalendarForm_name_calendar'],
                                  on_change=self.check_for_save_button),
-                    ft.Text(ref=self.info_failed, value="""Используйте только ЛАТИНСКИЕ буквы и цифры"""),
+                    ft.Text("""Используйте только ЛАТИНСКИЕ буквы и цифры"""),
                     ft.Container(width=20, height=20, alignment=ft.alignment.center),  # пустой контейнер
                     ft.ElevatedButton(
                         ref=self.button_save_new,
@@ -104,9 +102,4 @@ def check_latin(text: str):
     return pattern.match(text)
 
 
-def test_run(page: ft.Page):
-    page.add(CalendarForm(page, global_dict_state="@MishaIvanov*2", target_id_calendar="2", name_calendar="work"))
 
-
-if __name__ == "__main__":
-    ft.app(target=test_run, assets_dir="../assets")

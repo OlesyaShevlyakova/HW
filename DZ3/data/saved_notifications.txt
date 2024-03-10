@@ -27,3 +27,9 @@ id,id_user,id_event,action,del_details
 25,@LenaPush*7,5,D,Game
 1,@MishaIvanov*2,6,C,game
 2,@MaksimBazhin*3,6,C,game
+1,@MishaIvanov*2,4,C,Breakfast
+1,@MishaIvanov*2,4,D,Breakfast
+1,@MaksimBazhin*3,4,D,Breakfast
+2,@AllaShpak*5,4,D,Breakfast
+1,@OlgaVolkova*9,4,C,Breakfast
+2,@VladimirIvanov*10,4,C,Breakfast
