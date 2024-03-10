@@ -47,10 +47,16 @@ class MainScreen(ft.UserControl):
         self.page.overlay.append(self.date_picker_end)
 
     def change_date_end(self, e: ft.ControlEvent):
+        """
+        Обработка нажатия на кнопку фильтира по датам конец диапазона
+        """
         self.button_end_date.current.text = self.date_picker_end.value.date()
         self.update()
 
     def change_date_start(self, e: ft.ControlEvent):
+        """
+        Обработка нажатия на кнопку фильтира по датам начало диапазона
+        """
         self.button_start_date.current.text = self.date_picker_start.value.date()
         # self.date_picker_end.first_date = datetime.datetime(2024, 10, 1),  # self.date_picker_start.value
         # if self.button_end_date.current.text == 'Дата конца':
@@ -63,9 +69,15 @@ class MainScreen(ft.UserControl):
         # self.page.update()
 
     def click_cancel_date(self, e: ft.ControlEvent):
+        """
+        Обработка нажатия на кнопку сброса фильтра по датам
+        """
         self.callback_update_events()
 
     def click_apply_date(self, e: ft.ControlEvent):
+        """
+        Обработка нажатия на кнопку применения фильтра
+        """
         if self.global_dict_state['id_calendar'] == '':
             dlg = ft.AlertDialog(title=ft.Text(f"Выберите календарь"))
             self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог

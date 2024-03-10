@@ -95,6 +95,12 @@ class RegForm(ft.UserControl):
                 dlg.open = True
                 self.update()
                 self.page.update()
+            elif len(self.login_new.current.value) < 8:
+                dlg = ft.AlertDialog(title=ft.Text(f"Пароль слишком короткий, требуется минимум 8 символов"))
+                self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
+                dlg.open = True
+                self.update()
+                self.page.update()
             else:
                 result_back = Backend.reg_user(login_user=self.login_new.current.value,
                                                name_user=self.name_new.current.value,
