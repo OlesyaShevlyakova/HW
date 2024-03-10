@@ -5,3 +5,4 @@ id,name_event,description,data_event,repeat_type,event_owner,guests
 4,Breakfast,tasty,2024-03-07,M,@OlesyaShevlyakova*1,"['@NataNevskaya*6', '@OlgaVolkova*9', '@VladimirIvanov*10']"
 5,Game,Football table,2024-02-02,,@OlesyaShevlyakova*1,"['@MishaIvanov*2', '@AllaShpak*5']"
 6,game,basketball,2024-01-01,,@OlesyaShevlyakova*1,"['@MishaIvanov*2', '@MaksimBazhin*3']"
+7,Breakfast,Tasty cupcakes,2024-04-05,D,@OlesyaShevchenko*11,['@OlesyaShevlyakova*1']

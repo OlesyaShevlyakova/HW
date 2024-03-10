@@ -33,3 +33,4 @@ id,id_user,id_event,action,del_details
 2,@AllaShpak*5,4,D,Breakfast
 1,@OlgaVolkova*9,4,C,Breakfast
 2,@VladimirIvanov*10,4,C,Breakfast
+1,@OlesyaShevlyakova*1,7,C,Breakfast

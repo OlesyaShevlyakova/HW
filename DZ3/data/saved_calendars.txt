@@ -1,5 +1,5 @@
 id,name_calendar,id_user,id_events
-1,Work,@OlesyaShevlyakova*1,"['5', '4']"
+1,Work,@OlesyaShevlyakova*1,"['5', '4', '7']"
 2,work,@MishaIvanov*2,"['1', '2', '3', '5', '1', '6']"
 3,personal,@MaksimBazhin*3,"['2', '6']"
 4,work,@GrishaSidorov*4,"['1', '2', '3', '1']"
@@ -10,3 +10,4 @@ id,name_calendar,id_user,id_events
 9,work,@VladimirIvanov*10,['4']
 10,PlanLife,@OlesyaShevlyakova*1,['6']
 11,MyGame,@OlesyaShevlyakova*1,[]
+12,Personal,@OlesyaShevchenko*11,['7']
