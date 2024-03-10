@@ -67,7 +67,7 @@ class UserForm(ft.UserControl):
                                 ft.Text(value="Назад", size=20, color=ft.colors.LIGHT_BLUE_800),
                             ],
                             alignment=ft.MainAxisAlignment.SPACE_AROUND),
-                        on_click=lambda _: self.page.go('/mainscreen')  # Возвращает на окно логина  #TODO
+                        on_click=lambda _: self.page.go('/mainscreen')  # Возвращает на окно логина
                     )
                 ]
             )
