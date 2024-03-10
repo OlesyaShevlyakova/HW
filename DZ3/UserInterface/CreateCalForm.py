@@ -77,13 +77,18 @@ class CreateCalForm(ft.UserControl):
             dlg = ft.AlertDialog(title=ft.Text(f"Используйте только ЛАТИНСКИЕ буквы и цифры"))
             self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
             dlg.open = True
+            self.update()
+            self.page.update()
         else:
             Backend.add_new_calendar(id_user=self.global_dict_state['id_user'], name_calendar=self.calendar_new.current.value)
             dlg = ft.AlertDialog(title=ft.Text(f"Календарь успешно создан"))
             self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
             dlg.open = True
-        self.update()
-        self.page.update()
+            self.update()
+            self.page.update()
+            self.page.go('/mainscreen')
+
+
 
     def load_calendars(self):
         Backend.load_file_calendars(self.global_dict_state['id_user'])  # загружаем календари конкретного пользователя в Backend

@@ -14,6 +14,7 @@ class CalendarSection(ft.UserControl):
         self.page = page
         self.global_dict_state = global_dict_state
         self.callback_update_events = callback_update_events
+        self.calendar_column = ft.Ref[ft.Column]()
         #self.expand = True
 
     def load_calendars(self):
@@ -25,7 +26,6 @@ class CalendarSection(ft.UserControl):
 
     def build(self):
         self.load_calendars()
-        calendar_column = ft.Ref[ft.Column]()
         result = ft.Container(
                     content=ft.Column(
                         [
@@ -40,11 +40,11 @@ class CalendarSection(ft.UserControl):
                                             self.callback_update_events
                                         ) for elem in self.lst_cal
                                     ],
-                                    ref=calendar_column
+                                    ref=self.calendar_column
                                 ),
                             ),
                             ft.Container(
-                                content=CalendarIconAdd(self.page,'+')
+                                content=CalendarIconAdd(self.page, len(self.calendar_column.current.controls), '+')
                             ),
                         ],
                         #alignment=ft.MainAxisAlignment.CENTER
@@ -88,6 +88,7 @@ class CalendarIcon(ft.UserControl):
         Нажатие на имя календаря выбирая конкретный календарь
         """
         self.global_dict_state['id_calendar'] = self.info_calendar[0]
+        self.global_dict_state['name_calendar'] = self.info_calendar[1]
         self.callback_update_events()
 
     def build(self):
@@ -143,16 +144,26 @@ class CalendarIconAdd(ft.UserControl):
     """
     Кнопка добавления нового календаря
     """
-    def __init__(self, page:ft.Page, text=None):
+    def __init__(self, page:ft.Page, num_calc: int, text=None):
         super().__init__()
         self.text = text
         self.page = page
+        self.num_calc = num_calc
 
     def click_add_new_calendar(self, e: ft.ContainerTapEvent):
         """
         Обработка события нажатия на кнопку нового календаря
         """
-        self.page.go("/create_cal")
+        if self.num_calc <4:
+            self.page.go("/create_cal")
+        else:
+            dlg = ft.AlertDialog(title=ft.Text(f"Вы уже добавили максимальное количество календарей,"
+                                               f"в бесплатной версии данной программы. "
+                                               f"Для снятия ограничений, пожалуйста, купите платную версию программы."))
+            self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
+            dlg.open = True
+            self.update()
+            self.page.update()
 
 
     def build(self):

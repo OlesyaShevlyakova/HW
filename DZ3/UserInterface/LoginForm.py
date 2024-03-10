@@ -16,6 +16,7 @@ class LoginForm(ft.UserControl):
         self.page.title = "Окно авторизации"
         self.page.window_width = 850  # ширина внешнего окна
         self.page.window_height = 600  # высота внешнего окна
+        self.page.window_center()
         self.global_dict_state = global_dict_state
         # self.page.window_resizable = False  # запрет изменения размера окна
         self.global_dict_state['id_calendar']= ''

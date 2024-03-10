@@ -7,7 +7,7 @@ from UserInterface.MainScreenForm import MainScreen
 from UserInterface.CreateCalForm import CreateCalForm
 from UserInterface.NotiForm import NotiForm
 from UserInterface.CreateEvForm import CreateEvForm
-from UserInterface.EditEvent import EditEvent
+#from UserInterface.EditEvent import EditEvent
 
 
 def run():
@@ -87,7 +87,7 @@ def main(page: ft.Page):
                 ft.View(
                     route="/create_ev",
                     controls=[
-                        CreateEvForm(page, global_dict_state="@MishaIvanov*2")
+                        CreateEvForm(page, global_dict_state)
                     ]
                 )
             )

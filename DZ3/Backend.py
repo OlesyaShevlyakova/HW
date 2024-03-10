@@ -351,7 +351,8 @@ class Backend:
 
     @staticmethod
     def search_events(data_from: datetime, data_to: datetime, target_id_calendar):
-        "Поиск событий из промежутка времени"
+        """Поиск событий из промежутка времени
+        У метода есть дубдикат для веб интерфеса - search_events_for_webinterface"""
         """
         Алгоритм:
         1) На вход поступает диапазон дат и id календаря, в котором искать события из промежутка
@@ -384,6 +385,26 @@ class Backend:
                                               elem.info_Event()[6])
                         list_search_events.append(info_with_new_date)
 
+                    elif calculated_data > data_to:
+                        break
+        return list_search_events
+
+    @staticmethod
+    def search_events_for_webinterface(data_from: datetime, data_to: datetime, target_id_calendar):
+        """Поиск событий из промежутка времени
+        Это дубликат метода search_events но с изменениями для веб интерфейса"""
+
+        Backend.show_events(target_id_calendar)  # возвращаем события календаря
+        list_search_events = []  # список событий из нужного временного диапазона
+        data_from = str_to_date(data_from)
+        data_to = str_to_date(data_to)
+        for elem in Backend.info_events():  # в цикле проходимся по списку событий, выбирая каждое событие
+            if elem.info_Event()[4] == "N" and (data_from <= str_to_date(elem.info_Event()[3]) <= data_to):
+                list_search_events.append((elem,None))
+            elif (elem.info_Event()[4] in ["D", "W", "M", "Y"]) and (str_to_date(elem.info_Event()[3]) <= data_to):
+                for calculated_data in elem.repeat_events():
+                    if data_from <= calculated_data <= data_to:
+                        list_search_events.append((elem,str(calculated_data)[:11]))
                     elif calculated_data > data_to:
                         break
         return list_search_events

@@ -77,14 +77,17 @@ class CalendarForm(ft.UserControl):
             dlg = ft.AlertDialog(title=ft.Text(f"Используйте только ЛАТИНСКИЕ буквы и цифры"))
             self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
             dlg.open = True
+            self.update()
+            self.page.update()
         else:
             Backend.update_calendar(target_id_calendar=self.global_dict_state['CalendarForm_id_calendar'],
                                     new_name_calendar=self.name_new_calendar.current.value)
             dlg = ft.AlertDialog(title=ft.Text(f"Изменения выполнены успешно"))
             self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
             dlg.open = True
-        self.update()
-        self.page.update()
+            self.update()
+            self.page.update()
+            self.page.go('/mainscreen')
 
     def check_for_save_button(self, e: ft.ControlEvent):
         "Активация кнопки - Сохранить"
