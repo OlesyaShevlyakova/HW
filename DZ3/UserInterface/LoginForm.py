@@ -19,11 +19,9 @@ class LoginForm(ft.UserControl):
         self.page.window_center()
         self.global_dict_state = global_dict_state
         # self.page.window_resizable = False  # запрет изменения размера окна
-        self.global_dict_state['id_calendar']= ''
-        self.global_dict_state['name_calendar']= ''
-        self.global_dict_state['login_user']= ''
-
-
+        self.global_dict_state['id_calendar'] = ''
+        self.global_dict_state['name_calendar'] = ''
+        self.global_dict_state['login_user'] = ''
 
     def build(self):
         return ft.Container(

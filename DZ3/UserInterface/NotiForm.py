@@ -53,4 +53,3 @@ class NotiForm(ft.UserControl):
                 ]
             )
         )
-

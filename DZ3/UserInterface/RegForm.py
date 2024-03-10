@@ -108,7 +108,6 @@ class RegForm(ft.UserControl):
                 dlg.open = True
                 self.page.go('/mainscreen')
 
-
     def check_for_reg_button(self, e: ft.ControlEvent):
         "Активация кнопки - Зарегистрироваться"
         if (len(self.login_new.current.value) > 0 and len(self.name_new.current.value) > 0 and

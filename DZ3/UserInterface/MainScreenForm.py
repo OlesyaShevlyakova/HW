@@ -4,7 +4,6 @@ from UserInterface.MainScreen.EventSection import EventsSection
 from UserInterface.MainScreen.ServiceSection import ServiceSection
 
 
-
 class MainScreen(ft.UserControl):
     """
     Класс реализующий отображение ссновного экрана приложения,
@@ -34,19 +33,18 @@ class MainScreen(ft.UserControl):
         self.button_cancel_date = ft.Ref[ft.IconButton]()
         self.date_picker_start = ft.DatePicker(
             on_change=self.change_date_start,
-            #on_dismiss=self.date_picker_dismissed_start,
+            # on_dismiss=self.date_picker_dismissed_start,
             # first_date=datetime.datetime(2023, 10, 1),
             # last_date=datetime.datetime(2024, 10, 1),
         )
         self.date_picker_end = ft.DatePicker(
             on_change=self.change_date_end,
-            #on_dismiss=self.selfdate_picker_dismissed_end,
+            # on_dismiss=self.selfdate_picker_dismissed_end,
             # first_date=datetime.datetime(2023, 10, 1),
             # last_date=datetime.datetime(2024, 10, 1),
         )
         self.page.overlay.append(self.date_picker_start)
         self.page.overlay.append(self.date_picker_end)
-
 
     def change_date_end(self, e: ft.ControlEvent):
         self.button_end_date.current.text = self.date_picker_end.value.date()
@@ -54,15 +52,15 @@ class MainScreen(ft.UserControl):
 
     def change_date_start(self, e: ft.ControlEvent):
         self.button_start_date.current.text = self.date_picker_start.value.date()
-        #self.date_picker_end.first_date = datetime.datetime(2024, 10, 1),  # self.date_picker_start.value
+        # self.date_picker_end.first_date = datetime.datetime(2024, 10, 1),  # self.date_picker_start.value
         # if self.button_end_date.current.text == 'Дата конца':
         #     print(self.date_picker_start.value)
         #     print(type(self.date_picker_start.value))
-            #self.date_picker_end.first_date = datetime.datetime(2024, 10, 1), #self.date_picker_start.value
-            #first_date = datetime.datetime(2023, 10, 1),
+        # self.date_picker_end.first_date = datetime.datetime(2024, 10, 1), #self.date_picker_start.value
+        # first_date = datetime.datetime(2023, 10, 1),
         self.update()
-        #self.date_picker_end.update()
-        #self.page.update()
+        # self.date_picker_end.update()
+        # self.page.update()
 
     def click_cancel_date(self, e: ft.ControlEvent):
         self.callback_update_events()
@@ -81,11 +79,6 @@ class MainScreen(ft.UserControl):
         else:
             self.callback_update_events_by_date(self.button_start_date.current.text, self.button_end_date.current.text)
 
-
-
-
-
-
     def build(self):
         return ft.Container(
             image_src='/mainscreen_fon.jpg',
@@ -93,37 +86,37 @@ class MainScreen(ft.UserControl):
                 [
                     ft.Container(
                         content=
-                            ft.Row(
-                                [
-                                    ft.ElevatedButton(
-                                        ref=self.button_start_date,
-                                        icon=ft.icons.CALENDAR_MONTH,
-                                        text='Дата начала',
-                                        on_click=lambda _: self.date_picker_start.pick_date(),
-                                    ),
-                                    ft.ElevatedButton(
-                                        ref=self.button_end_date,
-                                        icon=ft.icons.CALENDAR_MONTH,
-                                        text='Дата конца',
-                                        on_click=lambda _: self.date_picker_end.pick_date(),
-                                    ),
-                                    ft.IconButton(
-                                        ref=self.button_apply_date,
-                                        icon=ft.icons.CHECK_CIRCLE_OUTLINED,
-                                        on_click=self.click_apply_date,
-                                        tooltip='Применить фильтр',
-                                    ),
-                                    ft.IconButton(
-                                        ref=self.button_cancel_date,
-                                        icon=ft.icons.CANCEL_OUTLINED,
-                                        on_click=self.click_cancel_date,
-                                        tooltip='Сбросить фильтр',
-                                    )
-                                ],
-                                alignment=ft.MainAxisAlignment.CENTER
-                            ),
+                        ft.Row(
+                            [
+                                ft.ElevatedButton(
+                                    ref=self.button_start_date,
+                                    icon=ft.icons.CALENDAR_MONTH,
+                                    text='Дата начала',
+                                    on_click=lambda _: self.date_picker_start.pick_date(),
+                                ),
+                                ft.ElevatedButton(
+                                    ref=self.button_end_date,
+                                    icon=ft.icons.CALENDAR_MONTH,
+                                    text='Дата конца',
+                                    on_click=lambda _: self.date_picker_end.pick_date(),
+                                ),
+                                ft.IconButton(
+                                    ref=self.button_apply_date,
+                                    icon=ft.icons.CHECK_CIRCLE_OUTLINED,
+                                    on_click=self.click_apply_date,
+                                    tooltip='Применить фильтр',
+                                ),
+                                ft.IconButton(
+                                    ref=self.button_cancel_date,
+                                    icon=ft.icons.CANCEL_OUTLINED,
+                                    on_click=self.click_cancel_date,
+                                    tooltip='Сбросить фильтр',
+                                )
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER
+                        ),
                         height=50,
-                        #border=ft.border.all(1, ft.colors.PINK_600),
+                        # border=ft.border.all(1, ft.colors.PINK_600),
                         alignment=ft.alignment.bottom_center,
                     ),
                     ft.Row(
@@ -158,4 +151,3 @@ class MainScreen(ft.UserControl):
         self.event_section.update_state_by_date(date_start, date_end)
 
     # def date_picker_popup(self):
-

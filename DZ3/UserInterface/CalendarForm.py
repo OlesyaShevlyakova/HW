@@ -33,7 +33,9 @@ class CalendarForm(ft.UserControl):
                             color=ft.colors.BLUE),
                     ft.Container(width=70, height=70, alignment=ft.alignment.center),  # пустой контейнер
                     ft.Text("Введите новое наименование календаря", size=18, italic=True),
-                    ft.TextField(ref=self.name_new_calendar, width=350, label=self.global_dict_state['CalendarForm_name_calendar'],
+                    ft.TextField(ref=self.name_new_calendar,
+                                 width=350,
+                                 label=self.global_dict_state['CalendarForm_name_calendar'],
                                  on_change=self.check_for_save_button),
                     ft.Text("""Используйте только ЛАТИНСКИЕ буквы и цифры"""),
                     ft.Container(width=20, height=20, alignment=ft.alignment.center),  # пустой контейнер
@@ -100,6 +102,3 @@ def check_latin(text: str):
     "Проверка на вхождение только правильных символов"
     pattern = re.compile("^[a-zA-Z0-9]*$")
     return pattern.match(text)
-
-
-
