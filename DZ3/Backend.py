@@ -706,6 +706,16 @@ class Backend:
                                               name_event)  # добавление события в
         # календарь гостей
 
+    @staticmethod
+    def get_event_by_id(id_event):
+        "Получение информации о событии по id"
+        Backend.load_file_events()  # TODO убрать. для тестирования используется
+        for elem in Backend.list_events:  # предполагаем, что в памяти загружены все события по конкретному календарю
+            if elem.info_Event()[0] == id_event:
+                our_event_by_id = elem.info_Event()
+                break
+        return our_event_by_id
+
 
 
 

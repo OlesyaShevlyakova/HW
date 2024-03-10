@@ -19,7 +19,6 @@ class CreateEvForm(ft.UserControl):
         self.des_event = ft.Ref[ft.TextField]()
         self.data_event = ft.Ref[ft.TextField]()
         self.repeat_event = ft.Ref[ft.TextField]()
-        self.info_failed = ft.Ref[ft.Text]()
         self.button_save_new = ft.Ref[ft.ElevatedButton]()
         self.button_back = ft.Ref[ft.ElevatedButton]()
         self.global_dict_state = global_dict_state
@@ -46,7 +45,7 @@ class CreateEvForm(ft.UserControl):
                 [
                     ft.Row(
                         [
-                            ft.Text(ref=self.info_failed, value="""Создание события""",
+                            ft.Text("""Создание события""",
                                     size=40,
                                     weight=ft.FontWeight.BOLD,
                                     color=ft.colors.BLUE_900),
@@ -60,8 +59,7 @@ class CreateEvForm(ft.UserControl):
                                     controls=
                                     [
 
-                                        ft.Text(ref=self.info_failed,
-                                                value="""Используйте только ЛАТИНСКИЕ буквы и цифры"""),
+                                        ft.Text("""Используйте только ЛАТИНСКИЕ буквы и цифры"""),
                                         ft.Text("Введите название события", size=18, italic=True),
                                         ft.TextField(ref=self.name_event, width=350, label="Название",
                                                      on_change=self.check_for_save_button),
@@ -72,15 +70,13 @@ class CreateEvForm(ft.UserControl):
                                         ft.TextField(ref=self.data_event, width=350,
                                                      label="Дата",
                                                      on_change=self.check_for_save_button),
-                                        ft.Text(ref=self.info_failed,
-                                                value="""Введите дату события в формате YYYY-MM-DD,
+                                        ft.Text("""Введите дату события в формате YYYY-MM-DD,
                                         например, 2023-01-05""", size=14),
                                         ft.Text("Введите периодичность события", size=18, italic=True),
                                         ft.TextField(ref=self.repeat_event, width=350,
                                                      label="Периодичность",
                                                      on_change=self.check_for_save_button),
-                                        ft.Text(ref=self.info_failed,
-                                                value="""Введите периодичность события в формате 
+                                        ft.Text("""Введите периодичность события в формате 
                 D или W или M или Y или N, где:
                                     D - ежедневно
                                     W - еженедельно

@@ -19,7 +19,6 @@ class RegForm(ft.UserControl):
         self.lastname_new = ft.Ref[ft.TextField]()
         self.password_new = ft.Ref[ft.TextField]()
         self.calendar_new = ft.Ref[ft.TextField]()
-        self.info_failed = ft.Ref[ft.Text]()
         self.button_reg_new = ft.Ref[ft.ElevatedButton]()
         self.button_back = ft.Ref[ft.ElevatedButton]()
         self.global_dict_state = global_dict_state
@@ -48,7 +47,7 @@ class RegForm(ft.UserControl):
                     ft.Text("Введите название календаря", size=16, italic=True),
                     ft.TextField(ref=self.calendar_new, width=400, label="Название календаря",
                                  on_change=self.check_for_reg_button),
-                    ft.Text(ref=self.info_failed, value="""Используйте только ЛАТИНСКИЕ буквы и цифры"""),
+                    ft.Text("""Используйте только ЛАТИНСКИЕ буквы и цифры"""),
                     ft.ElevatedButton(
                         ref=self.button_reg_new,
                         disabled=True,

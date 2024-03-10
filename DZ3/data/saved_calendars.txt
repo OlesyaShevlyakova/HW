@@ -1,11 +1,11 @@
 id,name_calendar,id_user,id_events
-1,work,@OlesyaShevlyakova*1,"['4', '5']"
-2,work,@MishaIvanov*2,"['1', '2', '3', '4', '5', '1', '6']"
-3,personal,@MaksimBazhin*3,"['2', '4', '6']"
-4,work,@GrishaSidorov*4,"['1', '2', '3', '1', '4']"
-5,personal,@AllaShpak*5,"['1', '2', '4', '5']"
+1,work,@OlesyaShevlyakova*1,['5']
+2,work,@MishaIvanov*2,"['1', '2', '3', '5', '1', '6']"
+3,personal,@MaksimBazhin*3,"['2', '6']"
+4,work,@GrishaSidorov*4,"['1', '2', '3', '1']"
+5,personal,@AllaShpak*5,"['1', '2', '5']"
 6,work,@NataNevskaya*6,"['2', '4', '1']"
-7,personal,@OlesyaShevlyakova*1,"['1', '2']"
-8,work,@OlgaVolkova*9,[]
-9,work,@VladimirIvanov*10,[]
+7,personal,@OlesyaShevlyakova*1,"['1', '2', '4']"
+8,work,@OlgaVolkova*9,['4']
+9,work,@VladimirIvanov*10,['4']
 10,personal,@OlesyaShevlyakova*1,['6']

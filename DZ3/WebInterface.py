@@ -92,7 +92,7 @@ def main(page: ft.Page):
                 )
             )
 
-        elif page.route == "/edit_event":  # Форма создания событий
+        elif page.route == "/edit_event":  # Форма редактирования событий
             page.views.append(
                 ft.View(
                     route="/edit_event",
@@ -108,12 +108,14 @@ def main(page: ft.Page):
         'id_user': "",
         'id_calendar': "",
         'name_calendar': "",
+        'id_event_for_edit': "",
         'CalendarForm_id_calendar': '',
         'CalendarForm_name_calendar': ''
     }
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER  # помещаем внутренние окна по центру относительно ширины
     page.on_route_change = route_change
     page.go('/login')
+
 
 
 if __name__ == "__main__":
