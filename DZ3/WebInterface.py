@@ -7,7 +7,7 @@ from UserInterface.MainScreenForm import MainScreen
 from UserInterface.CreateCalForm import CreateCalForm
 from UserInterface.NotiForm import NotiForm
 from UserInterface.CreateEvForm import CreateEvForm
-#from UserInterface.EditEvent import EditEvent
+from UserInterface.EditEvent import EditEvent
 
 
 def run():
@@ -116,7 +116,6 @@ def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER  # помещаем внутренние окна по центру относительно ширины
     page.on_route_change = route_change
     page.go('/login')
-
 
 
 if __name__ == "__main__":

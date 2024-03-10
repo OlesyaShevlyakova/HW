@@ -2,7 +2,6 @@ import flet as ft
 from UserInterface.MainScreen.CalendarSection import CalendarSection
 from UserInterface.MainScreen.EventSection import EventsSection
 from UserInterface.MainScreen.ServiceSection import ServiceSection
-import datetime
 
 
 

@@ -49,14 +49,13 @@ class EventsSection(ft.UserControl):
         self.load_events()
         if len(self.lst_events) != 0:
             self.grid_events.controls = []
-            print('self.lst_events',self.lst_events[0])
             for elem in self.lst_events:
                 self.grid_events.controls.append(
                     ft.Container(
                         content=
                         ft.Row(
                             [
-                                Event(elem.info_Event()),
+                                Event(elem.info_Event(), self.global_dict_state),
                             ],
                             alignment=ft.MainAxisAlignment.CENTER,
                         ),
@@ -116,7 +115,7 @@ class EventsSection(ft.UserControl):
                         content=
                         ft.Row(
                             [
-                                Event(elem[0].info_Event(),elem[1]),
+                                Event(elem[0].info_Event(),self.global_dict_state,elem[1]),
                             ],
                             alignment=ft.MainAxisAlignment.CENTER,
                         ),
@@ -166,13 +165,15 @@ class Event(ft.UserControl):
     """
     Класс реализующий форму отображения события из календаря пользователя
     """
-    def __init__(self, info_event: tuple, repeated_event=None):
+    def __init__(self, info_event: tuple, global_dict_state: dict,repeated_event = None):
         super().__init__()
         self.info_event = info_event
         self.repeated_event = repeated_event
         self.repeated_event_object = ft.Text(value=f'Дата с учетом повторения\nсобытия: {self.repeated_event}',size=12)
+        self.global_dict_state = global_dict_state
 
     def build(self):
+        self.global_dict_state['id_event_for_edit'] = self.info_event[0]
         if self.repeated_event is not None:
             self.repeated_event_object.visible=True
         else:
