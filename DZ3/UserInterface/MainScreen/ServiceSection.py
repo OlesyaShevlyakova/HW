@@ -23,7 +23,7 @@ class ServiceSection(ft.UserControl):
                         content=ServiceSectionButton(
                             page=self.page,
                             text='Изменить информацию о пользователе',
-                            route='change_user_info',
+                            route='/change_user_info',
                             icon=ft.icons.SETTINGS,
                         )
                     ),
@@ -31,7 +31,7 @@ class ServiceSection(ft.UserControl):
                         content=ServiceSectionButton(
                             page=self.page,
                             text='Посмотреть события',
-                            route='view_notifications',
+                            route='/view_notifications',
                             icon=ft.icons.NOTIFICATIONS,
                         )
                     ),
@@ -68,7 +68,8 @@ class ServiceSectionButton(ft.UserControl):
         #self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
         #dlg.open = True
         #self.page.update()
-        self.page.go('/login')
+        print(self.route)
+        self.page.go(self.route)
 
     def build(self):
         return ft.Container(

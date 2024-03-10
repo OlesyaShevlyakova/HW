@@ -67,14 +67,14 @@ class UserForm(ft.UserControl):
                                 ft.Text(value="Назад", size=20, color=ft.colors.LIGHT_BLUE_800),
                             ],
                             alignment=ft.MainAxisAlignment.SPACE_AROUND),
-                        on_click=lambda _: self.page.go('/login')  # Возвращает на окно логина  #TODO
+                        on_click=lambda _: self.page.go('/mainscreen')  # Возвращает на окно логина  #TODO
                     )
                 ]
             )
         )
 
     def load_user(self):
-        Backend.load_file_users(self.global_dict_state)  # загружаем конкретного пользователя в Backend
+        Backend.load_file_users(self.global_dict_state['login_user'])  # загружаем конкретного пользователя в Backend
         self.info_our_user = Backend.info_users()[0].info_User()  # информация о текущем пользователе
 
     def button_save_new_click(self, e: ft.ControlEvent):

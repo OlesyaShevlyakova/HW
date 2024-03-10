@@ -36,10 +36,10 @@ def main(page: ft.Page):
                     ]
                 )
             )
-        elif page.route == "/user":  # Форма редактирования информации о пользователе
+        elif page.route == "/change_user_info":  # Форма редактирования информации о пользователе
             page.views.append(
                 ft.View(
-                    route="/user",
+                    route="/change_user_info",
                     controls=[
                         UserForm(page, global_dict_state)
                     ]
@@ -72,12 +72,12 @@ def main(page: ft.Page):
                     ]
                 )
             )
-        elif page.route == "/noti":  # Форма просмотра оповещений
+        elif page.route == "/view_notifications":  # Форма просмотра оповещений
             page.views.append(
                 ft.View(
-                    route="/noti",
+                    route="/view_notifications",
                     controls=[
-                        NotiForm(page, global_dict_state="@MishaIvanov*2")
+                        NotiForm(page, global_dict_state)
                     ]
                 )
             )
@@ -106,6 +106,7 @@ def main(page: ft.Page):
     # передается не как значение, а как ссылка, так как является словарем, а не просто переменной
     global_dict_state = {
         'id_user': "",
+        'login_user': "",
         'id_calendar': "",
         'name_calendar': "",
         'id_event_for_edit': "",

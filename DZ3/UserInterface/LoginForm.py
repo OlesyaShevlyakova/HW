@@ -21,6 +21,9 @@ class LoginForm(ft.UserControl):
         # self.page.window_resizable = False  # запрет изменения размера окна
         self.global_dict_state['id_calendar']= ''
         self.global_dict_state['name_calendar']= ''
+        self.global_dict_state['login_user']= ''
+
+
 
     def build(self):
         return ft.Container(
@@ -82,6 +85,7 @@ class LoginForm(ft.UserControl):
         else:
             dlg = ft.AlertDialog(title=ft.Text(f"Авторизация выполнена успешно, выберите слева календарь."))
             self.global_dict_state['id_user'] = flag  # чтобы сохранить id user для последующего использования
+            self.global_dict_state['login_user'] = self.login_field.current.value
             self.page.dialog = dlg  # мы у страницы указываем, что у нее имеется диалог
             dlg.open = True
             self.page.go('/mainscreen')

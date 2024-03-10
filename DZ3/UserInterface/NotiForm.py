@@ -17,7 +17,7 @@ class NotiForm(ft.UserControl):
         self.global_dict_state = global_dict_state
 
     def build(self):
-        noti = Backend.show_notifications_user(self.global_dict_state)
+        noti = Backend.show_notifications_user(self.global_dict_state['id_user'])
         return ft.Container(
             image_src='/Noti.jpg',
             alignment=ft.alignment.center_right,
@@ -35,7 +35,7 @@ class NotiForm(ft.UserControl):
                                 ft.Text(value="Назад", size=20, color=ft.colors.LIGHT_BLUE_800),
                             ],
                             alignment=ft.MainAxisAlignment.SPACE_AROUND),
-                        on_click=lambda _: self.page.go('/login')  # Возвращает на окно логина  #TODO
+                        on_click=lambda _: self.page.go('/mainscreen')  # Возвращает на окно логина
                     ),
                     ft.Text("""Ваши оповещения""",
                             size=40,
