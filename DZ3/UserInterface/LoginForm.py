@@ -57,8 +57,10 @@ class LoginForm(ft.UserControl):
                             weight=ft.FontWeight.BOLD
                         ),
                         on_click=lambda _: self.page.go('/reg')),  # Возвращает на окно регистрации
-                    ft.Text(ref=self.login_failed, value="""Неправильный логин\пароль, либо пользователя не существует! 
-                Повторите попытку или зарегистрируйте нового пользователя!""", visible=False)
+                    ft.Text(ref=self.login_failed,
+                            value="""Неправильный логин\пароль, \n либо пользователя не существует! \n Повторите попытку или \nзарегистрируйте нового пользователя!""",
+                            size=16,
+                            visible=False)
                 ]
             )
         )
